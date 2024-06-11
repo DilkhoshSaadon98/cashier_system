@@ -1,0 +1,327 @@
+import 'package:cashier_system/controller/buying/definition_buying_controller.dart';
+import 'package:cashier_system/core/constant/app_theme.dart';
+import 'package:cashier_system/core/functions/validinput.dart';
+import 'package:cashier_system/data/model/purchaes_model.dart';
+import 'package:cashier_system/view/buying/components/buying_text_field.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+class BuyingController extends DefinitionBuyingController {
+  // GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+  int totalPrice = 0;
+
+  List<int> totalPrices = [];
+  List<List<String>> rowDataList = [];
+
+  void addRowDataToList(int rowIndex) {
+    List<String> rowData = [
+      itemCodeControllers[rowIndex].text,
+      itemNameControllers[rowIndex].text,
+      buyingPriceControllers[rowIndex].text,
+      quantityControllers[rowIndex].text,
+      sellingPriceControllers[rowIndex].text,
+      totalPriceController!.text,
+    ];
+
+    rowDataList.add(rowData);
+  }
+
+  int rowIndex = 0;
+  DataRow createRow() {
+    itemCodeControllers.add(itemCodeController!);
+    buyingPriceControllers.add(buyingPriceController!);
+    quantityControllers.add(quantityController!);
+    sellingPriceControllers.add(sellingPriceController!);
+    itemNameControllers.add(itemNameController!);
+    totalPrices.add(0);
+
+    int rowIndex = rows.length;
+
+    addRowDataToList(rowIndex);
+    update();
+
+    return DataRow(cells: [
+      DataCell(CustomTextFormFieldBuying(
+        hinttext: "Items Code",
+        valid: (value) {
+          return validInput(value!, 0, 10, ".");
+        },
+        isNumber: true,
+        onTap: () {},
+        nameController: itemCodeController,
+        idController: itemNameController,
+        data: dropDownListCodes,
+      )),
+      DataCell(CustomTextFormFieldBuying(
+        hinttext: "Items Name",
+        valid: (value) {
+          return validInput(value!, 0, 10, "");
+        },
+        isNumber: true,
+        nameController: itemNameController,
+        idController: itemCodeController,
+        data: dropDownList,
+        onTap: () {},
+      )),
+      DataCell(TextFormField(
+        controller: buyingPriceController,
+        textAlign: TextAlign.center,
+        style: titleStyle,
+        onChanged: (value) {
+          buyingPriceController!.text = value;
+          if (buyingPriceController!.text.isNotEmpty &&
+              quantityController!.text.isNotEmpty) {
+            int result = int.parse(buyingPriceController!.text) *
+                int.parse(quantityController!.text);
+            totalPriceController!.text = result.toString();
+          }
+          update();
+        },
+        decoration: InputDecoration(
+            hintText: "Buying Price",
+            hintStyle: bodyStyle,
+            border: InputBorder.none),
+        keyboardType: TextInputType.number, // Ensure only numbers are entered
+      )),
+      DataCell(Container(
+        width: 50,
+        alignment: Alignment.center,
+        child: TextFormField(
+          controller: quantityController,
+          textAlign: TextAlign.center,
+          style: titleStyle,
+          onChanged: (value) {
+            if (value.isEmpty) {
+              value = "0";
+            }
+            if (buyingPriceController!.text.isNotEmpty) {
+              totalPriceController!.text =
+                  (int.parse(value) * int.parse(buyingPriceController!.text))
+                      .toString();
+            }
+            update();
+          },
+          decoration: InputDecoration(
+              hintText: "0", hintStyle: bodyStyle, border: InputBorder.none),
+          keyboardType: TextInputType.number, // Ensure only numbers are entered
+        ),
+      )), // Quantity field
+      DataCell(TextFormField(
+        controller: sellingPriceController,
+        textAlign: TextAlign.center,
+        style: titleStyle,
+        decoration: InputDecoration(
+            hintText: "Selling Price",
+            hintStyle: bodyStyle,
+            border: InputBorder.none),
+      )),
+      DataCell(GetBuilder<BuyingController>(builder: (controller) {
+        return TextFormField(
+          controller: totalPriceController,
+          onChanged: (value) {
+            totalPriceController!.text = value;
+            if (totalPriceController!.text == "0" ||
+                totalPriceController!.text.isEmpty) {
+              buyingPriceController!.text = "0";
+            }
+            if (totalPriceController!.text.isNotEmpty &&
+                quantityController!.text.isNotEmpty) {
+              double result = double.parse(totalPriceController!.text) /
+                  double.parse(quantityController!.text);
+              buyingPriceController!.text = result.toString();
+            }
+            update();
+          },
+          textAlign: TextAlign.center,
+          style: titleStyle,
+          decoration: InputDecoration(
+              hintText: "Selling Price",
+              hintStyle: bodyStyle,
+              border: InputBorder.none),
+          keyboardType: TextInputType.number,
+        );
+      })), // Total price field
+    ]);
+  }
+
+  void updateColumnValues(
+      List<TextEditingController> controllers, List<String> values) {
+    values.clear();
+    for (var controller in controllers) {
+      values.add(controller.text);
+    }
+    update();
+  }
+
+  grouppingDate(String group) async {
+    var response =
+        await sqlDb.getData("SELECT * FROM purchaseView ORDER BY $group");
+    purchaseData.clear();
+    List responsedata = response ?? [];
+    purchaseData.addAll(responsedata.map((e) => PurchaseModel.fromJson(e)));
+    update();
+  }
+
+  getPurchaseData() async {
+    String? itemsNO;
+    String? itemsName;
+    String? itemsSelling;
+    String? itemsBuying;
+    String? itemsDate;
+    String? groupBy;
+
+    if (itemsIdController!.text.isNotEmpty) {
+      itemsNO = itemsIdController!.text;
+    }
+    if (itemsNameController!.text.isNotEmpty) {
+      itemsName = itemsNameController!.text;
+    }
+    if (itemsSellingPriceController!.text.isNotEmpty) {
+      itemsSelling = itemsSellingPriceController!.text;
+    }
+    if (itemsBuyingPriceController!.text.isNotEmpty) {
+      itemsBuying = itemsBuyingPriceController!.text;
+    }
+    if (purchaseDateController!.text.isNotEmpty) {
+      itemsDate = purchaseDateController!.text;
+    }
+    if (groupByNameController!.text.isNotEmpty) {
+      groupBy = groupByNameController!.text;
+    }
+    var response = await buyingClass.searchItemsData(
+        itemsBuying: itemsBuying,
+        itemsDate: itemsDate,
+        itemsName: itemsName,
+        itemsNo: itemsNO,
+        itemsSelling: itemsSelling,
+        groupBy: groupBy);
+    if (response['status'] == "success") {
+      purchaseData.clear();
+      List responsedata = response['data'] ?? [];
+      purchaseData.addAll(responsedata.map((e) => PurchaseModel.fromJson(e)));
+    }
+    update();
+  }
+
+  Map<String, dynamic> data = {};
+
+  addItems() async {
+    bool allFieldsNotEmpty = true;
+
+    for (int i = 0; i < rows.length; i++) {
+      int purchasePrice = int.tryParse(buyingPriceControllers[i].text) ?? 0;
+      int purchaseQuantity = int.tryParse(quantityControllers[i].text) ?? 0;
+      String itemCode = itemCodeControllers[i].text.trim();
+      String sellingPrice = sellingPriceControllers[i].text.trim();
+
+      if (purchasePrice == 0 ||
+          purchaseQuantity == 0 ||
+          itemCode.isEmpty ||
+          sellingPrice.isEmpty) {
+        allFieldsNotEmpty = false;
+        break; // Exit the loop as soon as any field is found empty
+      }
+
+      int itemsId = int.tryParse(itemCode) ?? 0;
+      int itemsTotalPrice = int.tryParse(totalPrices[i].toString()) ?? 0;
+
+      // Prepare data for the purchase transaction
+      data = {
+        "purchase_price": purchasePrice,
+        "purchase_quantity": purchaseQuantity,
+        "purchase_date": currentTime,
+        "selling_price": sellingPrice,
+        "purchase_items_id": itemsId,
+        "purchase_total_price": itemsTotalPrice,
+        "purchase_payment": paymentMethodNameController!.text,
+        "purchase_supplier_id": supplierIdController!.text,
+        "purchase_discount": purchaseDiscountController!.text,
+      };
+      print(data);
+      // Insert the purchase transaction into the database
+      var response = await sqlDb.insertData("tbl_purchase", data);
+    }
+
+    if (allFieldsNotEmpty) {
+    } else {
+      print("allFieldsNotEmpty NOIT");
+      // At least one field is empty, show an error message or take appropriate action
+    }
+  }
+
+  clearFields() {
+    itemsCodesData.clear();
+    itemsNameData.clear();
+    // buyingPriceValues.clear();
+    // quantityValues.clear();
+  }
+
+  List<TextEditingController?> itemsController = [];
+  @override
+  void onInit() {
+    //! Initialize controllers for adding items
+    itemsNameController = TextEditingController();
+    itemsSellingPriceController = TextEditingController();
+    itemsBuyingPriceController = TextEditingController();
+    purchaseDateController = TextEditingController();
+    itemsIdController = TextEditingController();
+    groupByIdController = TextEditingController();
+    groupByNameController = TextEditingController();
+
+    //! Initialize controllers for viewing items
+    itemCodeController = TextEditingController();
+    buyingPriceController = TextEditingController();
+    quantityController = TextEditingController();
+    sellingPriceController = TextEditingController();
+    itemNameController = TextEditingController();
+    supplierNameController = TextEditingController();
+    supplierIdController = TextEditingController();
+    paymentMethodNameController = TextEditingController();
+    paymentMethodIdController = TextEditingController();
+    purchaseDiscountController = TextEditingController();
+    itemsNameController = TextEditingController();
+    itemsSellingPriceController = TextEditingController();
+    totalPriceController = TextEditingController();
+    itemsController = [
+      itemsIdController,
+      itemsNameController,
+      purchaseDateController,
+      itemsSellingPriceController,
+      itemsBuyingPriceController
+    ];
+    getItems();
+    getCodes();
+    getUsers();
+    getPurchaseData();
+    rows.add(createRow());
+    super.onInit();
+  }
+
+  @override
+  void onClose() {
+    //! Dispose controllers for adding items
+    itemsNameController?.dispose();
+    itemsSellingPriceController?.dispose();
+    itemsBuyingPriceController?.dispose();
+    purchaseDateController?.dispose();
+    itemsIdController?.dispose();
+    groupByIdController?.dispose();
+    groupByNameController?.dispose();
+
+    //! Dispose controllers for viewing items
+    itemCodeController?.dispose();
+    buyingPriceController?.dispose();
+    quantityController?.dispose();
+    sellingPriceController?.dispose();
+    itemNameController?.dispose();
+    supplierNameController?.dispose();
+    supplierIdController?.dispose();
+    paymentMethodNameController?.dispose();
+    paymentMethodIdController?.dispose();
+    purchaseDiscountController?.dispose();
+    totalPriceController?.dispose();
+
+    super.onClose();
+  }
+}
