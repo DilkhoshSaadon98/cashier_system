@@ -16,15 +16,13 @@ class ViewBuyingTable extends StatelessWidget {
               data: const [
                 "Select",
                 "NO",
-                "Items Name",
-                "Items Purchase",
-                "QTY",
+                "Total Price",
                 "Purchaes Date",
                 "Supplier Name",
                 "Payment"
               ],
               onDoubleTap: () {},
-              flex: const [1, 1, 3, 2, 1, 2, 2, 1]),
+              flex: const [1, 2, 3, 3, 3, 1]),
           const BuyingTableRows()
         ],
       ),

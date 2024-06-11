@@ -5,7 +5,6 @@ import 'package:cashier_system/core/functions/validinput.dart';
 import 'package:cashier_system/data/model/purchaes_model.dart';
 import 'package:cashier_system/view/buying/components/buying_text_field.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class BuyingController extends DefinitionBuyingController {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -21,7 +20,6 @@ class BuyingController extends DefinitionBuyingController {
   DataRow createRow() {
     GlobalKey<FormState> formKeyTotalPrice = GlobalKey<FormState>();
     GlobalKey<FormState> formKeyBuying = GlobalKey<FormState>();
-    GlobalKey<FormState> formKeyBuyingDiscount = GlobalKey<FormState>();
     GlobalKey<FormState> formKeyQTY = GlobalKey<FormState>();
     GlobalKey<FormState> formKeyName = GlobalKey<FormState>();
     GlobalKey<FormState> formKeyCode = GlobalKey<FormState>();
@@ -195,12 +193,11 @@ class BuyingController extends DefinitionBuyingController {
   addItems() async {
     int purchaseNumber = await generateUniquePurchaseNumber();
     if (formKey.currentState!.validate()) {
-      List<Map<String, dynamic>> items = [];
       for (int i = 0; i < rows.length; i++) {
         if (formKeysCode[i].currentState!.validate() &&
             formKeysName[i].currentState!.validate() &&
             formKeysBuying[i].currentState!.validate() &&
-            formKeysQTY[i].currentState!.validate() && 
+            formKeysQTY[i].currentState!.validate() &&
             formKeysTotalPrice[i].currentState!.validate()) {
           int purchasePrice = int.tryParse(buyingPriceControllers[i].text) ?? 0;
           int purchaseQuantity = int.tryParse(quantityControllers[i].text) ?? 0;
@@ -302,6 +299,48 @@ class BuyingController extends DefinitionBuyingController {
       purchaseData.clear();
       List responsedata = response['data'] ?? [];
       purchaseData.addAll(responsedata.map((e) => PurchaseModel.fromJson(e)));
+    }
+    update();
+  }
+
+  getPurchaseDetailsData(String purchaseNumber) async {
+    String? itemsNO;
+    String? itemsName;
+    String? itemsSelling;
+    String? itemsBuying;
+    String? itemsDate;
+    String? groupBy;
+
+    if (itemsIdController!.text.isNotEmpty) {
+      itemsNO = itemsIdController!.text;
+    }
+    if (itemsNameController!.text.isNotEmpty) {
+      itemsName = itemsNameController!.text;
+    }
+    if (itemsSellingPriceController!.text.isNotEmpty) {
+      itemsSelling = itemsSellingPriceController!.text;
+    }
+    if (itemsBuyingPriceController!.text.isNotEmpty) {
+      itemsBuying = itemsBuyingPriceController!.text;
+    }
+    if (purchaseDateController!.text.isNotEmpty) {
+      itemsDate = purchaseDateController!.text;
+    }
+    if (groupByNameController!.text.isNotEmpty) {
+      groupBy = groupByNameController!.text;
+    }
+    var response = await buyingClass.searchPurchaseDetailsData(purchaseNumber,
+        itemsBuying: itemsBuying,
+        itemsDate: itemsDate,
+        itemsName: itemsName,
+        itemsNo: itemsNO,
+        itemsSelling: itemsSelling,
+        groupBy: groupBy);
+    if (response['status'] == "success") {
+      purchaseData.clear();
+      List responsedata = response['data'] ?? [];
+      purchaseDetailsData
+          .addAll(responsedata.map((e) => PurchaseModel.fromJson(e)));
     }
     update();
   }

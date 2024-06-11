@@ -31,10 +31,10 @@ class BuyingScreen extends StatelessWidget {
                 child: IndexedStack(
                   index: controller.currentIndex,
                   children: const [
-                    //! Add Items:
-                    AddBuyingTable(),
                     //! View Items:
                     ViewBuyingTable(),
+                    //! Add Items:
+                    AddBuyingTable(),
                   ],
                 ));
           }),
@@ -44,7 +44,7 @@ class BuyingScreen extends StatelessWidget {
                 return Container(
                   color: primaryColor,
                   child: DefaultTabController(
-                    initialIndex: 1,
+                    initialIndex: 0,
                     length: 2,
                     child: Column(
                       children: [

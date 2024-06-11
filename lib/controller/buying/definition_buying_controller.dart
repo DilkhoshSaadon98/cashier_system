@@ -14,6 +14,7 @@ class DefinitionBuyingController extends GetxController {
   List<ItemsModel> itemsCodesData = [];
   List<UsersModel> usersData = [];
   List<PurchaseModel> purchaseData = [];
+  List<PurchaseModel> purchaseDetailsData = [];
   //! Database Classes
   BuyingClass buyingClass = BuyingClass();
   ItemsClass itemsClass = ItemsClass();

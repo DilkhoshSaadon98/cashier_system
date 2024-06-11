@@ -1,5 +1,6 @@
 class PurchaseModel {
   int? purchaseId;
+  int? purchaseNumber;
   int? purchaseItemsId;
   int? purchasePrice;
   int? purchaseQuantity;
@@ -9,11 +10,12 @@ class PurchaseModel {
   int? purchaseSupplierId;
   double? purchaseDiscount;
   String? purchaseDate;
-  String? userName; // From users table
-  String? itemName; // From items table
+  String? userName; 
+  String? itemName; 
 
   PurchaseModel({
     this.purchaseId,
+    this.purchaseNumber,
     this.purchaseItemsId,
     this.purchasePrice,
     this.purchaseQuantity,
@@ -31,6 +33,7 @@ class PurchaseModel {
   factory PurchaseModel.fromJson(Map<String, dynamic> json) {
     return PurchaseModel(
       purchaseId: json['purchase_id'],
+      purchaseNumber: json['purchase_number'],
       purchaseItemsId: json['purchase_items_id'],
       purchasePrice: json['purchase_price'],
       purchaseQuantity: json['purchase_quantity'],

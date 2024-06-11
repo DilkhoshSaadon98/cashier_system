@@ -1,21 +1,19 @@
 import 'package:cashier_system/controller/buying/buying_controller.dart';
 import 'package:cashier_system/core/constant/app_theme.dart';
 import 'package:cashier_system/core/constant/color.dart';
-import 'package:cashier_system/core/constant/routes.dart';
 import 'package:cashier_system/core/functions/handle_data_function.dart';
-import 'package:cashier_system/view/buying/view_details/view_buying_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class BuyingTableRows extends StatelessWidget {
-  const BuyingTableRows({super.key});
+class BuyingTableDetailsRows extends StatelessWidget {
+  const BuyingTableDetailsRows({super.key});
 
   @override
   Widget build(BuildContext context) {
     Get.put(BuyingController());
     return GetBuilder<BuyingController>(builder: (controller) {
       return checkData(
-          controller.purchaseData,
+          controller.purchaseDetailsData,
           10,
           Expanded(
               flex: 10,
@@ -25,14 +23,12 @@ class BuyingTableRows extends StatelessWidget {
                 ),
                 alignment: Alignment.topCenter,
                 child: ListView.builder(
-                    itemCount: controller.purchaseData.length,
+                    itemCount: controller.purchaseDetailsData.length,
                     itemBuilder: (context, index) {
-                      var dataItem = controller.purchaseData[index];
+                      var dataItem = controller.purchaseDetailsData[index];
                       return GestureDetector(
-                        onTap: () async {
-                          await controller.getPurchaseDetailsData(
-                              dataItem.purchaseNumber.toString());
-                          Get.toNamed(AppRoute.buyingDetailsScreen);
+                        onTap: (){
+                          
                         },
                         onDoubleTap: () {},
                         child: Container(

@@ -9,6 +9,7 @@ import 'package:cashier_system/view/auth/login/login_screen.dart';
 import 'package:cashier_system/view/auth/signup/signup_screen.dart';
 import 'package:cashier_system/view/auth/system_auth/register_system_screen.dart';
 import 'package:cashier_system/view/buying/buying_screen.dart';
+import 'package:cashier_system/view/buying/view_details/view_buying_details_screen.dart';
 import 'package:cashier_system/view/cashier/cashier_screen.dart';
 import 'package:cashier_system/view/categories/catagories_screen.dart';
 import 'package:cashier_system/view/categories/components/edit_categories_screen.dart';
@@ -113,4 +114,10 @@ List<GetPage<dynamic>>? routes = [
       transitionDuration: const Duration(milliseconds: 100),
       name: AppRoute.editImportExport,
       page: () => const EditImportExportScreen()),
+      //! Buying :
+     GetPage(
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 100),
+      name: AppRoute.buyingDetailsScreen,
+      page: () => const ViewBuyingDetailsScreen()),   
 ];
