@@ -200,7 +200,7 @@ class BuyingController extends DefinitionBuyingController {
         if (formKeysCode[i].currentState!.validate() &&
             formKeysName[i].currentState!.validate() &&
             formKeysBuying[i].currentState!.validate() &&
-            formKeysQTY[i].currentState!.validate() &&
+            formKeysQTY[i].currentState!.validate() && 
             formKeysTotalPrice[i].currentState!.validate()) {
           int purchasePrice = int.tryParse(buyingPriceControllers[i].text) ?? 0;
           int purchaseQuantity = int.tryParse(quantityControllers[i].text) ?? 0;
