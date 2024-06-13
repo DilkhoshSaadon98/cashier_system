@@ -49,53 +49,53 @@ class SqlDb {
       ''');
       //! Table Admins
       await db.execute('''
-      CREATE TABLE IF NOT EXISTS "tbl_admins" (
-        "admin_id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "admin_name" TEXT NOT NULL,
-        "admin_username" TEXT NOT NULL,
-        "admin_email" TEXT NOT NULL,
-        "admin_password" TEXT NOT NULL,
-        "admin_role" TEXT NOT NULL,
-        "admin_approve" TEXT NOT NULL DEFAULT "0",
-        "admin_createdate" TEXT NOT NULL
-      )
+CREATE TABLE "tbl_admins" (
+    "admin_id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "admin_name" TEXT NOT NULL,
+    "admin_username" TEXT NOT NULL,
+    "admin_email" TEXT NOT NULL,
+    "admin_password" TEXT NOT NULL,
+    "admin_role" TEXT NOT NULL,
+    "admin_approve" TEXT NOT NULL DEFAULT "0",
+    "admin_createdate" TEXT NOT NULL
+)
       ''');
       //! Table Items
       await db.execute('''
-      CREATE TABLE IF NOT EXISTS "tbl_items" (
-        "items_id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "items_name" TEXT NOT NULL,
-        "items_barcode" TEXT NOT NULL,
-        "items_selling" int NOT NULL,
-        "items_buingprice" int NOT NULL,
-        "items_wholesaleprice" int NOT NULL,
-        "items_count" int NOT NULL,
-        "items_costprice" int NOT NULL,
-        "items_desc" TEXT NOT NULL,
-        "items_createdate" TEXT NOT NULL,
-        "items_cat" INTEGER NOT NULL,
-        "items_type" INTEGER NOT NULL,
-        FOREIGN KEY (items_type) REFERENCES tbl_types (type_id),
-        FOREIGN KEY (items_cat) REFERENCES tbl_categories (categories_id)
-      )
+     CREATE TABLE "tbl_items" (
+    "items_id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "items_name" TEXT NOT NULL,
+    "items_barcode" TEXT NOT NULL,
+    "items_selling" int NOT NULL,
+    "items_buingprice" int NOT NULL,
+    "items_wholesaleprice" int NOT NULL,
+    "items_count" int NOT NULL,
+    "items_costprice" int NOT NULL,
+    "items_desc" TEXT NOT NULL,
+    "items_createdate" TEXT NOT NULL,
+    "items_cat" INTEGER NOT NULL,
+    "items_type" INTEGER NOT NULL,
+    FOREIGN KEY (items_type) REFERENCES tbl_types (type_id),
+    FOREIGN KEY (items_cat) REFERENCES tbl_categories (categories_id)
+)
       ''');
 //! Table Users
       await db.execute('''
-      CREATE TABLE IF NOT EXISTS "tbl_users" (
-        users_id INTEGER PRIMARY KEY AUTOINCREMENT,
-        "users_name" TEXT NOT NULL,
-        "users_email" TEXT,
-        "users_phone2" TEXT,
-        "users_phone" TEXT NOT NULL,
-        "users_address" TEXT NOT NULL,
-        "users_role" TEXT NOT NULL,
-        "users_note" TEXT NOT NULL,
-        "users_createdate" TEXT NOT NULL
-      )
+      CREATE TABLE "tbl_users" (
+    "users_id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "users_name" TEXT NOT NULL,
+    "users_email" TEXT,
+    "users_phone2" TEXT,
+    "users_phone" TEXT NOT NULL,
+    "users_address" TEXT NOT NULL,
+    "users_role" TEXT NOT NULL,
+    "users_createdate" TEXT NOT NULL,
+    "users_note" TEXT
+)
       ''');
 //! Table Cart
       await db.execute('''
-      CREATE TABLE "tbl_cart" (
+CREATE TABLE "tbl_cart" (
     "cart_id" INTEGER PRIMARY KEY AUTOINCREMENT,
     "cart_items_id" INTEGER NOT NULL,
     "cart_orders" INTEGER NOT NULL DEFAULT 0,
@@ -109,24 +109,25 @@ class SqlDb {
     "cart_status" TEXT NOT NULL DEFAULT 'review',
     "cart_tax" TEXT DEFAULT '0',
     "cart_cash" TEXT DEFAULT '1',
-    cart_update INT DEFAULT 0,
+    "cart_update" INT DEFAULT 0,
     FOREIGN KEY (cart_items_id) REFERENCES tbl_items (items_id)
 )
       ''');
 //! Table invoice
       await db.execute('''
-      CREATE TABLE IF NOT EXISTS "tbl_invoice" (
-        "invoice_id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "invoice_user_id" INTEGER NOT NULL,
-        "invoice_tax" INTEGER NOT NULL,
-        "invoice_discount" INTEGER NOT NULL,
-        "invoice_price" INTEGER NOT NULL,
-        "invoice_cost" INTEGER NOT NULL,
-        "invoice_items_number" INTEGER NOT NULL,
-        "invoice_payment" TEXT NOT NULL,
-        "invoice_createdate" TEXT NOT NULL,
-        FOREIGN KEY (invoice_user_id) REFERENCES tbl_users (users_id)
-      )
+CREATE TABLE "tbl_invoice" (
+    "invoice_id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "invoice_user_id" INTEGER NOT NULL,
+    "invoice_tax" INTEGER NOT NULL,
+    "invoice_discount" INTEGER NOT NULL,
+    "invoice_price" INTEGER NOT NULL,
+    "invoice_cost" INTEGER NOT NULL,
+    "invoice_items_number" INTEGER NOT NULL,
+    "invoice_payment" TEXT NOT NULL,
+    "invoice_createdate" TEXT NOT NULL,
+    invoice_organizer TEXT NOT NULL,
+    FOREIGN KEY (invoice_user_id) REFERENCES tbl_users (users_id)
+)
       ''');
 //! Table import
       await db.execute('''
@@ -152,21 +153,19 @@ class SqlDb {
       ''');
       //! Table Purchase
       await db.execute('''
-       CREATE TABLE tbl_purchase (
-    purchase_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    purchase_items_id INTEGER NOT NULL,
-    purchase_price INTEGER NOT NULL,
-    purchase_quantity INTEGER NOT NULL,
-    selling_price INTEGER NOT NULL,
-    purchase_total_price INTEGER NOT NULL,
-    purchase_payment TEXT NOT NULL,
-    purchase_supplier_id INTEGER NOT NULL,
-    purchase_discount DECIMAL(5, 2) NOT NULL,
-    purchase_date DATETIME NOT NULL,
-    purchase_number INT NOT NULL DEFAULT 0,
+     CREATE TABLE tbl_purchase (
+    "purchase_id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "purchase_items_id" INTEGER NOT NULL,
+    "purchase_price" TEXT NOT NULL,
+    "purchase_quantity" INTEGER NOT NULL,
+    "purchase_total_price" TEXT NOT NULL,
+    "purchase_payment" TEXT NOT NULL,
+    "purchase_supplier_id" INTEGER NOT NULL,
+    "purchase_discount" INT NOT NULL,
+    "purchase_date" DATETIME NOT NULL,
+    "purchase_number" INT NOT NULL DEFAULT 0,
     FOREIGN KEY (purchase_items_id) REFERENCES tbl_items (items_id)
 )
-          );
 
         ''');
 //! View Cart
@@ -292,7 +291,7 @@ FROM CombinedInvoices
       ''');
 //! View Purchaes
       await db.execute('''
-     CREATE VIEW purchaseView AS
+    CREATE VIEW purchaseView AS
 SELECT tbl_purchase.*, tbl_users.users_name, tbl_items.items_name
 FROM
     tbl_purchase

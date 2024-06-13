@@ -3,7 +3,6 @@ import 'package:cashier_system/core/constant/app_theme.dart';
 import 'package:cashier_system/core/constant/color.dart';
 import 'package:cashier_system/core/constant/routes.dart';
 import 'package:cashier_system/core/functions/handle_data_function.dart';
-import 'package:cashier_system/view/buying/view_details/view_buying_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -30,9 +29,10 @@ class BuyingTableRows extends StatelessWidget {
                       var dataItem = controller.purchaseData[index];
                       return GestureDetector(
                         onTap: () async {
-                          await controller.getPurchaseDetailsData(
-                              dataItem.purchaseNumber.toString());
-                          Get.toNamed(AppRoute.buyingDetailsScreen);
+                          Get.toNamed(AppRoute.buyingDetailsScreen, arguments: {
+                            "purchase_number":
+                                dataItem.purchaseNumber.toString()
+                          });
                         },
                         onDoubleTap: () {},
                         child: Container(
@@ -84,7 +84,7 @@ class BuyingTableRows extends StatelessWidget {
                                                 color: primaryColor)),
                                         child: Text(
                                           textAlign: TextAlign.center,
-                                          "${dataItem.purchaseNumber}",
+                                          "${dataItem.purchaseId}",
                                           style: titleStyle,
                                         ),
                                       ),

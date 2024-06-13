@@ -12,7 +12,7 @@ class CustomTextFormFieldBuying extends StatelessWidget {
   List<SelectedListItem>? data;
   final bool isNumber;
   void Function()? onTap;
-
+  void Function(String)? onChanged;
   CustomTextFormFieldBuying(
       {super.key,
       required this.hinttext,
@@ -21,6 +21,7 @@ class CustomTextFormFieldBuying extends StatelessWidget {
       required this.valid,
       required this.isNumber,
       this.onTap,
+      this.onChanged,
       this.data});
 
   @override
@@ -30,6 +31,7 @@ class CustomTextFormFieldBuying extends StatelessWidget {
       textAlign: TextAlign.center,
       style: titleStyle,
       validator: valid,
+      onChanged: onChanged,
       onTap: onTap != null
           ? () {
               showDropDownList(context);

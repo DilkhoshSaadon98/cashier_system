@@ -7,26 +7,19 @@ import 'package:cashier_system/view/buying/components/buying_text_field.dart';
 import 'package:flutter/material.dart';
 
 class BuyingController extends DefinitionBuyingController {
-  GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  List<GlobalKey<FormState>> formKeysCode = [];
-  List<GlobalKey<FormState>> formKeysName = [];
-  List<GlobalKey<FormState>> formKeysBuying = [];
-  List<GlobalKey<FormState>> formKeysBuyingDiscount = [];
-  List<GlobalKey<FormState>> formKeysQTY = [];
-  List<GlobalKey<FormState>> formKeysTotalPrice = [];
+  bool rowAdded = false;
 
-  int rowIndex = 0;
   int totalInvoicePrice = 0;
+
   DataRow createRow() {
     GlobalKey<FormState> formKeyTotalPrice = GlobalKey<FormState>();
     GlobalKey<FormState> formKeyBuying = GlobalKey<FormState>();
     GlobalKey<FormState> formKeyQTY = GlobalKey<FormState>();
     GlobalKey<FormState> formKeyName = GlobalKey<FormState>();
     GlobalKey<FormState> formKeyCode = GlobalKey<FormState>();
+
     TextEditingController itemCodeController = TextEditingController();
     TextEditingController buyingPriceController = TextEditingController();
-    TextEditingController discountBuyingPriceController =
-        TextEditingController();
     TextEditingController quantityController = TextEditingController();
     TextEditingController itemNameController = TextEditingController();
     TextEditingController itemTotalPricesController = TextEditingController();
@@ -36,16 +29,18 @@ class BuyingController extends DefinitionBuyingController {
     quantityControllers.add(quantityController);
     itemNameControllers.add(itemNameController);
     itemTotalPriceControllers.add(itemTotalPricesController);
-    discountBuyingPriceControllers.add(discountBuyingPriceController);
+
     formKeysTotalPrice.add(formKeyTotalPrice);
     formKeysBuying.add(formKeyBuying);
     formKeysQTY.add(formKeyQTY);
     formKeysName.add(formKeyName);
     formKeysCode.add(formKeyCode);
 
+    rowAdded = false;
+
     update();
+
     return DataRow(cells: [
-      //! Code Items:
       DataCell(Form(
         key: formKeyCode,
         child: CustomTextFormFieldBuying(
@@ -60,7 +55,6 @@ class BuyingController extends DefinitionBuyingController {
           data: dropDownListCodes,
         ),
       )),
-      //! Name Items
       DataCell(Form(
         key: formKeyName,
         child: CustomTextFormFieldBuying(
@@ -75,7 +69,6 @@ class BuyingController extends DefinitionBuyingController {
           onTap: () {},
         ),
       )),
-      //! Buying Price
       DataCell(Form(
         key: formKeyBuying,
         child: TextFormField(
@@ -86,17 +79,11 @@ class BuyingController extends DefinitionBuyingController {
             return validInput(value!, 0, 20, "");
           },
           onChanged: (value) {
-            if (value.isEmpty) {
-              buyingPriceController.text = "0";
-            }
-
-            if (buyingPriceController.text.isNotEmpty &&
-                quantityController.text.isNotEmpty) {
-              int result = int.parse(buyingPriceController.text) *
-                  int.parse(quantityController.text);
-              itemTotalPricesController.text = result.toString();
-            }
-            update();
+            handleFieldUpdate(
+              buyingPriceController: buyingPriceController,
+              quantityController: quantityController,
+              itemTotalPricesController: itemTotalPricesController,
+            );
           },
           decoration: InputDecoration(
             hintText: "Buying Price",
@@ -108,7 +95,6 @@ class BuyingController extends DefinitionBuyingController {
           keyboardType: TextInputType.number,
         ),
       )),
-      //! QTY
       DataCell(Form(
         key: formKeyQTY,
         child: TextFormField(
@@ -118,31 +104,11 @@ class BuyingController extends DefinitionBuyingController {
             return validInput(value!, 0, 20, "number");
           },
           onChanged: (value) {
-            if (buyingPriceController.text.isEmpty) {
-              buyingPriceController.text = "0";
-            }
-            if (itemTotalPricesController.text.isEmpty) {
-              itemTotalPricesController.text = "0";
-            }
-            if (value.isEmpty) {
-              quantityController.text = "";
-            }
-            double itemTotalPrices =
-                double.parse(itemTotalPricesController.text);
-            double parsedValue = value.isNotEmpty ? double.parse(value) : 0.0;
-
-            if (value.isNotEmpty) {
-              if (parsedValue != 0) {
-                double divisionResult = itemTotalPrices / parsedValue;
-                String result = divisionResult.isFinite
-                    ? divisionResult.toStringAsFixed(2)
-                    : "0";
-                buyingPriceController.text = result;
-              } else {
-                buyingPriceController.text = "0";
-              }
-            }
-            update();
+            handleFieldUpdate(
+              buyingPriceController: buyingPriceController,
+              quantityController: quantityController,
+              itemTotalPricesController: itemTotalPricesController,
+            );
           },
           style: titleStyle,
           decoration: InputDecoration(
@@ -153,7 +119,6 @@ class BuyingController extends DefinitionBuyingController {
           keyboardType: TextInputType.number,
         ),
       )),
-      //! Total Price:
       DataCell(Form(
         key: formKeyTotalPrice,
         child: TextFormField(
@@ -161,20 +126,14 @@ class BuyingController extends DefinitionBuyingController {
           textAlign: TextAlign.center,
           style: titleStyle,
           validator: (value) {
-            return validInput(value!, 0, 20, "number");
+            return validInput(value!, 0, 20, "");
           },
           onChanged: (value) {
-            if (value.isEmpty) {
-              itemTotalPricesController.text = "0";
-            }
-
-            if (itemTotalPricesController.text.isNotEmpty &&
-                quantityController.text.isNotEmpty) {
-              double result =
-                  int.parse(value) / int.parse(quantityController.text);
-              buyingPriceController.text = result.toStringAsFixed(2);
-            }
-            update();
+            handleFieldUpdate(
+              buyingPriceController: buyingPriceController,
+              quantityController: quantityController,
+              itemTotalPricesController: itemTotalPricesController,
+            );
           },
           decoration: InputDecoration(
               errorStyle: bodyStyle.copyWith(color: Colors.red),
@@ -186,14 +145,43 @@ class BuyingController extends DefinitionBuyingController {
     ]);
   }
 
-  Map<String, dynamic> data = {};
-  int purchaseCounter =
-      0; // This will generate a unique purchase number for each transaction
+  void handleFieldUpdate({
+    required TextEditingController buyingPriceController,
+    required TextEditingController quantityController,
+    required TextEditingController itemTotalPricesController,
+  }) {
+    String buyingPrice = buyingPriceController.text;
+    String quantity = quantityController.text;
+    String totalPrice = itemTotalPricesController.text;
 
-  addItems() async {
+    if (buyingPrice.isNotEmpty && quantity.isNotEmpty) {
+      double result = double.parse(buyingPrice) * double.parse(quantity);
+      itemTotalPricesController.text = result.toStringAsFixed(2);
+    } else if (totalPrice.isNotEmpty && quantity.isNotEmpty) {
+      double result = double.parse(totalPrice) / double.parse(quantity);
+      buyingPriceController.text = result.toStringAsFixed(2);
+    }
+
+    if (!rowAdded &&
+        (buyingPrice.isNotEmpty ||
+            quantity.isNotEmpty ||
+            totalPrice.isNotEmpty)) {
+      rows.add(createRow());
+      rowAdded = true;
+      update();
+    }
+
+    update();
+  }
+
+  Map<String, dynamic> data = {};
+  int purchaseCounter = 0;
+
+  void addItems(BuildContext context) async {
     int purchaseNumber = await generateUniquePurchaseNumber();
     if (formKey.currentState!.validate()) {
-      for (int i = 0; i < rows.length; i++) {
+      bool allRowsInserted = true;
+      for (int i = 0; i < itemCodeControllers.length; i++) {
         if (formKeysCode[i].currentState!.validate() &&
             formKeysName[i].currentState!.validate() &&
             formKeysBuying[i].currentState!.validate() &&
@@ -216,34 +204,42 @@ class BuyingController extends DefinitionBuyingController {
             'purchase_supplier_id': supplierIdController!.text,
           };
           await sqlDb.insertData("tbl_purchase", itemData);
+          itemCodeControllers[i].clear();
+          buyingPriceControllers[i].clear();
+          quantityControllers[i].clear();
+          itemNameControllers[i].clear();
+          itemTotalPriceControllers[i].clear();
+        } else {
+          allRowsInserted = false;
         }
+      }
+
+      if (allRowsInserted) {
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('All items inserted successfully'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+        getPurchaseData();
+        rows.clear();
       }
     }
   }
 
-  Future<int> generateUniquePurchaseNumber() async {
-    int result = 0;
-    var response = await sqlDb.getData(
-        "SELECT MAX(purchase_number) AS purchase_number FROM tbl_purchase");
-    if (response[0]['purchase_number'] == null) {
-      result = 0;
-    } else {
-      result = response[0]['purchase_number'];
-    }
-    return result;
-  }
-
   List<dynamic> res = [];
-  calculateDiscount() {
+
+  void calculateDiscount() {
     if (formKey.currentState!.validate()) {
       for (int i = 0; i < rows.length; i++) {
         if (formKeysTotalPrice[i].currentState!.validate()) {
           int total = 0;
-          for (int i = 0; i < itemTotalPriceControllers.length; i++) {
-            total += int.parse(itemTotalPriceControllers[i].text);
+          for (int j = 0; j < itemTotalPriceControllers.length; j++) {
+            total += int.parse(itemTotalPriceControllers[j].text);
           }
           buyingPriceControllers[i].text = (calculateFees(
-                  int.parse(purchaseDiscountController!.text),
+                  int.parse(purchaseFeesController!.text),
                   total,
                   itemTotalPriceControllers)[i])
               .toStringAsFixed(2);
@@ -253,7 +249,7 @@ class BuyingController extends DefinitionBuyingController {
     update();
   }
 
-  orderringDate(String group) async {
+  void orderringDate(String group) async {
     var response = await sqlDb.getData(
         "SELECT * FROM purchaseView GROUP BY purchase_date ORDER BY $group ");
     purchaseData.clear();
@@ -262,92 +258,50 @@ class BuyingController extends DefinitionBuyingController {
     update();
   }
 
-  getPurchaseData() async {
-    String? itemsNO;
-    String? itemsName;
-    String? itemsSelling;
-    String? itemsBuying;
+  void getPurchaseData() async {
+    String? purchaseId;
+    String? purchaseTotalPrice;
     String? itemsDate;
+    String? supplierName;
+    String? purchasePayment;
     String? groupBy;
 
-    if (itemsIdController!.text.isNotEmpty) {
-      itemsNO = itemsIdController!.text;
+    if (purchaseIdController!.text.isNotEmpty) {
+      purchaseId = purchaseIdController!.text;
     }
-    if (itemsNameController!.text.isNotEmpty) {
-      itemsName = itemsNameController!.text;
-    }
-    if (itemsSellingPriceController!.text.isNotEmpty) {
-      itemsSelling = itemsSellingPriceController!.text;
-    }
-    if (itemsBuyingPriceController!.text.isNotEmpty) {
-      itemsBuying = itemsBuyingPriceController!.text;
+    if (purchaseTotalPriceController!.text.isNotEmpty) {
+      purchaseTotalPrice = purchaseTotalPriceController!.text;
     }
     if (purchaseDateController!.text.isNotEmpty) {
       itemsDate = purchaseDateController!.text;
+    }
+    if (purchaseSupplierNameController!.text.isNotEmpty) {
+      supplierName = purchaseSupplierNameController!.text;
+    }
+    if (purchasePaymentMethodController!.text.isNotEmpty) {
+      purchasePayment = purchasePaymentMethodController!.text;
     }
     if (groupByNameController!.text.isNotEmpty) {
       groupBy = groupByNameController!.text;
     }
     var response = await buyingClass.searchItemsData(
-        itemsBuying: itemsBuying,
         itemsDate: itemsDate,
-        itemsName: itemsName,
-        itemsNo: itemsNO,
-        itemsSelling: itemsSelling,
+        purchaseTotalPrice: purchaseTotalPrice,
+        purchaseId: purchaseId,
+        supplierName: supplierName,
+        purchasePayment: purchasePayment,
         groupBy: groupBy);
     if (response['status'] == "success") {
       purchaseData.clear();
       List responsedata = response['data'] ?? [];
       purchaseData.addAll(responsedata.map((e) => PurchaseModel.fromJson(e)));
+      purchaseIdController!.clear();
+      purchaseTotalPriceController!.clear();
+      purchaseDateController!.clear();
+      purchaseSupplierNameController!.clear();
+      purchasePaymentMethodController!.clear();
     }
     update();
-  }
-
-  getPurchaseDetailsData(String purchaseNumber) async {
-    String? itemsNO;
-    String? itemsName;
-    String? itemsSelling;
-    String? itemsBuying;
-    String? itemsDate;
-    String? groupBy;
-
-    if (itemsIdController!.text.isNotEmpty) {
-      itemsNO = itemsIdController!.text;
-    }
-    if (itemsNameController!.text.isNotEmpty) {
-      itemsName = itemsNameController!.text;
-    }
-    if (itemsSellingPriceController!.text.isNotEmpty) {
-      itemsSelling = itemsSellingPriceController!.text;
-    }
-    if (itemsBuyingPriceController!.text.isNotEmpty) {
-      itemsBuying = itemsBuyingPriceController!.text;
-    }
-    if (purchaseDateController!.text.isNotEmpty) {
-      itemsDate = purchaseDateController!.text;
-    }
-    if (groupByNameController!.text.isNotEmpty) {
-      groupBy = groupByNameController!.text;
-    }
-    var response = await buyingClass.searchPurchaseDetailsData(purchaseNumber,
-        itemsBuying: itemsBuying,
-        itemsDate: itemsDate,
-        itemsName: itemsName,
-        itemsNo: itemsNO,
-        itemsSelling: itemsSelling,
-        groupBy: groupBy);
-    if (response['status'] == "success") {
-      purchaseData.clear();
-      List responsedata = response['data'] ?? [];
-      purchaseDetailsData
-          .addAll(responsedata.map((e) => PurchaseModel.fromJson(e)));
-    }
-    update();
-  }
-
-  clearFields() {
-    itemsCodesData.clear();
-    itemsNameData.clear();
   }
 
   List<TextEditingController?> itemsController = [];
@@ -355,8 +309,7 @@ class BuyingController extends DefinitionBuyingController {
   @override
   void onInit() {
     //! Initialize controllers for adding items
-    itemsNameController = TextEditingController();
-    itemsSellingPriceController = TextEditingController();
+    purchaseTotalPriceController = TextEditingController();
     itemsBuyingPriceController = TextEditingController();
     purchaseDateController = TextEditingController();
     itemsIdController = TextEditingController();
@@ -367,21 +320,26 @@ class BuyingController extends DefinitionBuyingController {
     itemCodeController = TextEditingController();
     buyingPriceController = TextEditingController();
     quantityController = TextEditingController();
-    sellingPriceController = TextEditingController();
     itemNameController = TextEditingController();
     supplierNameController = TextEditingController();
     supplierIdController = TextEditingController();
     paymentMethodNameController = TextEditingController();
     paymentMethodIdController = TextEditingController();
     purchaseDiscountController = TextEditingController();
+    purchaseFeesController = TextEditingController();
     totalPriceController = TextEditingController();
+    purchaseIdController = TextEditingController();
+    purchaseTotalPriceController = TextEditingController();
+    purchaseDateController = TextEditingController();
+    purchaseSupplierNameController = TextEditingController();
+    purchasePaymentMethodController = TextEditingController();
 
     itemsController = [
-      itemsIdController,
-      itemsNameController,
+      purchaseIdController,
+      purchaseTotalPriceController,
       purchaseDateController,
-      itemsSellingPriceController,
-      itemsBuyingPriceController
+      purchaseSupplierNameController,
+      purchasePaymentMethodController
     ];
 
     getItems();
@@ -395,7 +353,7 @@ class BuyingController extends DefinitionBuyingController {
   @override
   void onClose() {
     //! Dispose controllers for adding items
-    itemsNameController?.dispose();
+    purchaseTotalPriceController?.dispose();
     itemsSellingPriceController?.dispose();
     itemsBuyingPriceController?.dispose();
     purchaseDateController?.dispose();

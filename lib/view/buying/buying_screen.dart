@@ -84,8 +84,7 @@ class BuyingScreen extends StatelessWidget {
                                 color: primaryColor,
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 10, vertical: 10),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                child: ListView(
                                   children: [
                                     CustomHeaderScreen(
                                       imagePath: AppImageAsset.buyingIcons,
@@ -129,7 +128,7 @@ class BuyingScreen extends StatelessWidget {
                                     customSizedBox(5),
                                     Form(
                                       child: SizedBox(
-                                        height: 350,
+                                        height: 300,
                                         child: ListView.separated(
                                             separatorBuilder: (context, index) {
                                               return customSizedBox(10);
@@ -138,6 +137,15 @@ class BuyingScreen extends StatelessWidget {
                                                 controller.itemsTitle.length,
                                             itemBuilder: (context, index) {
                                               return CustomTextFormFieldGlobal(
+                                                  onTap: index == 2
+                                                      ? () {
+                                                          controller.selectDate(
+                                                              context,
+                                                              controller
+                                                                      .itemsController[
+                                                                  index]!);
+                                                        }
+                                                      : null,
                                                   mycontroller: controller
                                                       .itemsController[index],
                                                   hinttext: controller
@@ -155,9 +163,8 @@ class BuyingScreen extends StatelessWidget {
                                             }),
                                       ),
                                     ),
-                                    const Spacer(),
                                     customButtonGlobal(() async {
-                                      await controller.getPurchaseData();
+                                      controller.getPurchaseData();
                                     }, "Search", Icons.search)
                                   ],
                                 )),
@@ -168,7 +175,7 @@ class BuyingScreen extends StatelessWidget {
                                   horizontal: 10, vertical: 10),
                               child: GetBuilder<BuyingController>(
                                   builder: (controller) {
-                                return Column(
+                                return ListView(
                                   children: [
                                     CustomHeaderScreen(
                                       imagePath: AppImageAsset.buyingIcons,
@@ -221,14 +228,27 @@ class BuyingScreen extends StatelessWidget {
                                                 },
                                                 borderColor: white,
                                                 isNumber: true),
+                                            customSizedBox(10),
+                                            CustomTextFormFieldGlobal(
+                                                hinttext: "Fees",
+                                                labeltext: "Fees",
+                                                mycontroller: controller
+                                                    .purchaseFeesController,
+                                                iconData:
+                                                    Icons.discount_outlined,
+                                                valid: (value) {
+                                                  return validInput(
+                                                      value!, 0, 100, "number");
+                                                },
+                                                borderColor: white,
+                                                isNumber: true),
                                           ],
                                         )),
-                                    const Spacer(),
                                     customButtonGlobal(() async {
-                                      await controller.addItems();
+                                      controller.addItems(context);
                                     }, "Save", Icons.save, white, primaryColor),
                                     customButtonGlobal(() async {
-                                      await controller
+                                      controller
                                           .calculateDiscount(); // await controller.addItems();
                                     }, "Calculate", Icons.save, white,
                                         primaryColor),

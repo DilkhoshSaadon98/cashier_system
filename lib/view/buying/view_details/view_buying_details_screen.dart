@@ -1,4 +1,5 @@
-import 'package:cashier_system/controller/buying/buying_controller.dart';
+
+import 'package:cashier_system/controller/buying/buying_details_view_controller.dart';
 import 'package:cashier_system/core/constant/app_theme.dart';
 import 'package:cashier_system/core/constant/color.dart';
 import 'package:cashier_system/core/constant/imgaeasset.dart';
@@ -21,6 +22,7 @@ class ViewBuyingDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Get.put(BuyingDetailsViewController());
     return Scaffold(
       body: Row(
         children: [
@@ -34,20 +36,23 @@ class ViewBuyingDetailsScreen extends StatelessWidget {
                         data: const [
                           "Select",
                           "NO",
-                          "Total Price",
+                          "Item Name",
+                          "Purchase Price",
+                          "Purchase QTY",
                           "Purchaes Date",
                           "Supplier Name",
                           "Payment"
                         ],
                         onDoubleTap: () {},
-                        flex: const [1, 2, 3, 3, 3, 1]),
+                        flex: const [1, 2, 2, 2, 2, 2, 2, 1]),
                     const BuyingTableDetailsRows()
                   ],
                 ),
               )),
           Expanded(
             flex: 2,
-            child: GetBuilder<BuyingController>(builder: (controller) {
+            child:
+                GetBuilder<BuyingDetailsViewController>(builder: (controller) {
               return Container(
                   color: primaryColor,
                   padding:

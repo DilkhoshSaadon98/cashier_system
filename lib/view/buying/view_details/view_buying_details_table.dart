@@ -1,4 +1,4 @@
-import 'package:cashier_system/controller/buying/buying_controller.dart';
+import 'package:cashier_system/controller/buying/buying_details_view_controller.dart';
 import 'package:cashier_system/core/constant/app_theme.dart';
 import 'package:cashier_system/core/constant/color.dart';
 import 'package:cashier_system/core/functions/handle_data_function.dart';
@@ -10,8 +10,8 @@ class BuyingTableDetailsRows extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Get.put(BuyingController());
-    return GetBuilder<BuyingController>(builder: (controller) {
+    Get.put(BuyingDetailsViewController());
+    return GetBuilder<BuyingDetailsViewController>(builder: (controller) {
       return checkData(
           controller.purchaseDetailsData,
           10,
@@ -27,9 +27,7 @@ class BuyingTableDetailsRows extends StatelessWidget {
                     itemBuilder: (context, index) {
                       var dataItem = controller.purchaseDetailsData[index];
                       return GestureDetector(
-                        onTap: (){
-                          
-                        },
+                        onTap: () {},
                         onDoubleTap: () {},
                         child: Container(
                           height: 40,
@@ -80,14 +78,14 @@ class BuyingTableDetailsRows extends StatelessWidget {
                                                 color: primaryColor)),
                                         child: Text(
                                           textAlign: TextAlign.center,
-                                          "${dataItem.purchaseNumber}",
+                                          "${dataItem.purchaseId}",
                                           style: titleStyle,
                                         ),
                                       ),
                                     ),
                                     //! Purchase Items Name
                                     Expanded(
-                                      flex: 3,
+                                      flex: 2,
                                       child: Container(
                                         height: 40,
                                         alignment: Alignment.center,
@@ -97,7 +95,41 @@ class BuyingTableDetailsRows extends StatelessWidget {
                                                 color: primaryColor)),
                                         child: Text(
                                           textAlign: TextAlign.center,
-                                          "${dataItem.purchaseTotalPrice}",
+                                          "${dataItem.itemName}",
+                                          style: titleStyle,
+                                        ),
+                                      ),
+                                    ),
+                                    //! Purchase Price
+                                    Expanded(
+                                      flex: 2,
+                                      child: Container(
+                                        height: 40,
+                                        alignment: Alignment.center,
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                                width: .3,
+                                                color: primaryColor)),
+                                        child: Text(
+                                          textAlign: TextAlign.center,
+                                          "${dataItem.purchasePrice}",
+                                          style: titleStyle,
+                                        ),
+                                      ),
+                                    ),
+                                    //! Purchase QTY
+                                    Expanded(
+                                      flex: 2,
+                                      child: Container(
+                                        height: 40,
+                                        alignment: Alignment.center,
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                                width: .3,
+                                                color: primaryColor)),
+                                        child: Text(
+                                          textAlign: TextAlign.center,
+                                          "${dataItem.purchaseQuantity}",
                                           style: titleStyle,
                                         ),
                                       ),
@@ -105,7 +137,7 @@ class BuyingTableDetailsRows extends StatelessWidget {
 
                                     //! Purchase Date
                                     Expanded(
-                                      flex: 3,
+                                      flex: 2,
                                       child: Container(
                                           height: 40,
                                           alignment: Alignment.center,
@@ -120,9 +152,9 @@ class BuyingTableDetailsRows extends StatelessWidget {
                                           )),
                                     ),
 
-                                    //! import Supplier Name
+                                    //!  Supplier Name
                                     Expanded(
-                                      flex: 3,
+                                      flex: 2,
                                       child: Container(
                                         height: 40,
                                         alignment: Alignment.center,

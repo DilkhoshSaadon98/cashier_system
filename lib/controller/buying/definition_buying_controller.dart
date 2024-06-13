@@ -1,3 +1,4 @@
+import 'package:cashier_system/core/constant/color.dart';
 import 'package:cashier_system/data/model/items_model.dart';
 import 'package:cashier_system/data/model/purchaes_model.dart';
 import 'package:cashier_system/data/model/users_model.dart';
@@ -7,6 +8,7 @@ import 'package:cashier_system/data/sql/sqldb.dart';
 import 'package:drop_down_list/model/selected_list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class DefinitionBuyingController extends GetxController {
   //! Data Model
@@ -14,7 +16,6 @@ class DefinitionBuyingController extends GetxController {
   List<ItemsModel> itemsCodesData = [];
   List<UsersModel> usersData = [];
   List<PurchaseModel> purchaseData = [];
-  List<PurchaseModel> purchaseDetailsData = [];
   //! Database Classes
   BuyingClass buyingClass = BuyingClass();
   ItemsClass itemsClass = ItemsClass();
@@ -27,11 +28,11 @@ class DefinitionBuyingController extends GetxController {
   List<DataRow> rows = [];
   //! Search Side Titles:
   List<String> itemsTitle = [
-    "Items NO",
-    "Items Name",
+    "Purchase NO",
+    "Total Price",
     "Purchase Date",
-    "Selling Price",
-    "Buying Price",
+    "Supplier Name",
+    "Payment Method"
   ];
   //! Update Screen Index:
   int currentIndex = 0;
@@ -49,6 +50,10 @@ class DefinitionBuyingController extends GetxController {
   TextEditingController? itemsIdController;
   TextEditingController? groupByIdController;
   TextEditingController? groupByNameController;
+  TextEditingController? purchaseIdController;
+  TextEditingController? purchaseTotalPriceController;
+  TextEditingController? purchaseSupplierNameController;
+  TextEditingController? purchasePaymentMethodController;
 
   //! Buy Items
   TextEditingController? itemCodeController;
@@ -61,6 +66,7 @@ class DefinitionBuyingController extends GetxController {
   TextEditingController? paymentMethodNameController;
   TextEditingController? paymentMethodIdController;
   TextEditingController? purchaseDiscountController;
+  TextEditingController? purchaseFeesController;
   TextEditingController? totalPriceController;
   //! List Text Controller:
   List<TextEditingController> itemCodeControllers = [];
@@ -70,7 +76,31 @@ class DefinitionBuyingController extends GetxController {
   List<TextEditingController> sellingPriceControllers = [];
   List<TextEditingController> itemNameControllers = [];
   List<TextEditingController> itemTotalPriceControllers = [];
+
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  List<GlobalKey<FormState>> formKeysCode = [];
+  List<GlobalKey<FormState>> formKeysName = [];
+  List<GlobalKey<FormState>> formKeysBuying = [];
+  List<GlobalKey<FormState>> formKeysBuyingDiscount = [];
+  List<GlobalKey<FormState>> formKeysQTY = [];
+  List<GlobalKey<FormState>> formKeysTotalPrice = [];
   //! --------------------------Functions ---------------------------------
+  //? Get current date Data for date picker
+  DateTime selectedDate = DateTime.now();
+  Future<void> selectDate(
+      BuildContext context, TextEditingController controller) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      barrierColor: primaryColor.withOpacity(.3),
+      initialDate: selectedDate,
+      firstDate: DateTime(2024, 1),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null && picked != selectedDate) selectedDate = picked;
+    controller.text = DateFormat('yyyy-MM-dd').format(selectedDate);
+    update();
+  }
+
   //! Get Supplier names
   getUsers() async {
     var response = await sqlDb.getAllData("tbl_users");
@@ -102,6 +132,18 @@ class DefinitionBuyingController extends GetxController {
       }
     }
     update();
+  }
+
+  Future<int> generateUniquePurchaseNumber() async {
+    int result = 0;
+    var response = await sqlDb.getData(
+        "SELECT MAX(purchase_number) AS purchase_number FROM tbl_purchase");
+    if (response[0]['purchase_number'] == null) {
+      result = 0;
+    } else {
+      result = response[0]['purchase_number'];
+    }
+    return result;
   }
 
 //! Get Items Codes for searching

@@ -9,33 +9,29 @@ class BuyingClass {
   }
 
   Future<dynamic> searchItemsData({
-    String? itemsNo,
-    String? itemsName,
-    String? itemsSelling,
-    String? itemsBuying,
+    String? purchaseId,
+    String? purchaseTotalPrice,
     String? itemsDate,
     String? supplierName,
+    String? purchasePayment,
     String? groupBy,
   }) async {
     String sql = "";
     List<String> conditions = [];
-    if (itemsNo != null) {
-      conditions.add("( purchase_id = '$itemsNo' )");
+    if (purchaseId != null) {
+      conditions.add("( purchase_id = $purchaseId )");
     }
-    if (itemsName != null) {
-      conditions.add("( items_name LIKE '%$itemsName%' )");
-    }
-    if (itemsSelling != null) {
-      conditions.add("( selling_price = '%$itemsName%' )");
-    }
-    if (itemsBuying != null) {
-      conditions.add("( purchase_price = '%$itemsName%' )");
+    if (purchaseTotalPrice != null) {
+      conditions.add("( 'users_name' LIKE '%$purchaseTotalPrice%' )");
     }
     if (itemsDate != null) {
       conditions.add("( purchase_date LIKE '%$itemsDate%')");
     }
     if (supplierName != null) {
-      conditions.add("( users_name LIKE '%$itemsDate%' )");
+      conditions.add("( users_name LIKE '%$supplierName%' )");
+    }
+    if (purchasePayment != null) {
+      conditions.add("( purchase_payment LIKE '%$purchasePayment%' )");
     }
 
     if (conditions.isNotEmpty) {
@@ -84,8 +80,7 @@ class BuyingClass {
     } else {
       sql = conditions[0];
     }
-    var response = await db.getAllData('purchaseView',
-        where: "$sql GROUP BY purchase_number");
+    var response = await db.getAllData('purchaseView', where: sql);
     return response;
   }
 }
