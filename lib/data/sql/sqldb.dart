@@ -1,6 +1,9 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
+import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:flutter/services.dart' show rootBundle;
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart';
 
@@ -18,8 +21,12 @@ class SqlDb {
   }
 
   initialDb() async {
-    String databasePath = await getDatabasesPath();
-    String path = join(databasePath, databaseName);
+     Directory documentsDirectory = await getApplicationDocumentsDirectory();
+    String path = join(documentsDirectory.path, databaseName);
+    print(path);
+    if (!await File(path).exists()) {
+      await _copyDatabaseFromAssets(path);
+    }
     Database myDb = await openDatabase(
       path,
       onCreate: _onCreate,
@@ -322,6 +329,13 @@ FROM
     }
 
     return null;
+  }
+
+  Future<void> _copyDatabaseFromAssets(String path) async {
+    ByteData data = await rootBundle.load('assets/$databaseName');
+    List<int> bytes =
+        data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+    await File(path).writeAsBytes(bytes);
   }
 
   Future<int> insertCategoryWithImage(String name, Uint8List imageBytes) async {

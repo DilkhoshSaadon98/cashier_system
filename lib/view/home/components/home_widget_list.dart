@@ -11,7 +11,6 @@ Widget buildGridView() {
   return Container(
     height: 400,
     width: Get.width / 2,
-    padding: EdgeInsets.symmetric(vertical: 15.h),
     child: GetBuilder<HomeController>(
       builder: (controller) {
         return GridView.builder(
@@ -40,7 +39,6 @@ Widget buildGridView() {
               child: InkWell(
                 onTap: controller.homeTab[index],
                 child: Container(
-                  padding: EdgeInsets.all(10.r),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(10.r),

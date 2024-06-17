@@ -1,10 +1,10 @@
-import 'dart:ui';
+
 
 import 'package:cashier_system/core/constant/app_theme.dart';
 import 'package:flutter/material.dart';
 
 Widget checkData(var data, int flex, Widget child) {
-  bool state = false;
+  bool state = true;
   if (state == false) {
     return Expanded(
         flex: flex,

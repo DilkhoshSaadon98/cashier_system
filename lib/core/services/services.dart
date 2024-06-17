@@ -11,10 +11,10 @@ class MyServices extends GetxService {
   Future<MyServices> init() async {
     sharedPreferences = await SharedPreferences.getInstance();
     systemSharedPreferences = await SharedPreferences.getInstance();
-
-    // Initialize sqflite_ffi
-    sqfliteFfiInit();
-    databaseFactory = databaseFactoryFfi;
+    if (GetPlatform.isDesktop) {
+      sqfliteFfiInit();
+      databaseFactory = databaseFactoryFfi;
+    }
 
     // Initialize the database
     sql = SqlDb();

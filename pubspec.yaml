@@ -49,7 +49,7 @@ dependencies:
   permission_handler: ^11.3.1
   restart_app: ^1.2.1
   flutter_local_notifications: ^17.1.2
-  android_alarm_manager: ^2.0.0
+  # android_alarm_manager: ^2.0.0
   dropdown_search: ^5.0.2
 dev_dependencies:
   flutter_test:
@@ -64,3 +64,4 @@ flutter:
     - assets/
     - assets/icons/  
     - assets/lottie/  
+    - assets/cashier_system.db

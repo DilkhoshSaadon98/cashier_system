@@ -2,12 +2,12 @@
 import 'package:cashier_system/bindings/intialbindings.dart';
 import 'package:cashier_system/core/functions/custom_scroll.dart';
 import 'package:cashier_system/core/localization/translation.dart';
-import 'package:cashier_system/core/services/services.dart';
 import 'package:cashier_system/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'core/localization/changelocal.dart';
+import 'core/services/services.dart';
 
 
 void main() async {

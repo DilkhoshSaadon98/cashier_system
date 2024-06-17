@@ -19,7 +19,7 @@ class MyMiddleWare extends GetMiddleware {
     }
     if (myServices.sharedPreferences.getString("step") == "0" ||
         myServices.sharedPreferences.getString("step") == null) {
-      return const RouteSettings(name: AppRoute.registerSystemScreen);
+      return const RouteSettings(name: AppRoute.homeScreen);
     }
 
     return null;
