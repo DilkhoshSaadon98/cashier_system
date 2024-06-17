@@ -16,14 +16,14 @@ class SqlDb {
       _db = await initialDb();
       return _db;
     } else {
+      print(_db);
       return _db;
     }
   }
 
   initialDb() async {
-     Directory documentsDirectory = await getApplicationDocumentsDirectory();
+    Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, databaseName);
-    print(path);
     if (!await File(path).exists()) {
       await _copyDatabaseFromAssets(path);
     }
@@ -219,76 +219,76 @@ CREATE TABLE "tbl_invoice" (
           tbl_categories.categories_id,
           tbl_types.type_id
       ''');
-//! View Profits
-      await db.execute('''
-      CREATE VIEW totalProfitView AS
-WITH
-    CombinedInvoices AS (
-        SELECT
-            'Cash' AS invoice_source_table,
-            tbl_invoice.invoice_price AS invoice_price,
-            tbl_invoice.invoice_createdate AS invoice_createdate,
-            tbl_invoice.invoice_id AS invoice_row_id
-        FROM tbl_invoice
-        WHERE
-            tbl_invoice.invoice_payment = 'Cash'
-        UNION ALL
-        SELECT
-            'Export' AS invoice_source_table,
-            tbl_export.export_amount AS invoice_price,
-            tbl_export.export_create_date AS invoice_createdate,
-            tbl_export.export_id AS invoice_row_id
-        FROM tbl_export
-        WHERE
-            tbl_export.export_account = 'Expenses'
-    )
-SELECT
-    invoice_source_table,
-    invoice_price,
-    invoice_createdate,invoice_row_id,
-    ROW_NUMBER() OVER (
-        ORDER BY invoice_createdate
-    ) AS invoice_id
-FROM CombinedInvoices
-      ''');
-//! View Box
-      await db.execute('''
-      CREATE VIEW boxView AS
-WITH
-    CombinedInvoices AS (
-        SELECT
-            'Cash' AS invoice_source_table,
-            tbl_invoice.invoice_price AS invoice_price,
-            tbl_invoice.invoice_createdate AS invoice_createdate,
-            tbl_invoice.invoice_id AS invoice_row_id
-        FROM tbl_invoice
-        WHERE
-            tbl_invoice.invoice_payment = 'Cash'
-        UNION ALL
-        SELECT
-            'Import' AS invoice_source_table,
-            tbl_import.import_amount AS invoice_price,
-            tbl_import.import_create_date AS invoice_createdate,
-            tbl_import.import_id AS invoice_row_id
-        FROM tbl_import
-        UNION ALL
-        SELECT
-            'Export' AS invoice_source_table,
-            tbl_export.export_amount AS invoice_price,
-            tbl_export.export_create_date AS invoice_createdate,
-            tbl_export.export_id AS invoice_row_id
-        FROM tbl_export
-    )
-SELECT
-    invoice_source_table,
-    invoice_price,
-    invoice_createdate,
-    invoice_row_id,
-    ROW_NUMBER() OVER (
-        ORDER BY invoice_createdate
-    ) AS 'invoice_id'
-FROM CombinedInvoices
-      ''');
+// //! View Profits
+//       await db.execute('''
+//       CREATE VIEW totalProfitView AS
+// WITH
+//     CombinedInvoices AS (
+//         SELECT
+//             'Cash' AS invoice_source_table,
+//             tbl_invoice.invoice_price AS invoice_price,
+//             tbl_invoice.invoice_createdate AS invoice_createdate,
+//             tbl_invoice.invoice_id AS invoice_row_id
+//         FROM tbl_invoice
+//         WHERE
+//             tbl_invoice.invoice_payment = 'Cash'
+//         UNION ALL
+//         SELECT
+//             'Export' AS invoice_source_table,
+//             tbl_export.export_amount AS invoice_price,
+//             tbl_export.export_create_date AS invoice_createdate,
+//             tbl_export.export_id AS invoice_row_id
+//         FROM tbl_export
+//         WHERE
+//             tbl_export.export_account = 'Expenses'
+//     )
+// SELECT
+//     invoice_source_table,
+//     invoice_price,
+//     invoice_createdate,invoice_row_id,
+//     ROW_NUMBER() OVER (
+//         ORDER BY invoice_createdate
+//     ) AS invoice_id
+// FROM CombinedInvoices
+//       ''');
+// //! View Box
+//       await db.execute('''
+//       CREATE VIEW boxView AS
+// WITH
+//     CombinedInvoices AS (
+//         SELECT
+//             'Cash' AS invoice_source_table,
+//             tbl_invoice.invoice_price AS invoice_price,
+//             tbl_invoice.invoice_createdate AS invoice_createdate,
+//             tbl_invoice.invoice_id AS invoice_row_id
+//         FROM tbl_invoice
+//         WHERE
+//             tbl_invoice.invoice_payment = 'Cash'
+//         UNION ALL
+//         SELECT
+//             'Import' AS invoice_source_table,
+//             tbl_import.import_amount AS invoice_price,
+//             tbl_import.import_create_date AS invoice_createdate,
+//             tbl_import.import_id AS invoice_row_id
+//         FROM tbl_import
+//         UNION ALL
+//         SELECT
+//             'Export' AS invoice_source_table,
+//             tbl_export.export_amount AS invoice_price,
+//             tbl_export.export_create_date AS invoice_createdate,
+//             tbl_export.export_id AS invoice_row_id
+//         FROM tbl_export
+//     )
+// SELECT
+//     invoice_source_table,
+//     invoice_price,
+//     invoice_createdate,
+//     invoice_row_id,
+//     ROW_NUMBER() OVER (
+//         ORDER BY invoice_createdate
+//     ) AS 'invoice_id'
+// FROM CombinedInvoices
+//       ''');
 //! View Invoice
       await db.execute('''
       CREATE VIEW IF NOT EXISTS invoiceView AS

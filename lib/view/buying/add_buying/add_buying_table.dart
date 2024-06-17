@@ -39,19 +39,19 @@ class AddBuyingTable extends StatelessWidget {
                   border: TableBorder.all(width: 2, color: thirdColor),
                   columns: const [
                     DataColumn(
-                        headingRowAlignment: MainAxisAlignment.center,
+                        // headingRowAlignment: MainAxisAlignment.center,
                         label: Text(textAlign: TextAlign.center, 'Item Code')),
                     DataColumn(
-                        headingRowAlignment: MainAxisAlignment.center,
+                        // headingRowAlignment: MainAxisAlignment.center,
                         label: Text('Item Name')),
                     DataColumn(
-                        headingRowAlignment: MainAxisAlignment.center,
+                        // headingRowAlignment: MainAxisAlignment.center,
                         label: Text('Buying Price')),
                     DataColumn(
-                        headingRowAlignment: MainAxisAlignment.center,
+                        // headingRowAlignment: MainAxisAlignment.center,
                         label: Text('Quantity')),
                     DataColumn(
-                        headingRowAlignment: MainAxisAlignment.center,
+                        // headingRowAlignment: MainAxisAlignment.center,
                         label: Text('Total Price')),
                   ],
                   rows: controller.rows,
