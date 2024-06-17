@@ -1,5 +1,4 @@
 import 'package:cashier_system/core/constant/app_theme.dart';
-import 'package:cashier_system/core/constant/routes.dart';
 import 'package:cashier_system/core/shared/custom_snack_bar.dart';
 import 'package:cashier_system/data/model/users_model.dart';
 import 'package:cashier_system/data/sql/data/users_class.dart';

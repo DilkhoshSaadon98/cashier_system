@@ -1,6 +1,22 @@
-import 'package:cashier_system/controller/setting/setting_controller.dart';
+import 'package:get/get.dart';
 
-class InvoiceController extends SettingController {
+class InvoiceController extends GetxController {
+  String selectedHeaderImage = "";
+  double headerHeight = 35.0;
+  int preSelectedLength = 0;
+  final double additionalHeight = 30.0;
+
+  void headerListHeight() {
+    if ((selectedColumnsHeader.length > preSelectedLength) &&
+        selectedColumnsHeader.length.isEven) {
+      headerHeight += additionalHeight;
+    } else if ((selectedColumnsHeader.length < preSelectedLength) &&
+        preSelectedLength.isEven) {
+      headerHeight -= additionalHeight;
+    }
+    preSelectedLength = selectedColumnsHeader.length;
+  }
+
   List<String> tablesTileTitle = [
     "Item Code",
     "Item Name",
@@ -18,16 +34,16 @@ class InvoiceController extends SettingController {
     false,
   ];
   List<String> tileTitle = [
-    "Customer Name",
-    "Orgnizer Name",
-    "Account Name",
-    "Number Of Items",
-    "Customer Phone",
-    "Customer Address",
-    "Invoice number",
-    "Date",
-    "Discount",
-    "Taxes",
+    "Customer Name:",
+    "Orgnizer Name:",
+    "Account Name:",
+    "Number Of Items:",
+    "Customer Phone:",
+    "Customer Address:",
+    "Invoice number:",
+    "Date:",
+    "Discount:",
+    "Taxes:",
   ];
   List<bool> tileState = [
     true,
@@ -41,6 +57,15 @@ class InvoiceController extends SettingController {
     false,
     false,
   ];
+  List<String> get selectedColumnsHeader {
+    List<String> selected = [];
+    for (int i = 0; i < tileState.length; i++) {
+      if (tileState[i]) {
+        selected.add(tileTitle[i]);
+      }
+    }
+    return selected;
+  }
 
   // Method to get selected columns
   List<String> get selectedColumns {

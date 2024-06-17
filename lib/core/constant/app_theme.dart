@@ -63,6 +63,7 @@ TextStyle get bodyStyle {
 }
 
 double constScreenPadding = 15.w;
+double mobileScreeenWidth = 460.0;
 double constRadius = 8.r;
 String constAppVersion = "1.1.2";
 String currentTime = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());

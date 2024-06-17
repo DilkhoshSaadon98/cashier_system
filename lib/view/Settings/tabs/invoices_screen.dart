@@ -24,67 +24,79 @@ class InvoicesScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(10),
                 child: SingleChildScrollView(
                   child: Container(
-                    width: 600,
                     height: Get.height - 80,
                     decoration: BoxDecoration(border: Border.all()),
                     child: Column(
                       children: [
-                        Expanded(
-                          child: Container(
-                            padding: const EdgeInsets.all(16.0),
-                            child: const Column(
-                              children: <Widget>[
-                                // Image.asset('assets/header-image.jpg'), // Replace with your image path
-                                FlutterLogo(),
-                                SizedBox(height: 8.0),
-                                Text(
-                                  'Header Title',
-                                  style: TextStyle(
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                        Container(
+                          width: Get.width,
+                          height: 125,
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.all(16.0),
+                          decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  fit: BoxFit.fill,
+                                  image: AssetImage(
+                                      controller.selectedHeaderImage.isEmpty
+                                          ? 'assets/header.png'
+                                          : controller.selectedHeaderImage)),
+                              color: primaryColor),
                         ),
-                        Expanded(
-                          child: GridView.builder(
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 2),
-                              itemBuilder: (context, index) {}),
-                        ),
-                        Expanded(
-                          flex: 3,
-                          child: Container(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Table(
-                              border: TableBorder.all(),
-                              columnWidths: Map.fromIterable(
-                                controller.selectedColumns,
-                                key: (item) =>
-                                    controller.selectedColumns.indexOf(item),
-                                value: (item) => FlexColumnWidth(1),
-                              ),
-                              children: [
-                                TableRow(
-                                  children:
-                                      controller.selectedColumns.map((title) {
-                                    return TableCell(
-                                      child: Padding(
-                                        padding: EdgeInsets.all(8.0),
-                                        child: Text(title),
-                                      ),
+                        SizedBox(
+                          height: controller.headerHeight,
+                          child: LayoutBuilder(builder: (context, constraints) {
+                            controller.headerListHeight();
+                            return SizedBox(
+                              height: 50 * constraints.minHeight,
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 15),
+                                child: GridView.custom(
+                                  childrenDelegate: SliverChildBuilderDelegate(
+                                      childCount: controller
+                                          .selectedColumnsHeader
+                                          .length, (context, index) {
+                                    return Text(
+                                      controller.selectedColumnsHeader[index],
+                                      style: titleStyle,
                                     );
-                                  }).toList(),
+                                  }),
+                                  gridDelegate:
+                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 2,
+                                          childAspectRatio: 10),
                                 ),
-                                // Add your table rows here dynamically based on the selectedColumns
-                              ],
+                              ),
+                            );
+                          }),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Table(
+                            border: TableBorder.all(),
+                            columnWidths: Map.fromIterable(
+                              controller.selectedColumns,
+                              key: (item) =>
+                                  controller.selectedColumns.indexOf(item),
+                              value: (item) => FlexColumnWidth(1),
                             ),
+                            children: [
+                              TableRow(
+                                children:
+                                    controller.selectedColumns.map((title) {
+                                  return TableCell(
+                                    child: Padding(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: Text(title),
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
+                              // Add your table rows here dynamically based on the selectedColumns
+                            ],
                           ),
                         ),
-                        Spacer(),
+                        const Spacer(),
                         Container(
                           padding: const EdgeInsets.all(16.0),
                           child: const Column(

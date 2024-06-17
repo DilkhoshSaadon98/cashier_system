@@ -1,9 +1,12 @@
 import 'package:cashier_system/controller/home/home_controller.dart';
+import 'package:cashier_system/core/constant/app_theme.dart';
 import 'package:cashier_system/core/constant/color.dart';
 import 'package:cashier_system/core/constant/routes.dart';
+import 'package:cashier_system/core/responsive/responsive_builder.dart';
 import 'package:cashier_system/view/home/components/custom_home_drawer.dart';
 import 'package:cashier_system/view/home/components/home_logo.dart';
 import 'package:cashier_system/view/home/components/home_widget_list.dart';
+import 'package:cashier_system/view/home/mobile/home_logo_mobile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -48,17 +51,13 @@ class HomeScreen extends StatelessWidget {
         width: Get.width,
         color: primaryColor,
         padding: EdgeInsets.symmetric(vertical: 20.h),
-        child: Stack(
-          alignment: Alignment.center,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                buildLogo(),
-                buildGridView(),
-              ],
-            ),
+            ResponsiveBuilder(windows: buildLogo(), mobile: buildLogoMobile()),
+            // GetPlatform.isDesktop ? buildLogo() : buildLogoMobile(),
+            buildGridView(),
           ],
         ),
       ),
