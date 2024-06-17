@@ -48,30 +48,30 @@ class BuyingTableRows extends StatelessWidget {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    //! Purchase Check
-                                    Expanded(
-                                      flex: 1,
-                                      child: Container(
-                                        height: 40,
-                                        alignment: Alignment.center,
-                                        decoration: BoxDecoration(
-                                            border: Border.all(
-                                                width: .3,
-                                                color: primaryColor)),
-                                        child: Checkbox(
-                                          value: false,
-                                          onChanged: (value) {},
-                                          // value: controller.selectedRows
-                                          //     .contains(controller
-                                          //         .importData[index].importId
-                                          //         .toString()),
-                                          // onChanged: (value) {
-                                          //   controller.checkSelectedRows(
-                                          //       value!, index);
-                                          // },
-                                        ),
-                                      ),
-                                    ),
+                                    // //! Purchase Check
+                                    // Expanded(
+                                    //   flex: 1,
+                                    //   child: Container(
+                                    //     height: 40,
+                                    //     alignment: Alignment.center,
+                                    //     decoration: BoxDecoration(
+                                    //         border: Border.all(
+                                    //             width: .3,
+                                    //             color: primaryColor)),
+                                    //     child: Checkbox(
+                                    //       value: false,
+                                    //       onChanged: (value) {},
+                                    //       // value: controller.selectedRows
+                                    //       //     .contains(controller
+                                    //       //         .importData[index].importId
+                                    //       //         .toString()),
+                                    //       // onChanged: (value) {
+                                    //       //   controller.checkSelectedRows(
+                                    //       //       value!, index);
+                                    //       // },
+                                    //     ),
+                                    //   ),
+                                    // ),
                                     //! Purchase Code
                                     Expanded(
                                       flex: 2,

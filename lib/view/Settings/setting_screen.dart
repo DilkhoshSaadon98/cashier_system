@@ -25,13 +25,13 @@ class SettingScreen extends StatelessWidget {
               flex: 6,
               child: IndexedStack(
                 index: controller.currentIndex,
-                children: const [
-                  SecurityScreen(),
-                  BackupScreen(),
-                  UpdateSystemScreen(),
-                  InvoicesScreen(),
-                  CustomersDetails(),
-                  LanguageScreen()
+                children: [
+                  const SecurityScreen(),
+                  const BackupScreen(),
+                  const UpdateSystemScreen(),
+                  const CustomersDetails(),
+                  const LanguageScreen(),
+                  Container()
                 ],
               ),
             );

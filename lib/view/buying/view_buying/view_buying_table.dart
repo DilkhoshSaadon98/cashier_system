@@ -14,7 +14,6 @@ class ViewBuyingTable extends StatelessWidget {
         children: [
           CustomTableHeaderGlobal(
               data: const [
-                "Select",
                 "NO",
                 "Total Price",
                 "Purchaes Date",
@@ -22,7 +21,7 @@ class ViewBuyingTable extends StatelessWidget {
                 "Payment"
               ],
               onDoubleTap: () {},
-              flex: const [1, 2, 3, 3, 3, 1]),
+              flex: const [2, 3, 3, 3, 1]),
           const BuyingTableRows()
         ],
       ),

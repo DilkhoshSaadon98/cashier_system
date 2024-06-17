@@ -181,6 +181,10 @@ class BuyingController extends DefinitionBuyingController {
     int purchaseNumber = await generateUniquePurchaseNumber();
     if (formKey.currentState!.validate()) {
       bool allRowsInserted = true;
+      var totalPrice = 0;
+      for (int j = 0; j < itemTotalPriceControllers.length; j++) {
+        totalPrice += int.parse(itemTotalPriceControllers[j].text);
+      }
       for (int i = 0; i < itemCodeControllers.length; i++) {
         if (formKeysCode[i].currentState!.validate() &&
             formKeysName[i].currentState!.validate() &&
@@ -190,8 +194,7 @@ class BuyingController extends DefinitionBuyingController {
           int purchasePrice = int.tryParse(buyingPriceControllers[i].text) ?? 0;
           int purchaseQuantity = int.tryParse(quantityControllers[i].text) ?? 0;
           String itemCode = itemCodeControllers[i].text.trim();
-          String totalPrice = itemTotalPriceControllers[i].text.trim();
-
+          print(purchasePrice);
           Map<String, dynamic> itemData = {
             'purchase_items_id': itemCode,
             'purchase_price': purchasePrice,

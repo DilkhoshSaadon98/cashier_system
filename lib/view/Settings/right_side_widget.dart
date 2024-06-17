@@ -6,6 +6,8 @@ import 'package:cashier_system/core/constant/imgaeasset.dart';
 import 'package:cashier_system/core/constant/routes.dart';
 import 'package:cashier_system/core/shared/custom_header_screen.dart';
 import 'package:cashier_system/core/shared/custom_sized_box.dart';
+import 'package:cashier_system/view/Settings/tabs/invoices_screen.dart';
+import 'package:cashier_system/view/cashier/cashier_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -39,11 +41,13 @@ class RightSideWidget extends StatelessWidget {
                 height: 0.7.sh,
                 child: GetBuilder<SettingController>(builder: (controller) {
                   return ListView.builder(
-                      itemCount: 5,
+                      itemCount: controller.settingTabName.length,
                       itemBuilder: (context, index) {
                         return InkWell(
                           onTap: () {
-                            controller.changeIndex(index);
+                            index == controller.settingTabName.length - 1
+                                ? Get.to(const InvoicesScreen())
+                                : controller.changeIndex(index);
                           },
                           child: Container(
                             margin: EdgeInsets.symmetric(

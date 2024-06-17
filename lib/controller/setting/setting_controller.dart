@@ -34,9 +34,9 @@ class SettingController extends GetxController {
     "Security",
     "Back Up",
     "System Update",
-    "Invoice",
     "Customers Details",
     "System Language",
+    "Invoice",
   ];
   List<String> securitySwitchTitle = [
     "Show Data",
@@ -51,24 +51,6 @@ class SettingController extends GetxController {
 
   int currentTab = 0;
 
-  List<void Function()> settingOnTab = [
-    () {
-      Get.toNamed(AppRoute.settingScreen);
-    },
-    () {
-      Get.toNamed(AppRoute.backUpScreen);
-    },
-    () {
-      Get.toNamed(AppRoute.updateScreen);
-    },
-    () {},
-    () {
-      Get.toNamed(AppRoute.customerDetailsScreen);
-    },
-    () {
-      Get.toNamed(AppRoute.languageScreen);
-    },
-  ];
   changeIndex(int index) {
     currentIndex = index;
     update();

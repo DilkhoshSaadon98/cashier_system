@@ -60,7 +60,6 @@ class BuyingDetailsViewController extends GetxController {
         itemsNo: itemsNO,
         itemsSelling: itemsSelling,
         groupBy: groupBy);
-    print(response);
     if (response['status'] == "success") {
       List responsedata = response['data'] ?? [];
       purchaseDetailsData
