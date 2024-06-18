@@ -32,11 +32,11 @@ class ViewExportDataMobile extends StatelessWidget {
                   columns: const [
                     DataColumn(
                         // headingRowAlignment: MainAxisAlignment.center,
-                        label: Text(
-                            textAlign: TextAlign.center, 'Invoice Number')),
+                        label: Text(textAlign: TextAlign.center, 'Select')),
                     DataColumn(
                         // headingRowAlignment: MainAxisAlignment.center,
-                        label: Text(textAlign: TextAlign.center, 'Select')),
+                        label: Text(
+                            textAlign: TextAlign.center, 'Invoice Number')),
                     DataColumn(
                         // headingRowAlignment: MainAxisAlignment.center,
                         label: Text('Account')),
