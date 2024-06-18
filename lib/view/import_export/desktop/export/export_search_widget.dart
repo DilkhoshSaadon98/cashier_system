@@ -43,6 +43,7 @@ class CustomSearchExportWidget extends GetView<ExportController> {
               SelectedListItem(name: "Employee".tr, value: "Employee"),
               SelectedListItem(name: "Export Money".tr, value: "Export Money"),
               SelectedListItem(name: "Expenses".tr, value: "Expenses"),
+                  SelectedListItem(name: "Cash Expenses".tr, value: "Cash Expenses"),
             ],
             iconData: Icons.layers,
             color: white,

@@ -45,6 +45,7 @@ class CustomAddExportWidget extends StatelessWidget {
                   SelectedListItem(
                       name: "Export Money".tr, value: "Import Money"),
                   SelectedListItem(name: "Expenses".tr, value: "Expenses"),
+                  SelectedListItem(name: "Cash Expenses".tr, value: "Cash Expenses"),
                 ],
                 iconData: Icons.layers,
                 color: white,
