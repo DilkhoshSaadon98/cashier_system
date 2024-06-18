@@ -5,7 +5,7 @@ import 'package:cashier_system/core/constant/imgaeasset.dart';
 import 'package:cashier_system/core/constant/routes.dart';
 import 'package:cashier_system/core/shared/custom_header_screen.dart';
 import 'package:cashier_system/core/shared/custom_sized_box.dart';
-import 'package:cashier_system/view/import_export/desktop/custom_expansion_tile.dart';
+import 'package:cashier_system/view/import_export/shared/custom_expansion_tile.dart';
 import 'package:cashier_system/view/import_export/mobile/export/export_add_widget_mobile.dart';
 import 'package:cashier_system/view/import_export/mobile/export/export_search_widget_mobile.dart';
 

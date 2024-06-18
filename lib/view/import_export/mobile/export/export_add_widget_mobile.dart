@@ -6,7 +6,7 @@ import 'package:cashier_system/core/functions/validinput.dart';
 import 'package:cashier_system/core/shared/custom_divider.dart';
 import 'package:cashier_system/core/shared/custom_formfield_global.dart';
 import 'package:cashier_system/core/shared/custom_sized_box.dart';
-import 'package:cashier_system/view/import_export/desktop/custom_drop_down_impexp.dart';
+import 'package:cashier_system/view/import_export/shared/custom_drop_down_impexp.dart';
 import 'package:drop_down_list/model/selected_list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
