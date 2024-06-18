@@ -56,12 +56,12 @@ class ImportTableRows extends StatelessWidget {
                                                   width: .3,
                                                   color: primaryColor)),
                                           child: Checkbox(
-                                            value: controller.selectedRows
+                                            value: controller.selectedRowsImports
                                                 .contains(controller
                                                     .importData[index].importId
                                                     .toString()),
                                             onChanged: (value) {
-                                              controller.checkSelectedRows(
+                                              controller.checkSelectedRowsImports(
                                                   value!, index);
                                             },
                                           ),

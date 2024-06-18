@@ -64,8 +64,8 @@ class ExportController extends ImportExportController {
   }
 
   deleteExportData() async {
-    if (selectedRows.isNotEmpty) {
-      var response = await exportClass.deleteExportData(selectedRows);
+    if (selectedRowsExports.isNotEmpty) {
+      var response = await exportClass.deleteExportData(selectedRowsExports);
       if (response > 0) {
         getexportData();
       }

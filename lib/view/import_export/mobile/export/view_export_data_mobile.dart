@@ -23,10 +23,10 @@ class ViewExportDataMobile extends StatelessWidget {
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: DataTable(
-                  dataRowColor: MaterialStateProperty.all(tableRowColor),
+                  dataRowColor: WidgetStateProperty.all(tableRowColor),
                   //  dataTextStyle: titleStyle,
                   dividerThickness: 1,
-                  headingRowColor: MaterialStateProperty.all(primaryColor),
+                  headingRowColor: WidgetStateProperty.all(primaryColor),
                   headingTextStyle: titleStyle.copyWith(color: white),
                   border: TableBorder.all(width: 2, color: thirdColor),
                   columns: const [
@@ -34,6 +34,9 @@ class ViewExportDataMobile extends StatelessWidget {
                         // headingRowAlignment: MainAxisAlignment.center,
                         label: Text(
                             textAlign: TextAlign.center, 'Invoice Number')),
+                    DataColumn(
+                        // headingRowAlignment: MainAxisAlignment.center,
+                        label: Text(textAlign: TextAlign.center, 'Select')),
                     DataColumn(
                         // headingRowAlignment: MainAxisAlignment.center,
                         label: Text('Account')),
@@ -54,6 +57,13 @@ class ViewExportDataMobile extends StatelessWidget {
                     ...List.generate(controller.exportData.length, (index) {
                       var dataItem = controller.exportData[index];
                       return DataRow(cells: [
+                        DataCell(Checkbox(
+                          value: controller.selectedRowsExports.contains(
+                              controller.exportData[index].exportId.toString()),
+                          onChanged: (value) {
+                            controller.checkSelectedRowsExports(value!, index);
+                          },
+                        )),
                         DataCell(Text(dataItem.exportId.toString())),
                         DataCell(Text(dataItem.exportAccount!)),
                         DataCell(Text(dataItem.exportCreateDate!)),

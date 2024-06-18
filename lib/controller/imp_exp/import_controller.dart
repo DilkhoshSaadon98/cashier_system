@@ -64,8 +64,8 @@ class ImportController extends ImportExportController {
   }
 
   deleteImportData() async {
-    if (selectedRows.isNotEmpty) {
-      var response = await importClass.deleteImportData(selectedRows);
+    if (selectedRowsImports.isNotEmpty) {
+      var response = await importClass.deleteImportData(selectedRowsImports);
       if (response > 0) {
         getImportData();
       }

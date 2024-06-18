@@ -53,12 +53,12 @@ class ExportTableRows extends StatelessWidget {
                                                 width: .3,
                                                 color: primaryColor)),
                                         child: Checkbox(
-                                          value: controller.selectedRows
+                                          value: controller.selectedRowsExports
                                               .contains(controller
                                                   .exportData[index].exportId
                                                   .toString()),
                                           onChanged: (value) {
-                                            controller.checkSelectedRows(
+                                            controller.checkSelectedRowsExports(
                                                 value!, index);
                                           },
                                         ),

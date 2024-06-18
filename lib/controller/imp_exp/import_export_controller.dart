@@ -39,7 +39,8 @@ class ImportExportController extends GetxController {
   //? Selecting var:
   String selectedScreenTitle = "Search";
   int seslectedIndex = 0;
-  List<String> selectedRows = [];
+  List<String> selectedRowsImports = [];
+  List<String> selectedRowsExports = [];
   bool checkValue = false;
   //? Time Var:
   DateTime selectedDate = DateTime.now();
@@ -70,22 +71,44 @@ class ImportExportController extends GetxController {
 
   //? Select All Rows:
   selectAllRows() {
-    if (selectedRows.length == importData.length) {
-      selectedRows.clear();
+    if (selectedRowsImports.length == importData.length) {
+      selectedRowsImports.clear();
     } else {
       for (int i = 0; i <= importData.length - 1; i++) {
-        selectedRows.add(importData[i].importId.toString());
+        selectedRowsImports.add(importData[i].importId.toString());
       }
     }
     update();
   }
 
-  void checkSelectedRows(bool value, int index) {
+  void checkSelectedRowsImports(bool value, int index) {
     if (value == true) {
-      selectedRows.add(importData[index].importId.toString());
+      selectedRowsImports.add(importData[index].importId.toString());
     } else {
-      selectedRows.removeWhere(
+      selectedRowsImports.removeWhere(
           (element) => element == importData[index].importId.toString());
+    }
+    update();
+  }
+
+  //? Select All Rows:
+  selectAllRowsExports() {
+    if (selectedRowsExports.length == exportData.length) {
+      selectedRowsExports.clear();
+    } else {
+      for (int i = 0; i <= exportData.length - 1; i++) {
+        selectedRowsExports.add(exportData[i].exportId.toString());
+      }
+    }
+    update();
+  }
+
+  void checkSelectedRowsExports(bool value, int index) {
+    if (value == true) {
+      selectedRowsExports.add(exportData[index].exportId.toString());
+    } else {
+      selectedRowsExports.removeWhere(
+          (element) => element == exportData[index].exportId.toString());
     }
     update();
   }

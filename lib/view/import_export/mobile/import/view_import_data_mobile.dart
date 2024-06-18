@@ -23,13 +23,16 @@ class ViewImportDataMobile extends StatelessWidget {
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: DataTable(
-                  dataRowColor: MaterialStateProperty.all(tableRowColor),
+                  dataRowColor: WidgetStateProperty.all(tableRowColor),
                   //  dataTextStyle: titleStyle,
                   dividerThickness: 1,
-                  headingRowColor: MaterialStateProperty.all(primaryColor),
+                  headingRowColor: WidgetStateProperty.all(primaryColor),
                   headingTextStyle: titleStyle.copyWith(color: white),
                   border: TableBorder.all(width: 2, color: thirdColor),
                   columns: const [
+                    DataColumn(
+                        // headingRowAlignment: MainAxisAlignment.center,
+                        label: Text(textAlign: TextAlign.center, 'Select')),
                     DataColumn(
                         // headingRowAlignment: MainAxisAlignment.center,
                         label: Text(
@@ -54,6 +57,13 @@ class ViewImportDataMobile extends StatelessWidget {
                     ...List.generate(controller.importData.length, (index) {
                       var dataItem = controller.importData[index];
                       return DataRow(cells: [
+                        DataCell(Checkbox(
+                          value: controller.selectedRowsImports.contains(
+                              controller.importData[index].importId.toString()),
+                          onChanged: (value) {
+                            controller.checkSelectedRowsImports(value!, index);
+                          },
+                        )),
                         DataCell(Text(dataItem.importId.toString())),
                         DataCell(Text(dataItem.importAccount!)),
                         DataCell(Text(dataItem.importCreateDate!)),
