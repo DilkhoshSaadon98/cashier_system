@@ -29,29 +29,51 @@ class ViewExportDataMobile extends StatelessWidget {
                   headingRowColor: WidgetStateProperty.all(primaryColor),
                   headingTextStyle: titleStyle.copyWith(color: white),
                   border: TableBorder.all(width: 2, color: thirdColor),
-                  columns: const [
-                    DataColumn(
-                        // headingRowAlignment: MainAxisAlignment.center,
-                        label: Text(textAlign: TextAlign.center, 'Select')),
+                  columns: [
                     DataColumn(
                         // headingRowAlignment: MainAxisAlignment.center,
                         label: Text(
-                            textAlign: TextAlign.center, 'Invoice Number')),
+                      textAlign: TextAlign.center,
+                      'Select',
+                      style: titleStyle.copyWith(color: white),
+                    )),
                     DataColumn(
                         // headingRowAlignment: MainAxisAlignment.center,
-                        label: Text('Account')),
+                        label: Text(
+                      textAlign: TextAlign.center,
+                      'Invoice Number',
+                      style: titleStyle.copyWith(color: white),
+                    )),
                     DataColumn(
                         // headingRowAlignment: MainAxisAlignment.center,
-                        label: Text('Date')),
+                        label: Text(
+                      'Account',
+                      style: titleStyle.copyWith(color: white),
+                    )),
                     DataColumn(
                         // headingRowAlignment: MainAxisAlignment.center,
-                        label: Text('Amount')),
+                        label: Text(
+                      'Date',
+                      style: titleStyle.copyWith(color: white),
+                    )),
                     DataColumn(
                         // headingRowAlignment: MainAxisAlignment.center,
-                        label: Text('Note')),
+                        label: Text(
+                      'Amount',
+                      style: titleStyle.copyWith(color: white),
+                    )),
                     DataColumn(
                         // headingRowAlignment: MainAxisAlignment.center,
-                        label: Text('Supplier Name')),
+                        label: Text(
+                      'Note',
+                      style: titleStyle.copyWith(color: white),
+                    )),
+                    DataColumn(
+                        // headingRowAlignment: MainAxisAlignment.center,
+                        label: Text(
+                      'Supplier Name',
+                      style: titleStyle.copyWith(color: white),
+                    )),
                   ],
                   rows: [
                     ...List.generate(controller.exportData.length, (index) {
@@ -64,13 +86,30 @@ class ViewExportDataMobile extends StatelessWidget {
                             controller.checkSelectedRowsExports(value!, index);
                           },
                         )),
-                        DataCell(Text(dataItem.exportId.toString())),
-                        DataCell(Text(dataItem.exportAccount!)),
-                        DataCell(Text(dataItem.exportCreateDate!)),
-                        DataCell(
-                            Text(formattingNumbers(dataItem.exportAmount!))),
-                        DataCell(Text(dataItem.exportNote!)),
-                        DataCell(Text(dataItem.usersName!)),
+                        DataCell(Text(
+                          dataItem.exportId.toString(),
+                          style: bodyStyle,
+                        )),
+                        DataCell(Text(
+                          dataItem.exportAccount!,
+                          style: bodyStyle,
+                        )),
+                        DataCell(Text(
+                          dataItem.exportCreateDate!,
+                          style: bodyStyle,
+                        )),
+                        DataCell(Text(
+                          formattingNumbers(dataItem.exportAmount!),
+                          style: bodyStyle,
+                        )),
+                        DataCell(Text(
+                          dataItem.exportNote!,
+                          style: bodyStyle,
+                        )),
+                        DataCell(Text(
+                          dataItem.usersName!,
+                          style: bodyStyle,
+                        )),
                       ]);
                     })
                   ],
