@@ -12,11 +12,11 @@ Widget buildLogoMobile() {
             children: [
               Text(
                 'MR.ROBOT ',
-                style: introStyle.copyWith(fontSize: 30.sp, color: white),
+                style: introStyle.copyWith(fontSize: 35.sp, color: white),
               ),
               Text(
                 'COM.',
-                style: introStyle.copyWith(fontSize: 30.sp, color: secondColor),
+                style: introStyle.copyWith(fontSize: 40.sp, color: secondColor),
               ),
             ],
           )
@@ -25,11 +25,11 @@ Widget buildLogoMobile() {
             children: [
               Text(
                 'COM.',
-                style: introStyle.copyWith(fontSize: 30.sp, color: secondColor),
+                style: introStyle.copyWith(fontSize: 40.sp, color: secondColor),
               ),
               Text(
                 'MR.ROBOT ',
-                style: introStyle.copyWith(fontSize: 30.sp, color: white),
+                style: introStyle.copyWith(fontSize: 40.sp, color: white),
               ),
             ],
           ),

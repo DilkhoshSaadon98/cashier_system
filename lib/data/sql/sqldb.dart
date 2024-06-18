@@ -16,7 +16,6 @@ class SqlDb {
       _db = await initialDb();
       return _db;
     } else {
-      print(_db);
       return _db;
     }
   }

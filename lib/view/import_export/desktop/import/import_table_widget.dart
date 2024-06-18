@@ -1,7 +1,7 @@
 import 'package:cashier_system/controller/imp_exp/import_controller.dart';
 import 'package:cashier_system/core/shared/custom_appbar_title.dart';
 import 'package:cashier_system/core/shared/custom_table_header_global.dart';
-import 'package:cashier_system/view/import_export/components/import/import_table_rows.dart';
+import 'package:cashier_system/view/import_export/desktop/import/import_table_rows.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -31,8 +31,7 @@ class ImportTableWidget extends GetView<ImportController> {
                 },
                 flex: const [1, 2, 2, 2, 2, 3, 3]),
           ),
-          const
-           ImportTableRows()
+          const ImportTableRows()
         ],
       ),
     );

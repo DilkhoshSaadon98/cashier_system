@@ -7,13 +7,14 @@ import 'package:cashier_system/core/shared/custom_buttton_global.dart';
 import 'package:cashier_system/core/shared/custom_divider.dart';
 import 'package:cashier_system/core/shared/custom_formfield_global.dart';
 import 'package:cashier_system/core/shared/custom_sized_box.dart';
-import 'package:cashier_system/view/import_export/components/custom_drop_down_impexp.dart';
+import 'package:cashier_system/view/import_export/desktop/custom_drop_down_impexp.dart';
+import 'package:cashier_system/view/import_export/mobile/import/view_import_data_mobile.dart';
 import 'package:drop_down_list/model/selected_list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class CustomSearchImportWidget extends GetView<ImportController> {
-  const CustomSearchImportWidget({
+class CustomSearchImportWidgetMobile extends GetView<ImportController> {
+  const CustomSearchImportWidgetMobile({
     super.key,
   });
 
@@ -28,7 +29,7 @@ class CustomSearchImportWidget extends GetView<ImportController> {
             alignment: Alignment.center,
             child: Text(
               controller.selectedScreenTitle.tr,
-              style: titleStyle.copyWith(color: white, fontSize: 20),
+              style: titleStyle.copyWith(color: primaryColor, fontSize: 20),
             ),
           ),
           customSizedBox(5),
@@ -45,7 +46,7 @@ class CustomSearchImportWidget extends GetView<ImportController> {
               SelectedListItem(name: "Expenses", value: "Expenses"),
             ],
             iconData: Icons.layers,
-            color: white,
+            color: primaryColor,
           ),
           customSizedBox(),
           CustomDropDownImpExp(
@@ -56,12 +57,12 @@ class CustomSearchImportWidget extends GetView<ImportController> {
             contrllerName: controller.userControllerName,
             listData: controller.dropDownListUsers,
             iconData: Icons.layers,
-            color: white,
+            color: primaryColor,
           ),
           customSizedBox(),
           Text(
             "Invoice Number".tr,
-            style: titleStyle.copyWith(color: white),
+            style: titleStyle.copyWith(color: primaryColor),
           ),
           customSizedBox(5),
           Row(
@@ -72,7 +73,7 @@ class CustomSearchImportWidget extends GetView<ImportController> {
                   iconData: Icons.numbers,
                   labeltext: "From",
                   isNumber: true,
-                  borderColor: white,
+                  borderColor: primaryColor,
                   mycontroller: controller.noFromController,
                   valid: (value) {
                     return validInput(value!, 0, 1000, "number");
@@ -89,7 +90,7 @@ class CustomSearchImportWidget extends GetView<ImportController> {
                   labeltext: "To",
                   isNumber: true,
                   mycontroller: controller.noToController,
-                  borderColor: white,
+                  borderColor: primaryColor,
                   valid: (value) {
                     return validInput(value!, 0, 1000, "number");
                   },
@@ -100,7 +101,7 @@ class CustomSearchImportWidget extends GetView<ImportController> {
           customSizedBox(5),
           Text(
             "Date".tr,
-            style: titleStyle.copyWith(color: white, fontSize: 16),
+            style: titleStyle.copyWith(color: primaryColor, fontSize: 16),
           ),
           customSizedBox(5),
           Row(
@@ -116,7 +117,7 @@ class CustomSearchImportWidget extends GetView<ImportController> {
                     controller.selectDate(
                         context, controller.dateFromController);
                   },
-                  borderColor: white,
+                  borderColor: primaryColor,
                   valid: (value) {
                     return validInput(value!, 0, 1000, "number");
                   },
@@ -135,7 +136,7 @@ class CustomSearchImportWidget extends GetView<ImportController> {
                   labeltext: "To",
                   isNumber: true,
                   mycontroller: controller.dateToController,
-                  borderColor: white,
+                  borderColor: primaryColor,
                   valid: (value) {
                     return validInput(value!, 0, 1000, "number");
                   },
@@ -144,25 +145,26 @@ class CustomSearchImportWidget extends GetView<ImportController> {
             ],
           ),
           customSizedBox(5),
-          customDivider(white),
+          customDivider(primaryColor),
           customSizedBox(5),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Text(
                 "Ballance".tr,
-                style: titleStyle.copyWith(color: white, fontSize: 20),
+                style: titleStyle.copyWith(color: primaryColor, fontSize: 20),
               ),
               Text(
                 formattingNumbers(controller.totalImportBallance),
-                style: titleStyle.copyWith(color: white, fontSize: 20),
+                style: titleStyle.copyWith(color: primaryColor, fontSize: 20),
               ),
             ],
           ),
           customSizedBox(5),
-          customButtonGlobal(() {
-            controller.getImportData();
-          }, "Search", Icons.search),
+          customButtonGlobal(() async {
+            await controller.getImportData();
+            Get.to(() => const ViewImportDataMobile());
+          }, "Show Data", Icons.search, primaryColor, white),
           customSizedBox(),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,

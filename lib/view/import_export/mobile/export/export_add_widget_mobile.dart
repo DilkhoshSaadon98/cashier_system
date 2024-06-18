@@ -1,0 +1,159 @@
+import 'package:cashier_system/controller/imp_exp/import_controller.dart';
+import 'package:cashier_system/core/constant/app_theme.dart';
+import 'package:cashier_system/core/constant/color.dart';
+import 'package:cashier_system/core/functions/formating_numbers.dart';
+import 'package:cashier_system/core/functions/validinput.dart';
+import 'package:cashier_system/core/shared/custom_divider.dart';
+import 'package:cashier_system/core/shared/custom_formfield_global.dart';
+import 'package:cashier_system/core/shared/custom_sized_box.dart';
+import 'package:cashier_system/view/import_export/desktop/custom_drop_down_impexp.dart';
+import 'package:drop_down_list/model/selected_list_item.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+class CustomAddExportWidgetMobile extends StatelessWidget {
+  const CustomAddExportWidgetMobile({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    Get.put(ImportController());
+    return GetBuilder<ImportController>(builder: (controller) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            alignment: Alignment.center,
+            child: Text(
+              controller.selectedScreenTitle.tr,
+              style: titleStyle.copyWith(color: primaryColor, fontSize: 20),
+            ),
+          ),
+          customSizedBox(10),
+          CustomDropDownImpExp(
+            title: controller.accountControllerName.text.isNotEmpty
+                ? controller.accountControllerName.text
+                : "Account".tr,
+            contrllerId: controller.accountControllerId,
+            contrllerName: controller.accountControllerName,
+            listData: [
+              SelectedListItem(name: "Box", value: "Box"),
+              SelectedListItem(name: "Employee", value: "Employee"),
+              SelectedListItem(name: "Export Money", value: "Export Money"),
+              SelectedListItem(name: "Expenses", value: "Expenses"),
+              SelectedListItem(name: "Cash Expenses", value: "Cash Expenses"),
+            ],
+            iconData: Icons.layers,
+            color: primaryColor,
+          ),
+          customSizedBox(10),
+          CustomDropDownImpExp(
+            title: controller.userControllerName.text.isNotEmpty
+                ? controller.userControllerName.text
+                : "Supplier Name".tr,
+            contrllerId: controller.userControllerId,
+            contrllerName: controller.userControllerName,
+            listData: controller.dropDownListUsers,
+            iconData: Icons.layers,
+            color: primaryColor,
+          ),
+          customSizedBox(10),
+          CustomTextFormFieldGlobal(
+            hinttext: '',
+            iconData: Icons.date_range_outlined,
+            labeltext: "Date",
+            isNumber: true,
+            borderColor: primaryColor,
+            mycontroller: controller.dateController,
+            onTap: () {
+              controller.selectDate(context, controller.dateController);
+            },
+            valid: (value) {
+              return validInput(value!, 0, 1000, "number");
+            },
+          ),
+          customSizedBox(10),
+          CustomTextFormFieldGlobal(
+            hinttext: 'Amount ',
+            iconData: Icons.attach_money,
+            labeltext: "Amount ",
+            isNumber: true,
+            borderColor: primaryColor,
+            mycontroller: controller.amountController,
+            valid: (value) {
+              return validInput(value!, 0, 1000, "number");
+            },
+          ),
+          customSizedBox(10),
+          SizedBox(
+            height: 50,
+            child: CustomTextFormFieldGlobal(
+              hinttext: 'Note',
+              iconData: Icons.description_outlined,
+              labeltext: "Note",
+              isNumber: false,
+              mycontroller: controller.noteController,
+              borderColor: primaryColor,
+              valid: (value) {
+                return validInput(value!, 0, 1000, "number");
+              },
+            ),
+          ),
+          customSizedBox(5),
+          customDivider(primaryColor),
+          customSizedBox(5),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Text(
+                "Ballance".tr,
+                style: titleStyle.copyWith(color: primaryColor, fontSize: 20),
+              ),
+              Text(
+                formattingNumbers(controller.totalImportBallance),
+                style: titleStyle.copyWith(color: primaryColor, fontSize: 20),
+              ),
+            ],
+          ),
+          customSizedBox(30),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              CircleAvatar(
+                backgroundColor: const Color(0xff43766C),
+                radius: 25,
+                child: IconButton(
+                    onPressed: () {
+                      controller.addImportData();
+                    },
+                    icon: const Icon(
+                      Icons.save,
+                      color: white,
+                    )),
+              ),
+              CircleAvatar(
+                backgroundColor: Colors.red,
+                radius: 25,
+                child: IconButton(
+                    onPressed: () {
+                      controller.deleteImportData();
+                    },
+                    icon: const Icon(
+                      Icons.delete_sweep_outlined,
+                      color: white,
+                    )),
+              ),
+              CircleAvatar(
+                  backgroundColor: thirdColor,
+                  radius: 25,
+                  child: IconButton(
+                      onPressed: () {},
+                      icon: const Icon(Icons.print, color: white))),
+            ],
+          ),
+        ],
+      );
+    });
+  }
+}

@@ -27,7 +27,9 @@ class AppRoute {
   static const String itemsAddScreen = "/itemsAddScreen";
   //! Import Export :
   static const String importScreen = "/importScreen";
+  static const String importScreenMobile = "/importScreenMobile";
   static const String exportScreen = "/exportScreen";
+  static const String exportScreenMobile = "/exportScreenMobile";
   //! Inventory
 
   static const String editImportExport = "/editImportExport";

@@ -15,9 +15,11 @@ import 'package:cashier_system/view/categories/catagories_screen.dart';
 import 'package:cashier_system/view/categories/components/edit_categories_screen.dart';
 import 'package:cashier_system/view/categories/components/add_categories_screen.dart';
 import 'package:cashier_system/view/home/home_screen.dart';
-import 'package:cashier_system/view/import_export/components/export/export_screen.dart';
-import 'package:cashier_system/view/import_export/components/import/import_screen.dart';
+import 'package:cashier_system/view/import_export/desktop/export/export_screen.dart';
+import 'package:cashier_system/view/import_export/desktop/import/import_screen.dart';
 import 'package:cashier_system/view/import_export/import_export_screen.dart';
+import 'package:cashier_system/view/import_export/mobile/export/export_screen_mobile.dart';
+import 'package:cashier_system/view/import_export/mobile/import/import_screen_mobile.dart';
 import 'package:cashier_system/view/inventory/components/edit_import_export.dart';
 import 'package:cashier_system/view/inventory/inventory_screen.dart';
 import 'package:cashier_system/view/items/components/items_add_screen.dart';
@@ -108,16 +110,26 @@ List<GetPage<dynamic>>? routes = [
       transitionDuration: const Duration(milliseconds: 100),
       name: AppRoute.exportScreen,
       page: () => const ExportScreen()),
+  GetPage(
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 100),
+      name: AppRoute.exportScreenMobile,
+      page: () => const ExportScreenMobile()),
+  GetPage(
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 100),
+      name: AppRoute.importScreenMobile,
+      page: () => const ImportScreenMobile()),
   //! Inventorty:
   GetPage(
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 100),
       name: AppRoute.editImportExport,
       page: () => const EditImportExportScreen()),
-      //! Buying :
-     GetPage(
+  //! Buying :
+  GetPage(
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 100),
       name: AppRoute.buyingDetailsScreen,
-      page: () => const ViewBuyingDetailsScreen()),   
+      page: () => const ViewBuyingDetailsScreen()),
 ];

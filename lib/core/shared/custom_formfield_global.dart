@@ -41,7 +41,7 @@ class CustomTextFormFieldGlobal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      autofocus: true,
+      autofocus: false,
       onTap: onTap,
       textCapitalization: capitalizeText == true
           ? TextCapitalization.sentences
@@ -82,7 +82,7 @@ class CustomTextFormFieldGlobal extends StatelessWidget {
         prefixIcon: Icon(
           iconData,
           color: borderColor ?? thirdColor,
-          size: responsiveIconSize(Get.width),
+          size: 20,
         ),
         // suffixIcon: onTapIcon == null
         //     ? Container(width: 0,)

@@ -6,13 +6,13 @@ import 'package:cashier_system/core/functions/validinput.dart';
 import 'package:cashier_system/core/shared/custom_divider.dart';
 import 'package:cashier_system/core/shared/custom_formfield_global.dart';
 import 'package:cashier_system/core/shared/custom_sized_box.dart';
-import 'package:cashier_system/view/import_export/components/custom_drop_down_impexp.dart';
+import 'package:cashier_system/view/import_export/desktop/custom_drop_down_impexp.dart';
 import 'package:drop_down_list/model/selected_list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class CustomAddImportWidget extends StatelessWidget {
-  const CustomAddImportWidget({
+class CustomAddImportWidgetMobile extends StatelessWidget {
+  const CustomAddImportWidgetMobile({
     super.key,
   });
 
@@ -27,7 +27,7 @@ class CustomAddImportWidget extends StatelessWidget {
             alignment: Alignment.center,
             child: Text(
               controller.selectedScreenTitle.tr,
-              style: titleStyle.copyWith(color: white, fontSize: 20),
+              style: titleStyle.copyWith(color: primaryColor, fontSize: 20),
             ),
           ),
           customSizedBox(10),
@@ -44,7 +44,7 @@ class CustomAddImportWidget extends StatelessWidget {
               SelectedListItem(name: "Expenses", value: "Expenses"),
             ],
             iconData: Icons.layers,
-            color: white,
+            color: primaryColor,
           ),
           customSizedBox(10),
           CustomDropDownImpExp(
@@ -55,7 +55,7 @@ class CustomAddImportWidget extends StatelessWidget {
             contrllerName: controller.userControllerName,
             listData: controller.dropDownListUsers,
             iconData: Icons.layers,
-            color: white,
+            color: primaryColor,
           ),
           customSizedBox(10),
           CustomTextFormFieldGlobal(
@@ -63,7 +63,7 @@ class CustomAddImportWidget extends StatelessWidget {
             iconData: Icons.date_range_outlined,
             labeltext: "Date",
             isNumber: true,
-            borderColor: white,
+            borderColor: primaryColor,
             mycontroller: controller.dateController,
             onTap: () {
               controller.selectDate(context, controller.dateController);
@@ -78,7 +78,7 @@ class CustomAddImportWidget extends StatelessWidget {
             iconData: Icons.attach_money,
             labeltext: "Amount ",
             isNumber: true,
-            borderColor: white,
+            borderColor: primaryColor,
             mycontroller: controller.amountController,
             valid: (value) {
               return validInput(value!, 0, 1000, "number");
@@ -93,25 +93,25 @@ class CustomAddImportWidget extends StatelessWidget {
               labeltext: "Note",
               isNumber: false,
               mycontroller: controller.noteController,
-              borderColor: white,
+              borderColor: primaryColor,
               valid: (value) {
                 return validInput(value!, 0, 1000, "number");
               },
             ),
           ),
           customSizedBox(5),
-          customDivider(white),
+          customDivider(primaryColor),
           customSizedBox(5),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Text(
                 "Ballance".tr,
-                style: titleStyle.copyWith(color: white, fontSize: 20),
+                style: titleStyle.copyWith(color: primaryColor, fontSize: 20),
               ),
               Text(
                 formattingNumbers(controller.totalImportBallance),
-                style: titleStyle.copyWith(color: white, fontSize: 20),
+                style: titleStyle.copyWith(color: primaryColor, fontSize: 20),
               ),
             ],
           ),

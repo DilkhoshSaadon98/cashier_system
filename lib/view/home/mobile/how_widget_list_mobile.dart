@@ -7,15 +7,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
-Widget buildGridView() {
-  return Container(
-    height: 400,
-    width: Get.width / 2,
+Widget buildGridViewMobile() {
+  return SizedBox(
+    height: Get.height,
     child: GetBuilder<HomeController>(
       builder: (controller) {
         return GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: _calculateCrossAxisCount(Get.width),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
             childAspectRatio: 1.5,
             crossAxisSpacing: 20,
             mainAxisSpacing: 20,
@@ -51,8 +50,8 @@ Widget buildGridView() {
                         semanticsLabel: 'Icon',
                         // ignore: deprecated_member_use
                         color: primaryColor,
-                        width: 75,
-                        height: 75,
+                        width: 50,
+                        height: 50,
                       ),
                       Text(
                         textAlign: TextAlign.center,
@@ -72,14 +71,4 @@ Widget buildGridView() {
       },
     ),
   );
-}
-
-int _calculateCrossAxisCount(double screenWidth) {
-  if (screenWidth > 1200) {
-    return 3;
-  } else if (screenWidth > 800) {
-    return 2;
-  } else {
-    return 1;
-  }
 }
