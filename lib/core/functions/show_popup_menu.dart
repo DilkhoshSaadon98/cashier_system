@@ -21,7 +21,7 @@ class CustomShowPopupMenu {
 
     await showMenu(
       context: context,
-      color: primaryColor,
+      color: primaryColor.withOpacity(0.9),
       elevation: 1,
       position: RelativeRect.fromRect(
         tapPosition & const Size(40, 40),

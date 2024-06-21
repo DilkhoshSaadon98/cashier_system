@@ -43,7 +43,13 @@ class BackupScreen extends StatelessWidget {
                         "Automatic backup",
                         style: titleStyle.copyWith(fontSize: 20.sp),
                       ),
-                      Switch(value: false, onChanged: (val) {}),
+                      Switch(
+                          value: myServices.sharedPreferences
+                                  .getBool("auto_back_up") ??
+                              false,
+                          onChanged: (val) {
+                            controller.autoBackup(val);
+                          }),
                     ],
                   ),
                 ),

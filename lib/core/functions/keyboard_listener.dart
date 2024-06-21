@@ -11,6 +11,8 @@ Widget customKeyboardListener({
     focusNode: focusNode,
     autofocus: true,
     onKeyEvent: (event) {
+      print(event);
+      
       if (event is KeyDownEvent) {
         if (logicalKeyboardKeys == event.logicalKey) {
           onTap();

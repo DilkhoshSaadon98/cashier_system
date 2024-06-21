@@ -1,5 +1,6 @@
 class ExportModel {
   int? exportId;
+  int? exportCashId;
   String? exportAccount;
   int? exportAmount;
   String? exportNote;
@@ -15,6 +16,7 @@ class ExportModel {
 
   ExportModel(
       {this.exportId,
+      this.exportCashId,
       this.exportAccount,
       this.exportAmount,
       this.exportNote,
@@ -30,6 +32,7 @@ class ExportModel {
 
   ExportModel.fromJson(Map<String, dynamic> json) {
     exportId = json['export_id'];
+    exportCashId = json['export_cash_id'];
     exportAccount = json['export_account'];
     exportAmount = json['export_amount'];
     exportNote = json['export_note'];

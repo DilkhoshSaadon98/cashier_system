@@ -78,8 +78,6 @@ class CustomersDetails extends StatelessWidget {
                                   color: primaryColor,
                                   listData: [
                                     SelectedListItem(
-                                        name: "Admin", value: "Admin"),
-                                    SelectedListItem(
                                         name: "Customer", value: "Customer"),
                                     SelectedListItem(
                                         name: "Suppliers", value: "Suppliers"),

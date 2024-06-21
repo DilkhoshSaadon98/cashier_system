@@ -43,10 +43,23 @@ class SettingController extends GetxController {
     "Settings",
   ];
   List<bool> securitySwitchState = [
-    true,
-    true,
-    true,
+    myServices.sharedPreferences.getBool("show_data") ?? false,
+    myServices.sharedPreferences.getBool("login") ?? false,
+    myServices.sharedPreferences.getBool("settings") ?? false,
   ];
+  void setSecurityData(int index, bool val) async {
+    // Update the shared preference value
+    if (index == 0) {
+      await myServices.sharedPreferences.setBool("show_data", val);
+    } else if (index == 1) {
+      await myServices.sharedPreferences.setBool("login", val);
+    } else if (index == 2) {
+      await myServices.sharedPreferences.setBool("settings", val);
+    }
+    securitySwitchState[index] = val;
+
+    update();
+  }
 
   int currentTab = 0;
 

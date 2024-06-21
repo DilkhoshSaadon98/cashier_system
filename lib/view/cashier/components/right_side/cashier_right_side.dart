@@ -38,12 +38,13 @@ class CashierRightSideScreen extends StatelessWidget {
               customSizedBox(10),
               //! Cart Price Display:
               Expanded(
+                flex: 3,
                 child: Container(
                   width: Get.width,
                   decoration: BoxDecoration(
                     color: const Color(0xffFF204E),
                     borderRadius: BorderRadius.circular(15),
-                  ), 
+                  ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -62,6 +63,7 @@ class CashierRightSideScreen extends StatelessWidget {
               customSizedBox(10),
               //! Payment Button
               Expanded(
+                flex: 2,
                 child: GestureDetector(
                     onTap: () {
                       customPaymentDialog();
@@ -94,7 +96,7 @@ class CashierRightSideScreen extends StatelessWidget {
               customSizedBox(10),
               //! Payment
               Expanded(
-                flex: 5,
+                flex: 11,
                 child: GetBuilder<CashierController>(builder: (controller) {
                   return GridView.builder(
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(

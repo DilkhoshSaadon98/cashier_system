@@ -98,8 +98,12 @@ class CustomDropDownSetting extends GetView<SettingController> {
           SelectedListItem selectedListItem = selectedList[0];
           contrllerName!.text = selectedListItem.name;
           contrllerId!.text = selectedListItem.value!;
-
-          controller.searchUsers(contrllerId!.text);
+          print(contrllerId!.text);
+          print(contrllerName!.text);
+          if (contrllerId!.text != "Customer" &&
+              contrllerId!.text != "Suppliers") {
+            controller.searchUsers(contrllerId!.text);
+          }
 
           controller.getUsers();
         },

@@ -2,7 +2,9 @@ import 'package:cashier_system/controller/cashier/cashier_controller.dart';
 import 'package:cashier_system/core/class/handlingdataview.dart';
 import 'package:cashier_system/core/constant/app_theme.dart';
 import 'package:cashier_system/core/constant/color.dart';
+import 'package:cashier_system/core/constant/routes.dart';
 import 'package:cashier_system/core/functions/formating_numbers.dart';
+import 'package:cashier_system/core/functions/show_popup_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -11,6 +13,7 @@ class CashierTableRows extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final CustomShowPopupMenu customShowPopupMenu = CustomShowPopupMenu();
     Get.put(CashierController());
     return GetBuilder<CashierController>(builder: (controller) {
       return myServices.sharedPreferences.getBool("start_new_cart") == true
@@ -47,10 +50,33 @@ class CashierTableRows extends StatelessWidget {
                         itemBuilder: (context, index) {
                           var dataItem = controller.cartData[index];
                           return GestureDetector(
-                            onTap: () {
+                            onDoubleTap: () {
                               controller.checkSelectedRows(
                                   controller.checkValue, index);
                               controller.checkValueFunction();
+                            },
+                            onTapDown: customShowPopupMenu.storeTapPosition,
+                            onTap: () {
+                              customShowPopupMenu.showPopupMenu(context, [
+                                "View",
+                                "Edit",
+                                "Remove"
+                              ], [
+                                () async {},
+                                () async {
+                                  await controller.getItemsById(
+                                      dataItem.itemsId.toString());
+                                  Get.toNamed(AppRoute.itemsUpdateScreen,
+                                      arguments: {
+                                        "itemsModel": controller.dataItem[0],
+                                        "screen_route": AppRoute.cashierScreen
+                                      });
+                                },
+                                () {
+                                  controller.deleteCartItem(
+                                      [dataItem.itemsId.toString()]);
+                                }
+                              ]);
                             },
                             child: Container(
                               height: 40,

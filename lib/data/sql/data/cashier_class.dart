@@ -329,6 +329,11 @@ class CashierClass {
 
   //! remove updated Invoice
   Future<int> removeUpdatedInvoice(String cartOrdersIdr) async {
-    return await db.deleteData('tbl_invoice', "invoice_id = $cartOrdersIdr");
+    int response =
+        await db.deleteData('tbl_invoice', "invoice_id = $cartOrdersIdr");
+    if (response > 0) {
+      await db.deleteData('tbl_export', "export_cash_id = $cartOrdersIdr");
+    }
+    return response;
   }
 }

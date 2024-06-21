@@ -66,7 +66,9 @@ class SecurityScreen extends StatelessWidget {
                               style: bodyStyle.copyWith(fontSize: 20)),
                           Switch(
                               value: controller.securitySwitchState[index],
-                              onChanged: (val) {}),
+                              onChanged: (val) {
+                                controller.setSecurityData(index, val);
+                              }),
                         ],
                       ),
                     );

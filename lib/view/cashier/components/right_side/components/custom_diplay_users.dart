@@ -115,8 +115,7 @@ class CustomDropDownSearchUsers extends GetView<CashierController> {
                       style: titleStyle,
                       controller: searchController,
                       decoration: InputDecoration(
-                        labelText:
-                            'Search by Name, Phone, Id, or address',
+                        labelText: 'Search by Name, Phone, Id, or address',
                         labelStyle: bodyStyle,
                         prefixIcon: Icon(
                           Icons.search,
@@ -148,16 +147,9 @@ class CustomDropDownSearchUsers extends GetView<CashierController> {
                         onTap: () {
                           controllerName.text = filteredList[index].name;
                           controllerId.text = filteredList[index].id!;
-                          controller.addItemsToCart(
-                              controllerId.text,
-                              controller.myServices.systemSharedPreferences
-                                  .getString('cart_number')!);
-                          controller.myServices.systemSharedPreferences
-                              .setBool("start_new_cart", false);
+                          controller.cartOwnerNameUpdate(controllerName.text );
                           Navigator.pop(context);
                           Navigator.pop(context);
-                          controllerName.clear();
-                          controllerId.clear();
                         },
                       );
                     },

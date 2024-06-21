@@ -149,8 +149,10 @@ class ItemsViewController extends GetxController {
   }
 
   goUpdateItems(ItemsModel itemsModel) {
-    Get.toNamed(AppRoute.itemsUpdateScreen,
-        arguments: {'itemsModel': itemsModel});
+    Get.toNamed(AppRoute.itemsUpdateScreen, arguments: {
+      'itemsModel': itemsModel,
+      "screen_route": AppRoute.itemsScreen
+    });
   }
 
   getItemTransaction(String itemsId) async {

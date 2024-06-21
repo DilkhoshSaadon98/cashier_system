@@ -30,6 +30,7 @@ class CashierDefinitionController extends GetxController {
   List<CartModel> cartData = [];
   //* Item Drop Down Search Data List
   List<ItemsModel> listdataSearch = [];
+  List<ItemsModel> dataItem = [];
   //* Last Invoices Data
   List<InvoiceModel> lastInvoices = [];
   //* Strore Selected Rows:

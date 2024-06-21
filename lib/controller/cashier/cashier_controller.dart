@@ -14,7 +14,6 @@ import 'package:get/get.dart';
 
 class CashierController extends CashierConstantController {
   final FocusNode focusNode = FocusNode();
-  final FocusNode focusNode2 = FocusNode();
   //? Hovering Buttons:
   void setHoverState(int index, bool isHovered) {
     hoverStates[index] = isHovered;
@@ -94,6 +93,19 @@ class CashierController extends CashierConstantController {
           price: listdataSearch[i].itemsSellingprice.toString(),
         ));
       }
+    } else {
+      statusRequest = StatusRequest.failure;
+    }
+    update();
+  }
+
+  //! Get Items By ID;
+  getItemsById(String id) async {
+    var response = await sqlDb.getAllData("itemsView", where: "items_id = $id");
+    if (response['status'] == "success") {
+      dataItem.clear();
+      List responsedata = response['data'];
+      dataItem.addAll(responsedata.map((e) => ItemsModel.fromJson(e)));
     } else {
       statusRequest = StatusRequest.failure;
     }
@@ -432,6 +444,17 @@ class CashierController extends CashierConstantController {
       "invoice_payment": invoicePaymentMethod,
       "invoice_createdate": currentTime,
     };
+    if (cartTotalCostPrice > cartTotalPrice) {
+      Map<String, dynamic> dataExport = {
+        "export_supplier_id": userIdResponse,
+        "export_amount": cartTotalCostPrice - cartTotalPrice,
+        "export_account": "Cash Expenses",
+        "export_note": "Cash Expenses",
+        "export_cash_id": maxInvoiceNumber,
+        "export_create_date": currentTime,
+      };
+      await sqlDb.insertData("tbl_export", dataExport);
+    }
     var response = await cashierClass.cartPayment(data);
     if (response > 0) {
       int idResponse = await cashierClass.getMaxInvoiceId();
@@ -442,23 +465,6 @@ class CashierController extends CashierConstantController {
       };
       await sqlDb.updateData("tbl_cart", inoiceData,
           "cart_number = ${myServices.systemSharedPreferences.getString("cart_number")!}");
-
-      // // Fetch the list of items and their counts from the order
-      // List<Map<String, dynamic>> cartItems = await sqlDb.getData(
-      //   "SELECT item_id, item_count FROM tbl_cart_items WHERE cart_number = ${myServices.systemSharedPreferences.getString("cart_number")!}"
-      // );
-
-      // // Update the item counts in tbl_count
-      // for (var item in cartItems) {
-      //   int itemId = item['item_id'];
-      //   int orderItemCount = item['item_count'];
-
-      //   await sqlDb.updateData(
-      //     "tbl_count",
-      //     {"item_count": "item_count - $orderItemCount"},
-      //     "item_id = $itemId"
-      //   );
-      // }
 
       createNewBill();
       getMaxInvoiceNumber();
@@ -510,9 +516,12 @@ class CashierController extends CashierConstantController {
     update();
   }
 
+  //! Pay Invoice If it in update state
   payUpdataleInvoice() async {
     if (cartData.isNotEmpty) {
       if (cartData[0].cartUpdate == 1) {
+        int userIdResponse =
+            await cashierClass.getUserId(cartData[0].cartOwner!);
         await cartPayment(
           cartData[0].cartOwner!,
           cartData[0].cartTax ?? "0",
@@ -522,6 +531,17 @@ class CashierController extends CashierConstantController {
           cartItemsCount.toString(),
           cartData[0].cartCash == "0" ? "Dept" : "Cash",
         );
+        if (cartTotalCostPrice > cartTotalPrice) {
+          Map<String, dynamic> dataExport = {
+            "export_supplier_id": userIdResponse,
+            "export_amount": cartTotalCostPrice - cartTotalPrice,
+            "export_account": "Cash Expenses",
+            "export_note": "Cash Expenses",
+            "export_cash_id": maxInvoiceNumber,
+            "export_create_date": currentTime,
+          };
+          await sqlDb.insertData("tbl_export", dataExport);
+        }
       }
     }
   }
@@ -551,14 +571,12 @@ class CashierController extends CashierConstantController {
   void onInit() {
     intialData();
     focusNode.requestFocus();
-    focusNode2.requestFocus();
     super.onInit();
   }
 
   @override
   void dispose() {
     focusNode.dispose();
-    focusNode2.dispose();
     dropDownName!.dispose();
     dropDownID!.dispose();
     itemsQuantity!.dispose();

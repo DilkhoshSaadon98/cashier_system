@@ -1,6 +1,7 @@
 import 'package:cashier_system/core/constant/app_theme.dart';
 import 'package:cashier_system/core/constant/color.dart';
 import 'package:cashier_system/core/constant/routes.dart';
+import 'package:cashier_system/core/shared/custom_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -63,7 +64,13 @@ Widget customDrawer(BuildContext context, void Function()? onTap) {
             style: titleStyle.copyWith(fontSize: 18),
           ),
           onTap: () {
-            Get.toNamed(AppRoute.settingScreen);
+            if (myServices.sharedPreferences.getBool("settings") == false ||
+                myServices.sharedPreferences.getBool("settings") == null) {
+              Get.toNamed(AppRoute.settingScreen);
+            } else {
+              customSnackBar(
+                  "Fail", "Admin Password Reqired to Access Settings");
+            }
           },
         ),
         ListTile(

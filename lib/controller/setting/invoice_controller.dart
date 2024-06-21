@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:cashier_system/core/functions/upload_file.dart';
 import 'package:get/get.dart';
 
 class InvoiceController extends GetxController {
@@ -15,6 +18,18 @@ class InvoiceController extends GetxController {
       headerHeight -= additionalHeight;
     }
     preSelectedLength = selectedColumnsHeader.length;
+  }
+
+  File? footerFile;
+  File? headerFile;
+  choseHeaderFile() async {
+    headerFile = await fileUploadGallery();
+    update();
+  }
+
+  choseFooterFile() async {
+    footerFile = await fileUploadGallery();
+    update();
   }
 
   List<String> tablesTileTitle = [

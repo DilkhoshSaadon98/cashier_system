@@ -12,6 +12,7 @@ import 'package:get/get.dart';
 
 class ItemsUpdateController extends GetxController {
   ItemsModel? itemsModel;
+  String screenRoute = "";
   GlobalKey<FormState> formState = GlobalKey<FormState>();
   TextEditingController? itemsName;
   TextEditingController? itemsDesc;
@@ -109,8 +110,8 @@ class ItemsUpdateController extends GetxController {
 
       if (StatusRequest.success == statusRequest) {
         if (response > 0) {
-          Get.offAllNamed(AppRoute.itemsScreen);
-          ItemsViewController temsViewController = Get.find();
+          Get.offAllNamed(screenRoute);
+          ItemsViewController temsViewController = Get.put(ItemsViewController());
           temsViewController.getItems();
         } else {
           statusRequest = StatusRequest.failure;
@@ -142,6 +143,7 @@ class ItemsUpdateController extends GetxController {
   void onInit() {
     initilaizeController();
     itemsModel = Get.arguments['itemsModel'];
+    screenRoute = Get.arguments['screen_route'];
     itemsName!.text = itemsModel!.itemsName!;
     itemsDesc!.text = itemsModel!.itemsDesc!;
     itemsCount!.text = itemsModel!.itemsCount!.toString();

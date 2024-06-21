@@ -35,11 +35,15 @@ class InvoicesScreen extends StatelessWidget {
                           padding: const EdgeInsets.all(16.0),
                           decoration: BoxDecoration(
                               image: DecorationImage(
-                                  fit: BoxFit.fill,
-                                  image: AssetImage(
-                                      controller.selectedHeaderImage.isEmpty
-                                          ? 'assets/header.png'
-                                          : controller.selectedHeaderImage)),
+                                fit: BoxFit.fill,
+                                image: controller.headerFile != null
+                                    ? FileImage(controller.headerFile!)
+                                    : AssetImage(
+                                        controller.selectedHeaderImage.isEmpty
+                                            ? 'assets/header.png'
+                                            : controller.selectedHeaderImage,
+                                      ) as ImageProvider,
+                              ),
                               color: primaryColor),
                         ),
                         SizedBox(
@@ -47,7 +51,7 @@ class InvoicesScreen extends StatelessWidget {
                           child: LayoutBuilder(builder: (context, constraints) {
                             controller.headerListHeight();
                             return SizedBox(
-                              height: 50 * constraints.minHeight,
+                              height: 30,
                               child: Padding(
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 15),
@@ -86,7 +90,7 @@ class InvoicesScreen extends StatelessWidget {
                                     controller.selectedColumns.map((title) {
                                   return TableCell(
                                     child: Padding(
-                                      padding: EdgeInsets.all(8.0),
+                                      padding: const EdgeInsets.all(8.0),
                                       child: Text(title),
                                     ),
                                   );
@@ -117,22 +121,58 @@ class InvoicesScreen extends StatelessWidget {
               ),
             ),
             Expanded(
-              flex: 1,
-              child: ListView.builder(
-                itemCount: controller.tileTitle.length,
-                itemBuilder: (BuildContext context, index) {
-                  return CheckboxListTile(
-                    title: Text(
-                      controller.tileTitle[index],
-                      style: titleStyle,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  customSizedBox(),
+                  Text(
+                    "Header Titles",
+                    style: titleStyle.copyWith(fontSize: 20),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: ListView.builder(
+                      itemCount: controller.tileTitle.length,
+                      itemBuilder: (BuildContext context, index) {
+                        return CheckboxListTile(
+                          title: Text(
+                            controller.tileTitle[index],
+                            style: titleStyle,
+                          ),
+                          value: controller.tileState[index],
+                          onChanged: (value) {
+                            controller.tileState[index] = value!;
+                            controller.update();
+                          },
+                        );
+                      },
                     ),
-                    value: controller.tileState[index],
-                    onChanged: (value) {
-                      controller.tileState[index] = value!;
-                      controller.update();
-                    },
-                  );
-                },
+                  ),
+                  customSizedBox(),
+                  Text(
+                    "Table Columns",
+                    style: titleStyle.copyWith(fontSize: 20),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: ListView.builder(
+                      itemCount: controller.tablesTileTitle.length,
+                      itemBuilder: (BuildContext context, index) {
+                        return CheckboxListTile(
+                          title: Text(
+                            controller.tablesTileTitle[index],
+                            style: titleStyle,
+                          ),
+                          value: controller.tablesTileState[index],
+                          onChanged: (value) {
+                            controller.tablesTileState[index] = value!;
+                            controller.update();
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
             Expanded(
@@ -186,12 +226,16 @@ class InvoicesScreen extends StatelessWidget {
                                   Column(
                                     children: [
                                       customButtonGlobal(
-                                        () {},
+                                        () {
+                                          controller.choseHeaderFile();
+                                        },
                                         "Upload Header",
                                         Icons.upload,
                                       ),
                                       customButtonGlobal(
-                                        () {},
+                                        () {
+                                          controller.choseFooterFile();
+                                        },
                                         "Upload Header",
                                         Icons.upload,
                                       ),

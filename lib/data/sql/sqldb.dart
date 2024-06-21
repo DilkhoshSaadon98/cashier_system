@@ -23,6 +23,8 @@ class SqlDb {
   initialDb() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, databaseName);
+    print(documentsDirectory);
+    print(path);
     if (!await File(path).exists()) {
       await _copyDatabaseFromAssets(path);
     }
