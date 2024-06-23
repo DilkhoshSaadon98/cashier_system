@@ -35,9 +35,7 @@ class CustomDropDownSearch extends StatelessWidget {
         showDropDownList(context);
       },
       style: titleStyle.copyWith(
-          fontWeight: FontWeight.w700,
-          fontSize: responsivefontSize(Get.width),
-          color: color ?? white),
+          fontWeight: FontWeight.w700, color: color ?? white),
       textAlign: TextAlign.start,
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.symmetric(
@@ -46,9 +44,9 @@ class CustomDropDownSearch extends StatelessWidget {
         label: Text(
           title!,
           style: titleStyle.copyWith(
-              color: color ?? white,
-              fontWeight: FontWeight.w100,
-              fontSize: 10.sp),
+            color: color ?? white,
+            fontWeight: FontWeight.w100,
+          ),
         ),
         // hintText: contrllerName.text == "" ? title : contrllerName.text,
         hintText: title,

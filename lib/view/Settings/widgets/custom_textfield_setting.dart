@@ -1,3 +1,4 @@
+import 'package:cashier_system/controller/setting/security_controller.dart';
 import 'package:cashier_system/core/constant/app_theme.dart';
 import 'package:cashier_system/core/constant/color.dart';
 import 'package:cashier_system/core/functions/validinput.dart';
@@ -31,7 +32,14 @@ class CustomTextFieldSetting extends StatelessWidget {
           Expanded(
             flex: 2,
             child: CustomTextFormFieldGlobal(
-                hinttext: title,
+                hinttext: title == "Old Username" &&
+                        myServices.sharedPreferences
+                                .getString("admins_username") !=
+                            null
+                    ? myServices.sharedPreferences
+                        .getString("admins_username")
+                        .toString()
+                    : title,
                 labeltext: title,
                 iconData: iconData,
                 valid: (value) {

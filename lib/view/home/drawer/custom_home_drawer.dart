@@ -13,10 +13,8 @@ Widget customDrawer(BuildContext context, void Function()? onTap) {
         UserAccountsDrawerHeader(
           accountName: Text(
             myServices.sharedPreferences
-                    .getString("admins_username")
-                    .toString()
-                    .capitalizeFirst ??
-                "Admin",
+                .getString("admins_username")
+                .toString(),
             style: titleStyle.copyWith(color: white, fontSize: 20),
           ),
           accountEmail: Text(
@@ -42,8 +40,7 @@ Widget customDrawer(BuildContext context, void Function()? onTap) {
             style: titleStyle.copyWith(fontSize: 18),
           ),
           onTap: () {
-            // Handle the Settings tap
-            Navigator.pop(context);
+            Get.toNamed(AppRoute.accountScreen);
           },
         ),
         ListTile(
@@ -53,8 +50,7 @@ Widget customDrawer(BuildContext context, void Function()? onTap) {
             style: titleStyle.copyWith(fontSize: 18),
           ),
           onTap: () {
-            // Handle the Settings tap
-            Navigator.pop(context);
+            Get.toNamed(AppRoute.addAdminScreen);
           },
         ),
         ListTile(

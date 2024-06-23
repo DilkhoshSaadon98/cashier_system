@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 class HomeController extends GetxController {
   bool isFullScreen = false;
   FocusNode focusNode = FocusNode();
+
   List<String> homeTitles = [
     "Cashier",
     "Imp/Exp",
@@ -66,11 +67,10 @@ class HomeController extends GetxController {
     myServices.sharedPreferences.setString("step", "1");
   }
 
-  List<double> s = [];
   @override
   void onInit() {
     focusNode.requestFocus();
-   // s.add(calculateFees(50, 180, [50, 40, 20, 70]) as double);
+
     super.onInit();
   }
 

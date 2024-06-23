@@ -13,7 +13,7 @@ class TotalProfitClass {
     String sql = "";
     String expensesSql = "";
     List conditions = [];
-    List expensesConditions = ["export_account = 'Expenses'"];
+    List expensesConditions = ["(export_account = 'Expenses' OR export_account = 'Cash Expenses')"];
     if (startTime != null && endTime != null) {
       DateFormat formatter = DateFormat('yyyy-MM-dd');
       DateTime startDate = formatter.parse(startTime);

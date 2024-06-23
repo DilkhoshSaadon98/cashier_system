@@ -2,7 +2,7 @@ import 'package:cashier_system/controller/home/home_controller.dart';
 import 'package:cashier_system/core/constant/color.dart';
 import 'package:cashier_system/core/constant/routes.dart';
 import 'package:cashier_system/core/responsive/responsive_builder.dart';
-import 'package:cashier_system/view/home/desktop/custom_home_drawer.dart';
+import 'package:cashier_system/view/home/drawer/custom_home_drawer.dart';
 import 'package:cashier_system/view/home/desktop/home_logo.dart';
 import 'package:cashier_system/view/home/desktop/home_widget_list.dart';
 import 'package:cashier_system/view/home/mobile/home_logo_mobile.dart';

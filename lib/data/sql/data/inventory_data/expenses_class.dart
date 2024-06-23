@@ -13,7 +13,9 @@ class ExpensesClass {
     String? endTime,
   }) async {
     String sql = "";
-    List conditions = ["export_account = 'Expenses'"];
+    List conditions = [
+      "(export_account = 'Expenses' OR export_account = 'Cash Expenses')"
+    ];
     if (startTime != null && endTime != null) {
       DateFormat formatter = DateFormat('yyyy-MM-dd');
       DateTime startDate = formatter.parse(startTime);
@@ -37,8 +39,7 @@ class ExpensesClass {
     if (conditions.isNotEmpty) {
       sql += conditions.join(" OR ");
     } else {
-      sql =
-          "";
+      sql = "";
     }
     var responseData = await db.getAllData(exportViewName, where: sql);
     int totalPrice = await getTotalExpensesPrice(sql);

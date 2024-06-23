@@ -13,6 +13,7 @@ import 'package:cashier_system/core/shared/custom_header_screen.dart';
 import 'package:cashier_system/core/shared/custom_table_header_global.dart';
 import 'package:cashier_system/view/inventory/components/box/custom_box_widget.dart';
 import 'package:cashier_system/view/inventory/components/custom_drop_down_inventory.dart';
+import 'package:cashier_system/view/inventory/components/deptor/debtor_table_rows.dart';
 import 'package:cashier_system/view/inventory/components/expense/expense_table_rows.dart';
 import 'package:cashier_system/view/inventory/components/export/export_table_rows.dart';
 import 'package:cashier_system/view/inventory/components/import/import_table_rows.dart';
@@ -131,6 +132,25 @@ class InventoryScreen extends StatelessWidget {
                       ),
                       //! Index 5:(Total Profi Inventory Show)
                       const CustomTotalProfitWidget(),
+                      //! Index 6 - (Deptor Show)
+                      Column(
+                        children: [
+                          SizedBox(
+                              height: 50,
+                              child: CustomTableHeaderGlobal(
+                                  data: const [
+                                    "Debtor Number",
+                                    "Invoices",
+                                    "Invoices Ballance",
+                                    "Imports",
+                                    "Import Ballance",
+                                    'Total Ballance',
+                                  ],
+                                  onDoubleTap: () {},
+                                  flex: const [2, 1, 2, 1, 2, 2])),
+                          const DebtorTableRows()
+                        ],
+                      ),
                     ],
                   ),
                 )),
@@ -168,8 +188,8 @@ class InventoryScreen extends StatelessWidget {
                           SelectedListItem(
                               name: "Total Profit / Invertory",
                               value: "total_profits"),
-                          SelectedListItem(name: "Creditor", value: "creditor"),
                           SelectedListItem(name: "Debtor", value: "debtor"),
+                          SelectedListItem(name: "Creditor", value: "creditor"),
                         ],
                         iconData: Icons.layers,
                       ),

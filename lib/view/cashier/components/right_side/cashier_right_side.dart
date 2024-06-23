@@ -125,40 +125,53 @@ class CashierRightSideScreen extends StatelessWidget {
                         onExit: (_) {
                           controller.setHoverState(index, false);
                         },
-                        child: GestureDetector(
-                          onTap: () {
-                            controller.buttonsDetails[index]['function'](
-                                controller.buttonsDetails[index]['title']);
-                          },
-                          child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 100),
-                            height: 55,
-                            padding: EdgeInsets.symmetric(horizontal: 15.w),
-                            decoration: BoxDecoration(
-                              color: !isHovered
-                                  ? primaryColor // controller.buttonsDetails[index]['color']
-                                  : controller.buttonsDetails[index]['color'],
-                              border: Border.all(color: white, width: .8),
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Flexible(
-                                  child: Text(
-                                    title.tr,
-                                    style: bodyStyle.copyWith(
-                                      color: white,
-                                      fontSize: responsivefontSize(Get.width),
+                        child: Tooltip(
+                          decoration: BoxDecoration(
+                              color: white,
+                              border:
+                                  Border.all(width: .3, color: secondColor)),
+                          showDuration: const Duration(seconds: 2),
+                          waitDuration: const Duration(seconds: 2),
+                          exitDuration: const Duration(seconds: 2),
+                          textAlign: TextAlign.center,
+                          textStyle: bodyStyle.copyWith(),
+                          message: controller.buttonsDetails[index]['tool_tip'],
+                          child: GestureDetector(
+                            onTap: () {
+                              controller.buttonsDetails[index]['function'](
+                                  controller.buttonsDetails[index]['title']);
+                            },
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 100),
+                              height: 55,
+                              padding: EdgeInsets.symmetric(horizontal: 15.w),
+                              decoration: BoxDecoration(
+                                color: !isHovered
+                                    ? primaryColor // controller.buttonsDetails[index]['color']
+                                    : controller.buttonsDetails[index]['color'],
+                                border: Border.all(color: white, width: .8),
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Flexible(
+                                    child: Text(
+                                      title.tr,
+                                      style: bodyStyle.copyWith(
+                                        color: white,
+                                        fontSize: responsivefontSize(Get.width),
+                                      ),
                                     ),
                                   ),
-                                ),
-                                Icon(
-                                  controller.buttonsDetails[index]['icon'],
-                                  color: white,
-                                  size: responsiveIconSize(Get.width),
-                                )
-                              ],
+                                  Icon(
+                                    controller.buttonsDetails[index]['icon'],
+                                    color: white,
+                                    size: responsiveIconSize(Get.width),
+                                  )
+                                ],
+                              ),
                             ),
                           ),
                         ),

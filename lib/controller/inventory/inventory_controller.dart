@@ -1,11 +1,13 @@
 import 'package:cashier_system/controller/inventory/inventory_definitions_controller.dart';
 import 'package:cashier_system/core/constant/app_theme.dart';
 import 'package:cashier_system/data/model/box_model.dart';
+import 'package:cashier_system/data/model/debtors_model.dart';
 import 'package:cashier_system/data/model/export_model.dart';
 import 'package:cashier_system/data/model/import_model.dart';
 import 'package:cashier_system/core/constant/color.dart';
 import 'package:cashier_system/data/model/invoice_model.dart';
 import 'package:cashier_system/data/model/total_profit_model.dart';
+import 'package:cashier_system/data/sql/data/inventory_data/creditor_deptor_class.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -48,6 +50,7 @@ class InventoryController extends InventoryDefinitionsController {
   }
 
   void changeIndex(String title) {
+    print(title);
     if (title == "Box") {
       myServices.sharedPreferences.setString("inventory_title", "Box");
       myServices.sharedPreferences.setInt("inventory_index", 0);
@@ -88,11 +91,12 @@ class InventoryController extends InventoryDefinitionsController {
       getProfitData();
       selectedRows.clear();
     }
-    if (title == "Creditor") {
-      myServices.sharedPreferences.setString("inventory_title", "Creditor");
-      myServices.sharedPreferences.setInt("inventory_index", 6);
-    }
     if (title == "Debtor") {
+      myServices.sharedPreferences.setString("inventory_title", "Debtor");
+      myServices.sharedPreferences.setInt("inventory_index", 6);
+      getDebtorData();
+    }
+    if (title == "Creditor") {
       myServices.sharedPreferences.setString("inventory_title", "Debtor");
       myServices.sharedPreferences.setInt("inventory_index", 7);
     }
@@ -335,6 +339,34 @@ class InventoryController extends InventoryDefinitionsController {
     update();
   }
 
+  CreditorDebtorClass creditorDebtorClass = CreditorDebtorClass();
+  //! /////// Get Deptor  Data //////////
+  getDebtorData() async {
+    String? startNo;
+    String? endNo;
+    String? startTime;
+    String? endTime;
+    var response = {};
+    if (fromDateController.text.isNotEmpty &&
+        toDateController.text.isNotEmpty) {
+      startTime = fromDateController.text;
+      endTime = toDateController.text;
+    }
+    if (fromNOController.text.isNotEmpty && toNOController.text.isNotEmpty) {
+      startNo = fromNOController.text;
+      endNo = toNOController.text;
+    }
+    response = await creditorDebtorClass.getDebtorData(
+        startNo: startNo, endNo: endNo, startTime: startTime, endTime: endTime);
+    if (response['status'] == "success") {
+      clearFields();
+      List responsedata = response['data']['data'] ?? [];
+      debtorsData.clear();
+      debtorsData.addAll(responsedata.map((e) => DebtorsModel.fromJson(e)));
+    }
+    update();
+  }
+
   deleteTableRow(String table, String sql) async {
     int response = await sqlDb.deleteData(table, sql);
     if (response > 0) {
@@ -377,6 +409,9 @@ class InventoryController extends InventoryDefinitionsController {
           "Total Profit / Invertory") {
         getTotalProfitInventoryData();
         getExpenseData();
+      } else if (myServices.sharedPreferences.getString("inventory_title") ==
+          "Debtor") {
+        getDebtorData();
       }
     }
   }

@@ -23,8 +23,6 @@ class SqlDb {
   initialDb() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, databaseName);
-    print(documentsDirectory);
-    print(path);
     if (!await File(path).exists()) {
       await _copyDatabaseFromAssets(path);
     }
@@ -174,7 +172,6 @@ CREATE TABLE "tbl_invoice" (
     "purchase_number" INT NOT NULL DEFAULT 0,
     FOREIGN KEY (purchase_items_id) REFERENCES tbl_items (items_id)
 )
-
         ''');
 //! View Cart
       await db.execute('''

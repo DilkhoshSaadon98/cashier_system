@@ -13,6 +13,8 @@ class AppRoute {
   static const String itemsScreen = "/itemsScreen";
   static const String inventoryScreen = "/inventoryScreen";
   static const String importExportScreen = "/importExportScreen";
+  static const String accountScreen = "/accountScreen";
+  static const String addAdminScreen = "/addAdminScreen";
   //! Settings Routes:
   static const String updateScreen = "/updateScreen";
   static const String backUpScreen = "/backUpScreen";

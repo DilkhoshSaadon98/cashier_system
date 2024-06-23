@@ -14,6 +14,8 @@ import 'package:cashier_system/view/cashier/cashier_screen.dart';
 import 'package:cashier_system/view/categories/catagories_screen.dart';
 import 'package:cashier_system/view/categories/components/edit_categories_screen.dart';
 import 'package:cashier_system/view/categories/components/add_categories_screen.dart';
+import 'package:cashier_system/view/home/drawer/acount_screen.dart';
+import 'package:cashier_system/view/home/drawer/add_admin_screen.dart';
 import 'package:cashier_system/view/home/home_screen.dart';
 import 'package:cashier_system/view/import_export/desktop/export/export_screen.dart';
 import 'package:cashier_system/view/import_export/desktop/import/import_screen.dart';
@@ -60,6 +62,14 @@ List<GetPage<dynamic>>? routes = [
       transitionDuration: const Duration(milliseconds: 200),
       name: AppRoute.itemsScreen,
       page: () => const ItemsScreen()),
+  GetPage(
+      transitionDuration: const Duration(milliseconds: 200),
+      name: AppRoute.accountScreen,
+      page: () => const AcountScreen()),
+  GetPage(
+      transitionDuration: const Duration(milliseconds: 200),
+      name: AppRoute.addAdminScreen,
+      page: () => const AddAdminScreen()),
   //! Settings Routes
   GetPage(
       transitionDuration: const Duration(milliseconds: 200),

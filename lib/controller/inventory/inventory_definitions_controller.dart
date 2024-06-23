@@ -1,4 +1,5 @@
 import 'package:cashier_system/data/model/box_model.dart';
+import 'package:cashier_system/data/model/debtors_model.dart';
 import 'package:cashier_system/data/model/export_model.dart';
 import 'package:cashier_system/data/model/import_model.dart';
 import 'package:cashier_system/data/model/invoice_model.dart';
@@ -9,6 +10,7 @@ import 'package:cashier_system/data/sql/data/inventory_data/expenses_class.dart'
 import 'package:cashier_system/data/sql/data/inventory_data/invoice_class.dart';
 import 'package:cashier_system/data/sql/data/inventory_data/profit_inventory_class.dart';
 import 'package:cashier_system/data/sql/sqldb.dart';
+import 'package:cashier_system/view/inventory/components/deptor/debtor_table_rows.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -39,6 +41,7 @@ class InventoryDefinitionsController extends GetxController {
   List<InvoiceModel> profitData = [];
   List<InvoiceModel> boxData = [];
   List<BoxModel> boxDataAll = [];
+  List<DebtorsModel> debtorsData = [];
   List<TotalProfitModel> totalProfitModel = [];
   List<ExportModel> expensesData = [];
   List<ImportModel> importData = [];

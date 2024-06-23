@@ -3,7 +3,7 @@ import 'package:cashier_system/core/constant/color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-Widget buildLogoDesktop() {
+Widget buildLogoDesktop([Color? color]) {
   return SingleChildScrollView(
     scrollDirection: Axis.horizontal,
     child: myServices.sharedPreferences.getString("lang") == "en"
@@ -12,7 +12,8 @@ Widget buildLogoDesktop() {
             children: [
               Text(
                 'MR.ROBOT ',
-                style: introStyle.copyWith(fontSize: 60.sp, color: white),
+                style:
+                    introStyle.copyWith(fontSize: 60.sp, color: color ?? white),
               ),
               Text(
                 'COM.',
@@ -29,7 +30,7 @@ Widget buildLogoDesktop() {
               ),
               Text(
                 'MR.ROBOT ',
-                style: introStyle.copyWith(fontSize: 60.sp, color: white),
+                style: introStyle.copyWith(fontSize: 60.sp, color:color?? white),
               ),
             ],
           ),

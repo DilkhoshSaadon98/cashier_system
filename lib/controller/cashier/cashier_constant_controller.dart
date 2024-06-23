@@ -17,64 +17,72 @@ import 'package:get/get.dart';
 
 class CashierConstantController extends CashierDefinitionController {
   List<Map<String, dynamic>> buttonsDetails = [
-    //! Print Function
     {
       'title': "Print",
       'icon': Icons.local_print_shop_outlined,
-      'function': (String parameter,
-          [String? itemsCount, String? cartNumber]) {},
+      'function': (String parameter, [String? itemsCount, String? cartNumber]) {},
       'color': const Color(0xff41C9E2),
+      'tool_tip': "Print a receipt\nCTRL + P",
       'keyboard': [LogicalKeyboardKey.control, LogicalKeyboardKey.keyP]
     },
-    //! Delay Function
     {
       'title': "Delay",
       'icon': FontAwesomeIcons.circlePause,
       'function': (String parameter, [String? itemsCount, String? cartNumber]) {
-        //! Delay Function
         CashierController cashierController = Get.put(CashierController());
         cashierController.delayCart();
       },
       'color': const Color(0xffFFAF45),
+      'tool_tip': "Pause the invoice for a while\nCTRL + D",
       'keyboard': [LogicalKeyboardKey.control, LogicalKeyboardKey.keyD]
     },
-    //! Item Discount Function
     {
       'title': "Item Discount",
       'icon': Icons.discount_outlined,
       'function': (String parameter, [String? itemsCount, String? cartNumber]) {
         CashierController cashierController = Get.put(CashierController());
         if (cashierController.selectedRows.isNotEmpty) {
-          cashierDialog("Item Discount", Icons.local_offer_outlined,
-              cashierController.buttonActionsController!, () {
-            cashierController.dicountingItems(cashierController.selectedRows,
-                cashierController.buttonActionsController!.text);
-            cashierController.buttonActionsController!.clear();
-          });
+          cashierDialog(
+            "Item Discount",
+            Icons.local_offer_outlined,
+            cashierController.buttonActionsController!,
+            () {
+              cashierController.dicountingItems(
+                cashierController.selectedRows,
+                cashierController.buttonActionsController!.text,
+              );
+              cashierController.buttonActionsController!.clear();
+            }
+          );
         } else {
           customSnackBar("Error", "Please select one row at least");
         }
       },
       'color': const Color(0xff9BCF53),
+      'tool_tip': "Percentage discount from the invoice\nCTRL + I",
       'keyboard': [LogicalKeyboardKey.control, LogicalKeyboardKey.keyI]
     },
-    //! Cart Discount Function:
     {
       'title': "Order Discount",
       'icon': FontAwesomeIcons.moneyCheckDollar,
       'function': (String parameter, [String? itemsCount, String? cartNumber]) {
         CashierController cashierController = Get.put(CashierController());
-        cashierDialog("Order Discount", Icons.percent,
-            cashierController.buttonActionsController!, () {
-          cashierController.percentDiscounting(
-              cashierController.buttonActionsController!.text);
-          cashierController.buttonActionsController!.clear();
-        });
+        cashierDialog(
+          "Order Discount",
+          Icons.percent,
+          cashierController.buttonActionsController!,
+          () {
+            cashierController.percentDiscounting(
+              cashierController.buttonActionsController!.text
+            );
+            cashierController.buttonActionsController!.clear();
+          }
+        );
       },
       'color': const Color(0xff76ABAE),
+      'tool_tip': "Discount specified amount from the invoice\nCTRL + O",
       'keyboard': [LogicalKeyboardKey.control, LogicalKeyboardKey.keyO]
     },
-    //! QTY Function
     {
       'title': "QTY",
       'icon': FontAwesomeIcons.layerGroup,
@@ -82,38 +90,41 @@ class CashierConstantController extends CashierDefinitionController {
         CashierController cashierController = Get.put(CashierController());
         if (cashierController.selectedRows.isNotEmpty) {
           cashierDialog(
-              "QTY", Icons.numbers, cashierController.buttonActionsController!,
-              () {
-            cashierController.updateItemQuantity(cashierController.selectedRows,
-                cashierController.buttonActionsController!.text);
-            cashierController.buttonActionsController!.clear();
-          });
+            "QTY",
+            Icons.numbers,
+            cashierController.buttonActionsController!,
+            () {
+              cashierController.updateItemQuantity(
+                cashierController.selectedRows,
+                cashierController.buttonActionsController!.text
+              );
+              cashierController.buttonActionsController!.clear();
+            }
+          );
         } else {
           customSnackBar("Error", "Please select one row at least");
         }
       },
       'color': const Color(0xff2C7865),
+      'tool_tip': "Change the quantity of selected item\nCTRL + Q",
       'keyboard': [LogicalKeyboardKey.control, LogicalKeyboardKey.keyQ]
     },
-    //! Gift
     {
       'title': "Gift",
       'icon': Icons.card_giftcard_outlined,
       'function': (String parameter, [String? itemsCount, String? cartNumber]) {
         CashierController cashierController = Get.put(CashierController());
         if (cashierController.selectedRows.isNotEmpty) {
-          cashierController.cartItemGift(
-            cashierController.selectedRows,
-          );
+          cashierController.cartItemGift(cashierController.selectedRows);
           cashierController.selectedRows.clear();
         } else {
           customSnackBar("Error", "Please select one row at least");
         }
       },
       'color': const Color(0xffD6589F),
+      'tool_tip': "Add selected item as gift to invoice (acts as discount)\nCTRL + G",
       'keyboard': [LogicalKeyboardKey.control, LogicalKeyboardKey.keyG]
     },
-    //! Delete Items Function:
     {
       'title': "Delete Item",
       'icon': FontAwesomeIcons.xmark,
@@ -127,9 +138,9 @@ class CashierConstantController extends CashierDefinitionController {
         }
       },
       'color': const Color(0xffFF204E),
+      'tool_tip': "Delete selected items\nCTRL + Delete",
       'keyboard': [LogicalKeyboardKey.control, LogicalKeyboardKey.delete]
     },
-    //! Delete Cart Function
     {
       'title': "Delete Cart",
       'icon': Icons.delete_sweep_outlined,
@@ -138,9 +149,9 @@ class CashierConstantController extends CashierDefinitionController {
         cashierController.deleteCart();
       },
       'color': const Color.fromARGB(255, 185, 15, 49),
+      'tool_tip': "Delete current cart\nCTRL + Backspace",
       'keyboard': [LogicalKeyboardKey.control, LogicalKeyboardKey.backspace]
     },
-    //! Owner Name
     {
       'title': "Customer Name",
       'icon': Icons.person,
@@ -265,10 +276,9 @@ class CashierConstantController extends CashierDefinitionController {
         );
       },
       'color': const Color(0xffF2613F),
+      'tool_tip': "Add customer name to the invoice\nCTRL + N",
       'keyboard': [LogicalKeyboardKey.control, LogicalKeyboardKey.keyN]
     },
-
-    //! Tax Function
     {
       'title': "Tax",
       'icon': FontAwesomeIcons.moneyBillWheat,
@@ -281,51 +291,45 @@ class CashierConstantController extends CashierDefinitionController {
         });
       },
       'color': const Color(0xff77B0AA),
+      'tool_tip': "Add extra tax to the invoice, like delivery fee or service fee\nCTRL + T",
       'keyboard': [LogicalKeyboardKey.control, LogicalKeyboardKey.keyT]
     },
-    //! Cash/ Dept Function
     {
       'title': "Cash / Dept",
       'icon': Icons.monetization_on_outlined,
       'function': (String parameter, [String? itemsCount, String? cartNumber]) {
         CashierController cashierController = Get.put(CashierController());
-        String state = "0";
-        cashierController.cartData[0].cartCash! == "1"
-            ? state = "0"
-            : state = "1";
+        String state = cashierController.cartData[0].cartCash! == "1" ? "0" : "1";
         cashierController.cartCashState(state);
       },
       'color': const Color(0xff8DECB4),
+      'tool_tip': "Toggle between cash payment and credit invoice (with customer name)\nCTRL + C",
       'keyboard': [LogicalKeyboardKey.control, LogicalKeyboardKey.keyC]
     },
-    //! Cashback / Cash Function
     {
       'title': "Cashback / Cash",
       'icon': Icons.money,
-      'function': (String parameter,
-          [String? itemsCount, String? cartNumber]) {},
+      'function': (String parameter, [String? itemsCount, String? cartNumber]) {},
       'color': const Color(0xff279EFF),
+      'tool_tip': "Toggle between cashback and normal cash transaction\nCTRL + Z",
       'keyboard': [LogicalKeyboardKey.control, LogicalKeyboardKey.keyZ]
-    }, //! Dept Function
-    //! Export Function
+    },
     {
       'title': "Export",
       'icon': Icons.import_export_rounded,
-      'function': (String parameter,
-          [String? itemsCount, String? cartNumber]) {},
+      'function': (String parameter, [String? itemsCount, String? cartNumber]) {},
       'color': const Color(0xff279EFF),
+      'tool_tip': "Export as PDF\nCTRL + F",
       'keyboard': [LogicalKeyboardKey.control, LogicalKeyboardKey.keyF]
     },
-    //! Previous Function
     {
       'title': "Edit Previous",
       'icon': Icons.recycling_rounded,
       'function': (String parameter, [String? itemsCount, String? cartNumber]) {
-        customDialogShowInvoices(
-          "Last Invoices".tr,
-        );
+        customDialogShowInvoices("Last Invoices".tr);
       },
       'color': const Color(0xff279EFF),
+      'tool_tip': "Edit selected invoice\nCTRL + E",
       'keyboard': [LogicalKeyboardKey.control, LogicalKeyboardKey.keyE]
     },
   ];
@@ -336,6 +340,6 @@ class CashierConstantController extends CashierDefinitionController {
     "Invoice Number",
     "Discount",
     "Tax",
-    "Invoice Orgnaizer"
+    "Invoice Organizer"
   ];
 }

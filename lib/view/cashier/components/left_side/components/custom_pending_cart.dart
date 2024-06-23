@@ -16,29 +16,34 @@ class CustomPendingCarts extends GetView<CashierController> {
         flex: 3,
         child: Row(
           children: [
-            // Expanded(
-            //     child: Container(
-            //   height: 45,
-            //   decoration: BoxDecoration(
-            //       border: Border.all(color: secondColor),
-            //       borderRadius: BorderRadius.circular(5.r)),
-            //   child: TextFormField(
-            //     onChanged: (value) {
-            //       if (controller.pendedCarts.contains(int.parse(value)) ==
-            //           true) {
-            //         print(value);
-            //         controller.myServices.systemSharedPreferences
-            //             .setBool("start_new_cart", false);
-            //         controller.myServices.systemSharedPreferences
-            //             .setString("cart_number", value);
-            //         controller.getCartData(value);
-            //         controller.selectedRows.clear();
-            //       }
-            //     },
-            //     decoration:
-            //         const InputDecoration(fillColor: white, filled: true),
-            //   ),
-            // )),
+            Expanded(
+              child: Container(
+                height: 45,
+                decoration: BoxDecoration(
+                    border: Border.all(color: secondColor),
+                    borderRadius: BorderRadius.circular(5.r)),
+                child: TextFormField(
+                  onChanged: (value) {
+                    int? cartIndex = int.tryParse(value);
+                    if (cartIndex != null &&
+                        cartIndex > 0 &&
+                        cartIndex <= controller.cartsNumbers.length) {
+                      int cartNumber = controller.cartsNumbers[cartIndex - 1];
+                      controller.myServices.systemSharedPreferences
+                          .setBool("start_new_cart", false);
+                      controller.myServices.systemSharedPreferences
+                          .setString("cart_number", cartNumber.toString());
+                      controller.getCartData(cartNumber.toString());
+                      controller.selectedRows.clear();
+                    }
+                  },
+                  textAlign: TextAlign.center,
+                  style: titleStyle.copyWith(fontSize: 18),
+                  decoration:
+                      const InputDecoration(fillColor: white, filled: true),
+                ),
+              ),
+            ),
             Expanded(
               flex: 15,
               child: Container(
@@ -100,7 +105,7 @@ class CustomPendingCarts extends GetView<CashierController> {
                               ),
                             ),
                           ),
-                          myServices.sharedPreferences
+                          controller.myServices.systemSharedPreferences
                                           .getBool("start_new_cart") ==
                                       true &&
                                   index + 1 == controller.pendedCarts.length
