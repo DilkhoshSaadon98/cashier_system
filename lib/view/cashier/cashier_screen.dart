@@ -1,10 +1,12 @@
 import 'package:cashier_system/controller/cashier/cashier_controller.dart';
 import 'package:cashier_system/core/constant/routes.dart';
+import 'package:cashier_system/core/responsive/responsive_builder.dart';
 import 'package:cashier_system/core/shared/custom_snack_bar.dart';
-import 'package:cashier_system/view/cashier/components/left_side/cashier_left_side_screen.dart';
-import 'package:cashier_system/view/cashier/components/left_side/components/show_drop_down_items_dialog.dart';
-import 'package:cashier_system/view/cashier/components/right_side/cashier_right_side.dart';
-import 'package:cashier_system/view/cashier/components/right_side/components/payment_dialog.dart';
+import 'package:cashier_system/view/cashier/mobile/cashier_screen_mobile.dart';
+import 'package:cashier_system/view/cashier/windows/left_side/cashier_left_side_screen.dart';
+import 'package:cashier_system/view/cashier/windows/left_side/components/show_drop_down_items_dialog.dart';
+import 'package:cashier_system/view/cashier/windows/right_side/cashier_right_side.dart';
+import 'package:cashier_system/view/cashier/windows/right_side/components/payment_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -99,11 +101,14 @@ class _CashierScreenState extends State<CashierScreen> {
           }
           return KeyEventResult.ignored;
         },
-        child: const Row(
-          children: [
-            CashierLeftSideScreen(),
-            CashierRightSideScreen(),
-          ],
+        child: ResponsiveBuilder(
+          windows: Row(
+            children: [
+              CashierLeftSideScreen(),
+              CashierRightSideScreen(),
+            ],
+          ),
+          mobile: CashierScreenMobile(),
         ),
       ),
     );

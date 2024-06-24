@@ -8,7 +8,7 @@ import 'package:cashier_system/core/responsive/responisve_text_body.dart';
 import 'package:cashier_system/core/responsive/responsive_icons.dart';
 import 'package:cashier_system/core/shared/custom_header_screen.dart';
 import 'package:cashier_system/core/shared/custom_sized_box.dart';
-import 'package:cashier_system/view/cashier/components/right_side/components/payment_dialog.dart';
+import 'package:cashier_system/view/cashier/windows/right_side/components/payment_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';

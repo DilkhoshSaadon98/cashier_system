@@ -2,7 +2,7 @@ import 'package:cashier_system/controller/cashier/cashier_controller.dart';
 import 'package:cashier_system/core/constant/app_theme.dart';
 import 'package:cashier_system/core/constant/color.dart';
 import 'package:cashier_system/data/model/locale/custom_selected_list_items.dart';
-import 'package:cashier_system/view/cashier/components/left_side/components/show_drop_down_items_dialog.dart';
+import 'package:cashier_system/view/cashier/windows/left_side/components/show_drop_down_items_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

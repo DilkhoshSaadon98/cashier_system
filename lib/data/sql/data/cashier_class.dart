@@ -181,10 +181,8 @@ class CashierClass {
   //? Cart Items Discount:
   Future<dynamic> discountingItems(
       String cartNumber, String discount, List<String> itemsId) async {
-    String itemIdList = itemsId.join(',');
     Map<String, dynamic> data = {"cart_item_discount": discount};
-    return await db.updateData('tbl_cart', data,
-        'cart_number = $cartNumber AND cart_items_id IN ($itemIdList)');
+    return await db.updateData('tbl_cart', data, 'cart_number = $cartNumber ');
   }
 
   //? Cart Discount:

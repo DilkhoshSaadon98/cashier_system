@@ -4,12 +4,12 @@ import 'package:cashier_system/core/constant/app_theme.dart';
 import 'package:cashier_system/core/constant/color.dart';
 import 'package:cashier_system/core/functions/validinput.dart';
 import 'package:cashier_system/core/shared/custom_buttton_global.dart';
-import 'package:cashier_system/view/cashier/components/right_side/components/custom_cashier_dialog.dart';
+import 'package:cashier_system/view/cashier/windows/right_side/components/custom_cashier_dialog.dart';
 import 'package:cashier_system/core/shared/custom_formfield_global.dart';
 import 'package:cashier_system/core/shared/custom_sized_box.dart';
 import 'package:cashier_system/core/shared/custom_snack_bar.dart';
-import 'package:cashier_system/view/cashier/components/right_side/components/custom_diplay_users.dart';
-import 'package:cashier_system/view/cashier/components/right_side/components/show_last_invoices.dart';
+import 'package:cashier_system/view/cashier/windows/right_side/components/custom_diplay_users.dart';
+import 'package:cashier_system/view/cashier/windows/right_side/components/show_last_invoices.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -41,8 +41,7 @@ class CashierConstantController extends CashierDefinitionController {
       'icon': Icons.discount_outlined,
       'function': (String parameter, [String? itemsCount, String? cartNumber]) {
         CashierController cashierController = Get.put(CashierController());
-        if (cashierController.selectedRows.isNotEmpty) {
-          cashierDialog(
+         cashierDialog(
             "Item Discount",
             Icons.local_offer_outlined,
             cashierController.buttonActionsController!,
@@ -54,9 +53,6 @@ class CashierConstantController extends CashierDefinitionController {
               cashierController.buttonActionsController!.clear();
             }
           );
-        } else {
-          customSnackBar("Error", "Please select one row at least");
-        }
       },
       'color': const Color(0xff9BCF53),
       'tool_tip': "Percentage discount from the invoice\nCTRL + I",

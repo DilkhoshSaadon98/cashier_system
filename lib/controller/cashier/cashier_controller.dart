@@ -169,21 +169,21 @@ class CashierController extends CashierConstantController {
         cartsNumbers = response["carts_number"];
         cartItemsCount = response["cart_items_count"];
         cartTotalCostPrice = response["total_cart_cost"];
-        cartTotalPrice = response["total_cart_price"];
-        // if (cartData.isNotEmpty) {
-        //   for (int i = 0; i < cartData.length; i++) {
-        //     double totalItemPrice = 0;
-        //     if (cartData[i].cartItemGift != 1) {
-        //       totalItemPrice = cartData[i].cartItemsCount! *
-        //           cartData[i].itemsSellingprice! *
-        //           ((100 - cartData[i].cartItemDiscount!) / 100);
-        //       cartTotalPrice += totalItemPrice.toInt();
-        //     }
-        //   }
-        //   cartTotalPrice = cartTotalPrice -
-        //       cartData[0].cartDiscount! +
-        //       int.parse(cartData[0].cartTax ?? "0");
-        // }
+       // cartTotalPrice = response["total_cart_price"];
+        if (cartData.isNotEmpty) {
+          for (int i = 0; i < cartData.length; i++) {
+            double totalItemPrice = 0;
+            if (cartData[i].cartItemGift != 1) {
+              totalItemPrice = cartData[i].cartItemsCount! *
+                  cartData[i].itemsSellingprice! *
+                  ((100 - cartData[i].cartItemDiscount!) / 100);
+              cartTotalPrice += totalItemPrice.toInt();
+            }
+          }
+          cartTotalPrice = cartTotalPrice -
+              cartData[0].cartDiscount! +
+              int.parse(cartData[0].cartTax ?? "0");
+        }
       }
     } else {
       statusRequest = StatusRequest.failure;

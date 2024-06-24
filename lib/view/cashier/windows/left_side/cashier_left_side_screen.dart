@@ -2,9 +2,9 @@ import 'package:cashier_system/controller/cashier/cashier_controller.dart';
 import 'package:cashier_system/core/constant/app_theme.dart';
 import 'package:cashier_system/core/constant/color.dart';
 import 'package:cashier_system/core/shared/custom_table_header_global.dart';
-import 'package:cashier_system/view/cashier/components/left_side/components/cashier_table_rows.dart';
-import 'package:cashier_system/view/cashier/components/left_side/components/custom_pending_cart.dart';
-import 'package:cashier_system/view/cashier/components/left_side/components/search_box_widget.dart';
+import 'package:cashier_system/view/cashier/windows/left_side/components/cashier_table_rows.dart';
+import 'package:cashier_system/view/cashier/windows/left_side/components/custom_pending_cart.dart';
+import 'package:cashier_system/view/cashier/windows/left_side/components/search_box_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
