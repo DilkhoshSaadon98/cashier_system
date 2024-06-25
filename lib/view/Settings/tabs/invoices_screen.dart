@@ -29,8 +29,7 @@ class InvoicesScreen extends StatelessWidget {
                     child: Column(
                       children: [
                         Container(
-                          width: Get.width,
-                          height: 125,
+                          height: 200,
                           alignment: Alignment.center,
                           padding: const EdgeInsets.all(16.0),
                           decoration: BoxDecoration(

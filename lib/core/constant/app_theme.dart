@@ -31,7 +31,7 @@ TextStyle get titleStyle {
 }
 
 TextStyle get introStyle {
-  return GoogleFonts.notable(
+  return GoogleFonts.monoton(
       textStyle: TextStyle(
     fontSize: 14.sp,
     fontWeight: FontWeight.w700,
