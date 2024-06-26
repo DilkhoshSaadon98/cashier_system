@@ -146,30 +146,24 @@ class BuyingController extends DefinitionBuyingController {
   }
 
   void handleFieldUpdate({
-    required TextEditingController buyingPriceController,
     required TextEditingController quantityController,
     required TextEditingController itemTotalPricesController,
+    required TextEditingController buyingPriceController,
   }) {
-    String buyingPrice = buyingPriceController.text;
     String quantity = quantityController.text;
     String totalPrice = itemTotalPricesController.text;
 
-    if (buyingPrice.isNotEmpty && quantity.isNotEmpty) {
-      double result = double.parse(buyingPrice) * double.parse(quantity);
-      itemTotalPricesController.text = result.toStringAsFixed(2);
-    } else if (totalPrice.isNotEmpty && quantity.isNotEmpty) {
-      double result = double.parse(totalPrice) / double.parse(quantity);
+    if (totalPrice.isNotEmpty && quantity.isNotEmpty) {
+      double result = int.parse(totalPrice) / int.parse(quantity);
+      print(result);
       buyingPriceController.text = result.toStringAsFixed(2);
     }
 
-    if (!rowAdded &&
-        (buyingPrice.isNotEmpty ||
-            quantity.isNotEmpty ||
-            totalPrice.isNotEmpty)) {
-      rows.add(createRow());
-      rowAdded = true;
-      update();
-    }
+    // if (!rowAdded && (quantity.isNotEmpty || totalPrice.isNotEmpty)) {
+    //   rows.add(createRow());
+    //   rowAdded = true;
+    //   update();
+    // }
 
     update();
   }
@@ -237,12 +231,13 @@ class BuyingController extends DefinitionBuyingController {
     if (formKey.currentState!.validate()) {
       for (int i = 0; i < rows.length; i++) {
         if (formKeysTotalPrice[i].currentState!.validate()) {
-          int total = 0;
+          double total = 0;
           for (int j = 0; j < itemTotalPriceControllers.length; j++) {
-            total += int.parse(itemTotalPriceControllers[j].text);
+            print(itemTotalPriceControllers[j].text);
+            total += double.parse(itemTotalPriceControllers[j].text);
           }
           buyingPriceControllers[i].text = (calculateFees(
-                  int.parse(purchaseFeesController!.text),
+                  int.parse(purchaseDiscountController!.text),
                   total,
                   itemTotalPriceControllers)[i])
               .toStringAsFixed(2);

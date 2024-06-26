@@ -46,7 +46,7 @@ class RightSideWidget extends StatelessWidget {
                         return InkWell(
                           onTap: () {
                             index == controller.settingTabName.length - 1
-                                ? Get.to(const InvoicesScreen())
+                                ? Get.to( InvoicesScreen())
                                 : controller.changeIndex(index);
                           },
                           child: Container(

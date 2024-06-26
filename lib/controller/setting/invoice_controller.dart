@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:cashier_system/core/functions/upload_file.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class InvoiceController extends GetxController {
@@ -20,10 +22,38 @@ class InvoiceController extends GetxController {
     preSelectedLength = selectedColumnsHeader.length;
   }
 
+  Future<Size> getImageSize(ImageProvider imageProvider) async {
+    final Completer<Size> completer = Completer<Size>();
+    final ImageStreamListener listener =
+        ImageStreamListener((ImageInfo info, bool _) {
+      final Size imageSize = Size(
+        info.image.width.toDouble(),
+        info.image.height.toDouble(),
+      );
+      completer.complete(imageSize);
+    });
+
+    final ImageStream imageStream =
+        imageProvider.resolve(const ImageConfiguration());
+    imageStream.addListener(listener);
+
+    return completer.future;
+  }
+
   File? footerFile;
   File? headerFile;
-  choseHeaderFile() async {
+  Size? imageSizeFuture;
+
+  void choseHeaderFile() async {
     headerFile = await fileUploadGallery();
+    ImageProvider imageProvider = headerFile != null
+        ? FileImage(headerFile!)
+        : AssetImage(
+            selectedHeaderImage.isEmpty
+                ? 'assets/header.png'
+                : selectedHeaderImage,
+          ) as ImageProvider;
+    imageSizeFuture = await getImageSize(imageProvider);
     update();
   }
 
@@ -82,7 +112,6 @@ class InvoiceController extends GetxController {
     return selected;
   }
 
-  // Method to get selected columns
   List<String> get selectedColumns {
     List<String> selected = ["#"];
     for (int i = 0; i < tablesTileState.length; i++) {
@@ -91,5 +120,11 @@ class InvoiceController extends GetxController {
       }
     }
     return selected;
+  }
+
+  @override
+  void onInit() {
+    imageSizeFuture = Size(Get.width, 200);
+    super.onInit();
   }
 }

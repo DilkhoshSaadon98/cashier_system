@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:cashier_system/controller/setting/invoice_controller.dart';
 import 'package:cashier_system/core/constant/app_theme.dart';
 import 'package:cashier_system/core/constant/color.dart';
@@ -5,6 +7,8 @@ import 'package:cashier_system/core/constant/imgaeasset.dart';
 import 'package:cashier_system/core/shared/custom_buttton_global.dart';
 import 'package:cashier_system/core/shared/custom_header_screen.dart';
 import 'package:cashier_system/core/shared/custom_sized_box.dart';
+import 'package:cashier_system/view/Settings/invoices/printing_widget.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -20,104 +24,7 @@ class InvoicesScreen extends StatelessWidget {
           children: [
             Expanded(
               flex: 2,
-              child: Container(
-                padding: const EdgeInsets.all(10),
-                child: SingleChildScrollView(
-                  child: Container(
-                    height: Get.height - 80,
-                    decoration: BoxDecoration(border: Border.all()),
-                    child: Column(
-                      children: [
-                        Container(
-                          height: 200,
-                          alignment: Alignment.center,
-                          padding: const EdgeInsets.all(16.0),
-                          decoration: BoxDecoration(
-                              image: DecorationImage(
-                                fit: BoxFit.fill,
-                                image: controller.headerFile != null
-                                    ? FileImage(controller.headerFile!)
-                                    : AssetImage(
-                                        controller.selectedHeaderImage.isEmpty
-                                            ? 'assets/header.png'
-                                            : controller.selectedHeaderImage,
-                                      ) as ImageProvider,
-                              ),
-                              color: primaryColor),
-                        ),
-                        SizedBox(
-                          height: controller.headerHeight,
-                          child: LayoutBuilder(builder: (context, constraints) {
-                            controller.headerListHeight();
-                            return SizedBox(
-                              height: 30,
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 15),
-                                child: GridView.custom(
-                                  childrenDelegate: SliverChildBuilderDelegate(
-                                      childCount: controller
-                                          .selectedColumnsHeader
-                                          .length, (context, index) {
-                                    return Text(
-                                      controller.selectedColumnsHeader[index],
-                                      style: titleStyle,
-                                    );
-                                  }),
-                                  gridDelegate:
-                                      const SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 2,
-                                          childAspectRatio: 10),
-                                ),
-                              ),
-                            );
-                          }),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Table(
-                            border: TableBorder.all(),
-                            columnWidths: Map.fromIterable(
-                              controller.selectedColumns,
-                              key: (item) =>
-                                  controller.selectedColumns.indexOf(item),
-                              value: (item) => FlexColumnWidth(1),
-                            ),
-                            children: [
-                              TableRow(
-                                children:
-                                    controller.selectedColumns.map((title) {
-                                  return TableCell(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text(title),
-                                    ),
-                                  );
-                                }).toList(),
-                              ),
-                              // Add your table rows here dynamically based on the selectedColumns
-                            ],
-                          ),
-                        ),
-                        const Spacer(),
-                        Container(
-                          padding: const EdgeInsets.all(16.0),
-                          child: const Column(
-                            children: <Widget>[
-                              FlutterLogo(), // Replace with your image path
-                              SizedBox(height: 8.0),
-                              Text(
-                                'Footer Text',
-                                style: TextStyle(fontSize: 16),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
+              child: const PrintingWidget(),
             ),
             Expanded(
               child: Column(
@@ -232,10 +139,8 @@ class InvoicesScreen extends StatelessWidget {
                                         Icons.upload,
                                       ),
                                       customButtonGlobal(
-                                        () {
-                                          controller.choseFooterFile();
-                                        },
-                                        "Upload Header",
+                                        () async {},
+                                        "Upload Footer",
                                         Icons.upload,
                                       ),
                                     ],

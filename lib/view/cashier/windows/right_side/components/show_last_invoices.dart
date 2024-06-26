@@ -32,6 +32,7 @@ customDialogShowInvoices(String title) {
               child: ListView.builder(
                   itemCount: controller.lastInvoices.length,
                   itemBuilder: (context, index) {
+                    print(controller.lastInvoices[index].usersName);
                     return InkWell(
                       onTap: () {
                         controller.updateInvoice(controller

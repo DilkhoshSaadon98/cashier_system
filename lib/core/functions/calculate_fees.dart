@@ -1,4 +1,5 @@
-List<double> calculateFees(int fees, int totalPrice, List<dynamic> data) {
+List<double> calculateFees(int fees, var totalPrice, List<dynamic> data) {
+  print("fees $fees");
   List<double> percentageValue = [];
   List<double> dataResult = [];
   for (int i = 0; i < data.length; i++) {
