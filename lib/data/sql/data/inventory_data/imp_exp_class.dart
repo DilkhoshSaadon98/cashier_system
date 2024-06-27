@@ -62,7 +62,7 @@ class ImportExportClass {
     String? endTime,
   }) async {
     String sql = "";
-    List<String> conditions = [];
+    List<String> conditions = ["export_account != 'Employee' "];
     if (startTime != null && endTime != null) {
       DateFormat formatter = DateFormat('yyyy-MM-dd');
       DateTime startDate = formatter.parse(startTime);
@@ -84,10 +84,10 @@ class ImportExportClass {
     if (account != null) {
       conditions.add("export_account = '$account' ");
     }
-    if (conditions.isNotEmpty) {
+    if (conditions.length > 1) {
       sql += conditions.join(" AND ");
     } else {
-      sql = "1 == 1";
+      sql = conditions[0];
     }
     var responseData = await db.getAllData(exportViewName, where: sql);
     int totalBallance = await getTotalExportBallance(sql, exportViewName);

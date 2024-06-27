@@ -238,7 +238,7 @@ class BuyingController extends DefinitionBuyingController {
           }
           buyingPriceControllers[i].text = (calculateFees(
                   int.parse(purchaseDiscountController!.text),
-                  total,
+                  5,
                   itemTotalPriceControllers)[i])
               .toStringAsFixed(2);
         }

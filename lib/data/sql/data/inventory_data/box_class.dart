@@ -17,7 +17,7 @@ class BoxClass {
     List invoiceConditions = ["invoice_payment = 'Cash'"];
     List boxConditions = [];
     List importConditions = [];
-    List exportConditions = [];
+    List exportConditions = ["export_account != 'Employee'"];
     if (startTime != null && endTime != null) {
       DateFormat formatter = DateFormat('yyyy-MM-dd');
       DateTime startDate = formatter.parse(startTime);
@@ -44,15 +44,18 @@ class BoxClass {
     } else {
       invoiceSql = invoiceConditions[0];
     }
-    if (boxConditions.isNotEmpty ||
-        importConditions.isNotEmpty ||
-        exportConditions.isNotEmpty) {
-      boxSql += boxConditions.join(" AND ");
-      importSql += importConditions.join(" AND ");
+
+    if (exportConditions.length > 1) {
       exportSql += exportConditions.join(" AND ");
     } else {
+      exportSql = exportConditions[0];
+    }
+    if (boxConditions.isNotEmpty ||
+        importConditions.isNotEmpty ) {
+      boxSql += boxConditions.join(" AND ");
+      importSql += importConditions.join(" AND ");
+    } else {
       importSql = " 1 == 1";
-      exportSql = " 1 == 1";
       boxSql = " 1 == 1";
     }
     var responseData = await db.getAllData('tbl_invoice', where: invoiceSql);

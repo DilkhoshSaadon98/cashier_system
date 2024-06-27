@@ -1,14 +1,21 @@
-List<double> calculateFees(int fees, var totalPrice, List<dynamic> data) {
-  print("fees $fees");
+import 'package:flutter/material.dart';
+
+List<double> calculateFees(int fees, int totalPrice, List<TextEditingController> itemTotalPriceControllers) {
   List<double> percentageValue = [];
   List<double> dataResult = [];
-  for (int i = 0; i < data.length; i++) {
-    percentageValue.add((int.parse(data[i].text) / totalPrice) * 100);
+
+  // Calculate percentage of each item's total price compared to the total
+  for (int i = 0; i < itemTotalPriceControllers.length; i++) {
+    double itemTotal = double.parse(itemTotalPriceControllers[i].text);
+    double percentage = (itemTotal / totalPrice) * 100;
+    percentageValue.add(percentage);
   }
-  print("percentage  : $percentageValue");
-  for (int i = 0; i < data.length; i++) {
-    dataResult.add((percentageValue[i] * fees / 100));
+
+  // Apply the fees percentage to each item's percentage value
+  for (int i = 0; i < itemTotalPriceControllers.length; i++) {
+    double feeAmount = (percentageValue[i] * fees / 100);
+    dataResult.add(feeAmount);
   }
-  print("dataResult  : $dataResult");
+
   return dataResult;
 }

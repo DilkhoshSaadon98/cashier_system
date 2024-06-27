@@ -4,7 +4,7 @@ import 'package:cashier_system/data/model/export_model.dart';
 import 'package:cashier_system/data/model/import_model.dart';
 import 'package:cashier_system/data/model/invoice_model.dart';
 import 'package:cashier_system/data/model/total_profit_model.dart';
-import 'package:cashier_system/data/sql/data/imp_exp_class.dart';
+import 'package:cashier_system/data/sql/data/inventory_data/imp_exp_class.dart';
 import 'package:cashier_system/data/sql/data/inventory_data/box_class.dart';
 import 'package:cashier_system/data/sql/data/inventory_data/expenses_class.dart';
 import 'package:cashier_system/data/sql/data/inventory_data/invoice_class.dart';
