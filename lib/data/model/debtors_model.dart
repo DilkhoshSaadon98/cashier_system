@@ -1,4 +1,5 @@
 class DebtorsModel {
+  final int debtorsId;
   final String debtorsName;
   final int totalInvoicesCount;
   final int totalImportsCount;
@@ -7,6 +8,7 @@ class DebtorsModel {
   final int totalCustomerDebtorBallance;
 
   DebtorsModel({
+    required this.debtorsId,
     required this.debtorsName,
     required this.totalInvoicesCount,
     required this.totalImportsCount,
@@ -17,6 +19,7 @@ class DebtorsModel {
 
   factory DebtorsModel.fromJson(Map<String, dynamic> json) {
     return DebtorsModel(
+      debtorsId: json['id'],
       debtorsName: json['users_name'],
       totalInvoicesCount: json['total_invoices_count'],
       totalImportsCount: json['total_imports_count'],

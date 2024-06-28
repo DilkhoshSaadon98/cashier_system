@@ -200,3 +200,88 @@ FROM tbl_invoice
     LEFT JOIN tbl_users ON tbl_invoice.invoice_user_id = tbl_users.users_id
 -------------------------------------------------
 
+CREATE VIEW debtorView AS
+SELECT
+    u.users_id AS id,
+    u.users_name,
+    COALESCE(
+        COUNT(
+            DISTINCT CASE
+                WHEN i.invoice_payment = 'Dept' THEN i.invoice_id
+            END
+        ),
+        0
+    ) AS total_invoices_count,
+    COALESCE(
+        COUNT(
+            DISTINCT CASE
+                WHEN e.export_account = 'Employee' THEN e.export_id
+            END
+        ),
+        0
+    ) AS total_exports_count,
+    COALESCE(
+        COUNT(DISTINCT im.import_id),
+        0
+    ) AS total_imports_count,
+    COALESCE(
+        SUM(
+            CASE
+                WHEN i.invoice_payment = 'Dept' THEN i.invoice_price
+                ELSE 0
+            END
+        ),
+        0
+    ) AS total_invoice_value_dept,
+    COALESCE(SUM(im.import_amount), 0) AS total_import_value,
+    COALESCE(
+        SUM(
+            CASE
+                WHEN e.export_account = 'Employee' THEN e.export_amount
+                ELSE 0
+            END
+        ),
+        0
+    ) AS total_export_value_employee,
+    COALESCE(SUM(im.import_amount), 0) - COALESCE(
+        SUM(
+            CASE
+                WHEN i.invoice_payment = 'Dept' THEN i.invoice_price
+                ELSE 0
+            END
+        ),
+        0
+    ) + COALESCE(
+        SUM(
+            CASE
+                WHEN e.export_account = 'Employee' THEN e.export_amount
+                ELSE 0
+            END
+        ),
+        0
+    ) AS total_customer_debtor_price
+FROM
+    tbl_users u
+    LEFT JOIN tbl_invoice i ON u.users_id = i.invoice_user_id
+    LEFT JOIN tbl_import im ON u.users_id = im.import_supplier_id
+    LEFT JOIN tbl_export e ON u.users_id = e.export_supplier_id
+GROUP BY
+    u.users_name
+HAVING
+    COALESCE(SUM(im.import_amount), 0) - COALESCE(
+        SUM(
+            CASE
+                WHEN i.invoice_payment = 'Dept' THEN i.invoice_price
+                ELSE 0
+            END
+        ),
+        0
+    ) + COALESCE(
+        SUM(
+            CASE
+                WHEN e.export_account = 'Employee' THEN e.export_amount
+                ELSE 0
+            END
+        ),
+        0
+    ) > 0

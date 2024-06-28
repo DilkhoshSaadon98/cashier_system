@@ -1,6 +1,7 @@
 import 'package:cashier_system/controller/inventory/inventory_controller.dart';
 import 'package:cashier_system/core/constant/app_theme.dart';
 import 'package:cashier_system/core/constant/color.dart';
+import 'package:cashier_system/core/functions/formating_numbers.dart';
 import 'package:cashier_system/core/functions/handle_data_function.dart';
 import 'package:cashier_system/core/functions/show_popup_menu.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +29,7 @@ class DebtorTableRows extends StatelessWidget {
                     itemCount: controller.debtorsData.length,
                     itemBuilder: (context, index) {
                       var dataItem = controller.debtorsData[index];
+                      print(dataItem);
                       return GestureDetector(
                         onTapDown: customShowPopupMenu.storeTapPosition,
                         onTap: () {
@@ -58,9 +60,26 @@ class DebtorTableRows extends StatelessWidget {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
+                                    //! Debtor Id
+                                    Expanded(
+                                      flex: 1,
+                                      child: Container(
+                                        height: 40,
+                                        alignment: Alignment.center,
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                                width: .3,
+                                                color: primaryColor)),
+                                        child: Text(
+                                          textAlign: TextAlign.center,
+                                          dataItem.debtorsId.toString(),
+                                          style: titleStyle,
+                                        ),
+                                      ),
+                                    ),
                                     //! Debtors Name
                                     Expanded(
-                                      flex: 2,
+                                      flex: 3,
                                       child: Container(
                                         height: 40,
                                         alignment: Alignment.center,
@@ -75,78 +94,10 @@ class DebtorTableRows extends StatelessWidget {
                                         ),
                                       ),
                                     ),
-                                    //! Debtors Invoices
-                                    Expanded(
-                                      flex: 1,
-                                      child: Container(
-                                        height: 40,
-                                        alignment: Alignment.center,
-                                        decoration: BoxDecoration(
-                                            border: Border.all(
-                                                width: .3,
-                                                color: primaryColor)),
-                                        child: Text(
-                                          textAlign: TextAlign.center,
-                                          "${dataItem.totalInvoicesCount}",
-                                          style: titleStyle,
-                                        ),
-                                      ),
-                                    ),
-                                    //! Debtors Invoice Ballance
-                                    Expanded(
-                                      flex: 2,
-                                      child: Container(
-                                        height: 40,
-                                        alignment: Alignment.center,
-                                        decoration: BoxDecoration(
-                                            border: Border.all(
-                                                width: .3,
-                                                color: primaryColor)),
-                                        child: Text(
-                                          textAlign: TextAlign.center,
-                                          "${dataItem.totalInvoiceValueDept}",
-                                          style: titleStyle,
-                                        ),
-                                      ),
-                                    ),
 
-                                    //! Debtors Imports
-                                    Expanded(
-                                      flex: 1,
-                                      child: Container(
-                                        height: 40,
-                                        alignment: Alignment.center,
-                                        decoration: BoxDecoration(
-                                            border: Border.all(
-                                                width: .3,
-                                                color: primaryColor)),
-                                        child: Text(
-                                          textAlign: TextAlign.center,
-                                          dataItem.totalImportsCount.toString(),
-                                          style: titleStyle,
-                                        ),
-                                      ),
-                                    ),
-                                    //! Debtors Imports Ballance
-                                    Expanded(
-                                      flex: 2,
-                                      child: Container(
-                                          height: 40,
-                                          alignment: Alignment.center,
-                                          decoration: BoxDecoration(
-                                              border: Border.all(
-                                                  width: .3,
-                                                  color: primaryColor)),
-                                          child: Text(
-                                            textAlign: TextAlign.center,
-                                            dataItem.totalImportValue
-                                                .toString(),
-                                            style: titleStyle,
-                                          )),
-                                    ),
                                     //! Debtors Ballance
                                     Expanded(
-                                      flex: 2,
+                                      flex: 3,
                                       child: Container(
                                         height: 40,
                                         alignment: Alignment.center,
@@ -156,7 +107,8 @@ class DebtorTableRows extends StatelessWidget {
                                                 color: primaryColor)),
                                         child: Text(
                                           textAlign: TextAlign.center,
-                                          "${dataItem.totalCustomerDebtorBallance}",
+                                          formattingNumbers(dataItem
+                                              .totalCustomerDebtorBallance),
                                           style: titleStyle,
                                         ),
                                       ),

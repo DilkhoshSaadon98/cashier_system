@@ -139,15 +139,12 @@ class InventoryScreen extends StatelessWidget {
                               height: 50,
                               child: CustomTableHeaderGlobal(
                                   data: const [
-                                    "Debtor Number",
-                                    "Invoices",
-                                    "Invoices Ballance",
-                                    "Imports",
-                                    "Import Ballance",
+                                    "Debtor Id",
+                                    "Debtor Name",
                                     'Total Ballance',
                                   ],
                                   onDoubleTap: () {},
-                                  flex: const [2, 1, 2, 1, 2, 2])),
+                                  flex: const [1, 3, 3])),
                           const DebtorTableRows()
                         ],
                       ),

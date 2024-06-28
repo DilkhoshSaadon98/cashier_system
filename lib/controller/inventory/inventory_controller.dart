@@ -361,6 +361,7 @@ class InventoryController extends InventoryDefinitionsController {
     if (response['status'] == "success") {
       clearFields();
       List responsedata = response['data']['data'] ?? [];
+      print(responsedata);
       debtorsData.clear();
       debtorsData.addAll(responsedata.map((e) => DebtorsModel.fromJson(e)));
     }
