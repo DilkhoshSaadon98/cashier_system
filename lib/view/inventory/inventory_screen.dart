@@ -12,6 +12,7 @@ import 'package:cashier_system/core/shared/custom_formfield_global.dart';
 import 'package:cashier_system/core/shared/custom_header_screen.dart';
 import 'package:cashier_system/core/shared/custom_table_header_global.dart';
 import 'package:cashier_system/view/inventory/components/box/custom_box_widget.dart';
+import 'package:cashier_system/view/inventory/components/creditor/creditor_table_rows.dart';
 import 'package:cashier_system/view/inventory/components/custom_drop_down_inventory.dart';
 import 'package:cashier_system/view/inventory/components/deptor/debtor_table_rows.dart';
 import 'package:cashier_system/view/inventory/components/expense/expense_table_rows.dart';
@@ -146,6 +147,22 @@ class InventoryScreen extends StatelessWidget {
                                   onDoubleTap: () {},
                                   flex: const [1, 3, 3])),
                           const DebtorTableRows()
+                        ],
+                      ),
+                      //! Index 7 - (Creditor Show)
+                      Column(
+                        children: [
+                          SizedBox(
+                              height: 50,
+                              child: CustomTableHeaderGlobal(
+                                  data: const [
+                                    "Creditor Id",
+                                    "Creditor Name",
+                                    'Total Ballance',
+                                  ],
+                                  onDoubleTap: () {},
+                                  flex: const [1, 3, 3])),
+                          const CreditorTableRows()
                         ],
                       ),
                     ],

@@ -25,7 +25,7 @@ class DebtorsModel {
       totalImportsCount: json['total_imports_count'],
       totalInvoiceValueDept: json['total_invoice_value_dept'],
       totalImportValue: json['total_import_value'],
-      totalCustomerDebtorBallance: json['total_customer_debtor_price'],
+      totalCustomerDebtorBallance: json['total_customer_balance'],
     );
   }
 

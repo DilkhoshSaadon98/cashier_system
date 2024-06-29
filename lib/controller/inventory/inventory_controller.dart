@@ -97,8 +97,9 @@ class InventoryController extends InventoryDefinitionsController {
       getDebtorData();
     }
     if (title == "Creditor") {
-      myServices.sharedPreferences.setString("inventory_title", "Debtor");
+      myServices.sharedPreferences.setString("inventory_title", "Creditor");
       myServices.sharedPreferences.setInt("inventory_index", 7);
+      getCreditorData();
     }
     update();
   }
@@ -139,6 +140,12 @@ class InventoryController extends InventoryDefinitionsController {
     }
     if (index == 5) {
       getTotalProfitInventoryData();
+    }
+    if (index == 6) {
+      getDebtorData();
+    }
+    if (index == 7) {
+      getCreditorData();
     }
   }
 
@@ -368,6 +375,33 @@ class InventoryController extends InventoryDefinitionsController {
     update();
   }
 
+  //! /////// Get Creditor  Data //////////
+  getCreditorData() async {
+    String? startNo;
+    String? endNo;
+    String? startTime;
+    String? endTime;
+    var response = {};
+    if (fromDateController.text.isNotEmpty &&
+        toDateController.text.isNotEmpty) {
+      startTime = fromDateController.text;
+      endTime = toDateController.text;
+    }
+    if (fromNOController.text.isNotEmpty && toNOController.text.isNotEmpty) {
+      startNo = fromNOController.text;
+      endNo = toNOController.text;
+    }
+    response = await creditorDebtorClass.getCreditorData(
+        startNo: startNo, endNo: endNo, startTime: startTime, endTime: endTime);
+    if (response['status'] == "success") {
+      clearFields();
+      List responsedata = response['data']['data'] ?? [];
+      debtorsData.clear();
+      debtorsData.addAll(responsedata.map((e) => DebtorsModel.fromJson(e)));
+    }
+    update();
+  }
+
   deleteTableRow(String table, String sql) async {
     int response = await sqlDb.deleteData(table, sql);
     if (response > 0) {
@@ -413,6 +447,9 @@ class InventoryController extends InventoryDefinitionsController {
       } else if (myServices.sharedPreferences.getString("inventory_title") ==
           "Debtor") {
         getDebtorData();
+      }else if (myServices.sharedPreferences.getString("inventory_title") ==
+          "Creditor") {
+        getCreditorData();
       }
     }
   }
