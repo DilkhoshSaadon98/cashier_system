@@ -13,34 +13,35 @@ class PendingCartsMobile extends StatelessWidget {
   Widget build(BuildContext context) {
     Get.put(CashierController());
     return GetBuilder<CashierController>(builder: (controller) {
-      return Expanded(
-          child: Row(
-        children: [
-          Expanded(
-            child: IconButton(
-                onPressed: () {
-                  Get.toNamed(AppRoute.homeScreen);
-                },
-                icon: Container(
+      return SizedBox(
+          width: Get.width,
+          height: 60,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
                   width: 50,
                   height: 50,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5),
                       shape: BoxShape.rectangle,
                       color: primaryColor),
-                  child: const Icon(
-                    Icons.home,
-                    color: secondColor,
-                    size: 30,
-                  ),
-                )),
-          ),
-          Expanded(
-            flex: 6,
-            child: //? Show Pending Cart
+                  child: IconButton(
+                      onPressed: () {
+                        Get.toNamed(AppRoute.homeScreen);
+                      },
+                      icon: const Icon(
+                        Icons.home,
+                        color: secondColor,
+                        size: 30,
+                      )),
+                ),
                 controller.pendedCarts.isNotEmpty
                     ? Container(
                         height: 50,
+                        width: Get.width - 80,
                         margin: EdgeInsets.symmetric(horizontal: 15.h),
                         padding:
                             EdgeInsets.symmetric(horizontal: 5.w, vertical: 2),
@@ -130,10 +131,13 @@ class PendingCartsMobile extends StatelessWidget {
                               );
                             }),
                       )
-                    : Container(),
-          )
-        ],
-      ));
+                    : Container(
+                        alignment: Alignment.center,
+                        child: Text("No Data"),
+                      )
+              ],
+            ),
+          ));
     });
   }
 }

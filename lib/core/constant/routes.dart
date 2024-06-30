@@ -35,5 +35,6 @@ class AppRoute {
   //! Inventory
 
   static const String editImportExport = "/editImportExport";
+  static const String viewCreditorScreen = "/viewCreditorScreen";
   static const String buyingDetailsScreen = "/buyingDetailsScreen";
 }

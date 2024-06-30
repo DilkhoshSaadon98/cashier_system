@@ -1,6 +1,7 @@
 import 'package:cashier_system/controller/inventory/inventory_controller.dart';
 import 'package:cashier_system/core/constant/app_theme.dart';
 import 'package:cashier_system/core/constant/color.dart';
+import 'package:cashier_system/core/constant/routes.dart';
 import 'package:cashier_system/core/functions/formating_numbers.dart';
 import 'package:cashier_system/core/functions/handle_data_function.dart';
 import 'package:cashier_system/core/functions/show_popup_menu.dart';
@@ -29,7 +30,6 @@ class CreditorTableRows extends StatelessWidget {
                     itemCount: controller.debtorsData.length,
                     itemBuilder: (context, index) {
                       var dataItem = controller.debtorsData[index];
-                      print(dataItem);
                       return GestureDetector(
                         onTapDown: customShowPopupMenu.storeTapPosition,
                         onTap: () {
@@ -38,11 +38,9 @@ class CreditorTableRows extends StatelessWidget {
                             "Delete Selected"
                           ], [
                             () async {
-                              // Get.toNamed(AppRoute.editImportExport,
-                              //     arguments: {
-                              //       "id": dataItem.exportId,
-                              //       "table": "Export"
-                              //     });
+                              Get.toNamed(
+                                AppRoute.viewCreditorScreen,
+                              );
                             },
                             () async {},
                           ]);

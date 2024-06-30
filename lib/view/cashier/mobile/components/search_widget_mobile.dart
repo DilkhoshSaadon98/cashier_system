@@ -13,37 +13,36 @@ class SearchWidgetMobile extends StatelessWidget {
   Widget build(BuildContext context) {
     Get.put(CashierController());
     return GetBuilder<CashierController>(builder: (controller) {
-      return Expanded(
-        child: Row(
-          children: [
-            Expanded(
-              child: IconButton(
-                  onPressed: () {
-                    showDropDownList(
-                      context,
-                      controller.dropDownList,
-                      controller.dropDownID!,
-                      controller.dropDownName!,
-                    );
-                  },
-                  icon: Container(
-                    width: 50,
-                    height: 50,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        shape: BoxShape.rectangle,
-                        color: primaryColor),
-                    child: const Icon(
+      return SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: SizedBox(
+          height: 60,
+          child: Row(
+            children: [
+              Container(
+                width: 50,
+                height: 50,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    shape: BoxShape.rectangle,
+                    color: primaryColor),
+                child: IconButton(
+                    onPressed: () {
+                      showDropDownList(
+                        context,
+                        controller.dropDownList,
+                        controller.dropDownID!,
+                        controller.dropDownName!,
+                      );
+                    },
+                    icon: const Icon(
                       Icons.search,
                       color: secondColor,
                       size: 30,
-                    ),
-                  )),
-            ),
-            Expanded(
-              flex: 6,
-              child: Container(
-                width: Get.width,
+                    )),
+              ),
+              Container(
+                width: Get.width - 80,
                 height: 50,
                 margin: const EdgeInsets.symmetric(horizontal: 10),
                 decoration: BoxDecoration(
@@ -65,9 +64,9 @@ class SearchWidgetMobile extends StatelessWidget {
                     ),
                   ],
                 ),
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
       );
     });

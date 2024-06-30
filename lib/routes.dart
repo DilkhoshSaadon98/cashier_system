@@ -22,6 +22,7 @@ import 'package:cashier_system/view/import_export/desktop/import/import_screen.d
 import 'package:cashier_system/view/import_export/import_export_screen.dart';
 import 'package:cashier_system/view/import_export/mobile/export/export_screen_mobile.dart';
 import 'package:cashier_system/view/import_export/mobile/import/import_screen_mobile.dart';
+import 'package:cashier_system/view/inventory/components/creditor/view_creditor_details.dart';
 import 'package:cashier_system/view/inventory/components/edit_import_export.dart';
 import 'package:cashier_system/view/inventory/inventory_screen.dart';
 import 'package:cashier_system/view/items/components/items_add_screen.dart';
@@ -136,6 +137,11 @@ List<GetPage<dynamic>>? routes = [
       transitionDuration: const Duration(milliseconds: 100),
       name: AppRoute.editImportExport,
       page: () => const EditImportExportScreen()),
+  GetPage(
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 100),
+      name: AppRoute.viewCreditorScreen,
+      page: () => const ViewCreditorDetails()),
   //! Buying :
   GetPage(
       transition: Transition.fadeIn,
