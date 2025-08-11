@@ -738,6 +738,7 @@ class CashierController extends CashierConstantController {
 
 //? Update Cart Owner
   Future<void> cartOwnerNameUpdate(String? userId) async {
+    print(userId);
     try {
       String? cartNumber =
           myServices.systemSharedPreferences.getString("cart_number");
@@ -750,6 +751,7 @@ class CashierController extends CashierConstantController {
         var response =
             await cashierClass.cartOwnerNameUpdate(cartNumber, userId);
         if (response > 0) {
+          showSuccessSnackBar(TextRoutes.dataAddedSuccess);
           await getCartData(cartNumber);
         } else {
           showErrorSnackBar(TextRoutes.errorUpdatingCartOwnerName);

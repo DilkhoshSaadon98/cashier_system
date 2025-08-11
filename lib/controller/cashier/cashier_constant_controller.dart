@@ -381,7 +381,7 @@ class CashierConstantController extends CashierDefinitionController {
                                     alignment: Alignment.centerRight,
                                     child: TextButton.icon(
                                         onPressed: () {
-                                          controller.cartOwnerNameUpdate("");
+                                          controller.cartOwnerNameUpdate(null);
                                           Get.back();
                                         },
                                         icon: const Icon(

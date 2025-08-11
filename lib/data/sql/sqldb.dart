@@ -110,10 +110,32 @@ class SqlDb {
     return count;
   }
 
+  Future<int> updateDataAllowNull(
+      String table, Map<String, dynamic> data, String where) async {
+    Database? myDb = await db;
+    // Build SQL that handles null values
+    final sets = data.entries.map((e) {
+      if (e.value == null) {
+        return '${e.key} = NULL';
+      } else {
+        return '${e.key} = ?';
+      }
+    }).join(', ');
+
+    // Only bind non-null values
+    final values = data.values.where((v) => v != null).toList();
+
+    final sql = 'UPDATE $table SET $sets WHERE $where';
+    return await myDb!.rawUpdate(sql, values);
+  }
+
   //! Delete Data:
   Future<int> deleteData(String table, String where, {bool json = true}) async {
     Database? myDb = await db;
-    int count = await myDb!.delete(table, where: where,);
+    int count = await myDb!.delete(
+      table,
+      where: where,
+    );
     return count;
   }
 
