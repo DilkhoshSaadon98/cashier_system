@@ -1,0 +1,2 @@
+C:/Users/fares/Desktop/MR-ROBOT/cashier_system/android/app/.cxx/Debug/m14o2b6v/arm64-v8a/CMakeFiles/edit_cache.dir
+C:/Users/fares/Desktop/MR-ROBOT/cashier_system/android/app/.cxx/Debug/m14o2b6v/arm64-v8a/CMakeFiles/rebuild_cache.dir
