@@ -25,8 +25,8 @@ class QuantityFieldWidget extends GetView<CashierController> {
             IconButton(
                 onPressed: () {
                   controller.cartItemDecrease(
-                      controller.cartData[index].cartItemsCount!,
-                      controller.cartData[index].itemsId.toString());
+                      controller.cartData[index].cartItemsCount,
+                      controller.cartData[index].cartItemsId);
                 },
                 icon: const Icon(
                   Icons.remove,
@@ -61,8 +61,8 @@ class QuantityFieldWidget extends GetView<CashierController> {
             IconButton(
                 onPressed: () {
                   controller.cartItemIncrease(
-                      controller.cartData[index].cartItemsCount!,
-                      controller.cartData[index].itemsId.toString());
+                      controller.cartData[index].cartItemsCount,
+                      controller.cartData[index].cartItemsId);
                 },
                 icon: const Icon(
                   Icons.add,

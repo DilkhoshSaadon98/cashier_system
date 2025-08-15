@@ -51,7 +51,7 @@ class DefinitionBuyingController extends GetxController {
   //! Update Screen Index:
   int currentIndex = 0;
 
-  String selectedSection = TextRoutes.view;
+  String selectedSection = TextRoutes.add;
 
   changeSection(value) {
     selectedSection = value;
@@ -139,7 +139,7 @@ class DefinitionBuyingController extends GetxController {
       if (response['status'] == 'success') {
         List responsedata = response['data'] ?? [];
         unitsData.addAll(responsedata.map((e) => UnitModel.fromJson(e)));
-        dropdownItems.addAll(unitsData.map((unit) => unit.unitName));
+        dropdownItems.addAll(unitsData.map((unit) => unit.unitBaseName));
       }
     } catch (e) {
       showErrorDialog(e.toString(),
@@ -229,7 +229,7 @@ class DefinitionBuyingController extends GetxController {
             desc: listDataSearch[i].itemsName,
             name: listDataSearch[i].itemsName,
             value: listDataSearch[i].itemsId.toString(),
-            price: listDataSearch[i].itemsSellingPrice.toString(),
+            price: listDataSearch[i].itemsBuyingPrice.toString(),
           ));
         }
       }

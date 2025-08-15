@@ -8,7 +8,7 @@ import 'package:cashier_system/core/shared/custom_divider.dart';
 import 'package:cashier_system/core/shared/custom_sized_box.dart';
 import 'package:cashier_system/core/shared/custom_text_field_widget.dart';
 import 'package:cashier_system/data/model/account_model.dart';
-import 'package:cashier_system/view/transactions/components/transaction_accounts_dropdown_widget.dart';
+import 'package:cashier_system/core/shared/drop_downs/transaction_accounts_dropdown_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -77,13 +77,13 @@ class JournalVoucherAddDialog extends StatelessWidget {
                               children: [
                                 SizedBox(
                                   width: 250,
-                                  child: TransactionAccountsDropdownWidget<
-                                      AccountModel>(
+                                  child:
+                                      CustomDropdownSearchWidget<AccountModel>(
                                     validator: (AccountModel? value) {
                                       if (value == null) {
                                         return validInput("", 0, 100, "");
                                       }
-                                      return null; 
+                                      return null;
                                     },
                                     label: TextRoutes.accountName,
                                     iconData: Icons.account_balance,

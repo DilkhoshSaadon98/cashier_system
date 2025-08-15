@@ -1,6 +1,6 @@
 import 'package:cashier_system/core/shared/custom_divider.dart';
 import 'package:cashier_system/core/shared/custom_header_screen.dart';
-import 'package:cashier_system/view/transactions/components/transaction_accounts_dropdown_widget.dart';
+import 'package:cashier_system/core/shared/drop_downs/transaction_accounts_dropdown_widget.dart';
 import 'package:cashier_system/view/transactions/receipt/widgets/transaction_receipt_dialog_form.dart';
 import 'package:flutter/material.dart';
 import 'package:cashier_system/controller/transactions/transaction_receipt_controller.dart';
@@ -103,7 +103,7 @@ class TransactionReceiptActionWidget extends StatelessWidget {
                     },
                   ),
                   verticalGap(10),
-                  TransactionAccountsDropdownWidget<AccountModel>(
+                  CustomDropdownSearchWidget<AccountModel>(
                     iconData: Icons.account_balance,
                     items: controller.dropDownListSourceAccounts,
                     label: TextRoutes.sourceAccount,
@@ -123,7 +123,7 @@ class TransactionReceiptActionWidget extends StatelessWidget {
                     },
                   ),
                   verticalGap(10),
-                  TransactionAccountsDropdownWidget<AccountModel>(
+                  CustomDropdownSearchWidget<AccountModel>(
                     iconData: Icons.account_balance,
                     items: controller.dropDownListTargetAccounts,
                     label: TextRoutes.targetAccount,

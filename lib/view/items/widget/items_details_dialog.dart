@@ -41,7 +41,7 @@ class ItemDetailContent extends StatelessWidget {
             _buildDetailRow(TextRoutes.itemsDesc.tr, item.itemsDescription),
             _buildDetailRow(TextRoutes.categoriesName.tr, item.categoriesName),
             _buildDetailRow(TextRoutes.qty.tr, item.itemsBaseQty.toString()),
-            _buildDetailRow(TextRoutes.baseUnit.tr, item.unitName),
+            _buildDetailRow(TextRoutes.baseUnit.tr, item.baseUnitName),
             _buildDetailRow(
                 TextRoutes.price.tr, formattingNumbers(item.itemsSellingPrice)),
             _buildDetailRow(TextRoutes.buyingPrice.tr,

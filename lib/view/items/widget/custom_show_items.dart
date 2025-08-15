@@ -1,25 +1,19 @@
-// ignore_for_file: deprecated_member_use
-
-import 'dart:io';
 
 import 'package:cashier_system/controller/items/items_view_controller.dart';
 import 'package:cashier_system/core/class/handling_data_view.dart';
-import 'package:cashier_system/core/constant/app_theme.dart';
 import 'package:cashier_system/core/constant/color.dart';
-import 'package:cashier_system/core/constant/imgaeasset.dart';
 import 'package:cashier_system/core/dialogs/delete_dialog.dart';
 import 'package:cashier_system/core/functions/formating_numbers.dart';
 import 'package:cashier_system/core/localization/text_routes.dart';
 import 'package:cashier_system/core/shared/buttons/custom_floating_button.dart';
-import 'package:cashier_system/core/shared/custom_sized_box.dart';
 import 'package:cashier_system/data/model/item_details_model.dart';
 import 'package:cashier_system/data/model/items_model.dart';
 import 'package:cashier_system/view/items/widget/items_details_dialog.dart';
+import 'package:cashier_system/view/items/widget/items_grid_card_widget.dart';
 import 'package:cashier_system/view/widgets/tables/table_cell.dart';
 import 'package:cashier_system/view/widgets/tables/table_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
 class CustomShowItems extends StatelessWidget {
@@ -28,13 +22,7 @@ class CustomShowItems extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(ItemsViewController());
-    int calculateCrossAxisCount(double width) {
-      if (width >= 1000) return 5;
-      if (width >= 700) return 4;
-      if (width >= 500) return 3;
-      if (width >= 300) return 2;
-      return 1;
-    }
+  
 
     void showDialogBox(ItemsModel dataItem) {
       controller.customShowPopupMenu.showPopupMenu(
@@ -114,153 +102,7 @@ class CustomShowItems extends StatelessWidget {
             child: HandlingDataView(
               statusRequest: controller.statusRequest,
               child: controller.layoutDisplay
-                  ? Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 10),
-                      child: LayoutBuilder(
-                        builder: (context, constraints) {
-                          return GridView.builder(
-                            itemCount: controller.data.length,
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount:
-                                  calculateCrossAxisCount(constraints.maxWidth),
-                              mainAxisExtent: 200,
-                              crossAxisSpacing: 20,
-                              mainAxisSpacing: 20,
-                            ),
-                            itemBuilder: (_, index) {
-                              var dataItem = controller.data[index];
-                              final String? imagePath = myServices
-                                  .sharedPreferences
-                                  .getString("image_path");
-                              final String imageFilePath =
-                                  "$imagePath/${dataItem.itemsImage}";
-                              return GestureDetector(
-                                onTap: () {
-                                  showItemDetailsDialog(
-                                      context: context,
-                                      item: dataItem,
-                                      itemDetailsModel:
-                                          ItemDetailsModel(itemId: 1),
-                                      onDelete: () {
-                                        // showDeleteDialog(
-                                        //     context: context,
-                                        //     title: "",
-                                        //     content: "",
-                                        //     onPressed: () {});
-                                      },
-                                      onEdit: () {
-                                        Navigator.of(context).pop(false);
-                                        controller.goUpdateItems(
-                                          dataItem,
-                                        );
-                                      });
-                                },
-                                child: MouseRegion(
-                                  cursor: SystemMouseCursors.click,
-                                  child: AnimatedContainer(
-                                    duration: const Duration(milliseconds: 250),
-                                    padding: const EdgeInsets.all(12),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(16),
-                                      border: Border.all(
-                                          color: primaryColor.withOpacity(0.2)),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withOpacity(0.05),
-                                          blurRadius: 8,
-                                          offset: const Offset(2, 4),
-                                        ),
-                                      ],
-                                    ),
-                                    child: Stack(
-                                      alignment: Alignment.center,
-                                      children: [
-                                        Align(
-                                          alignment: Alignment.topLeft,
-                                          child: IconButton(
-                                            icon: const Icon(Icons.edit,
-                                                color: Colors.blue),
-                                            tooltip: TextRoutes.edit.tr,
-                                            onPressed: () => controller
-                                                .goUpdateItems(dataItem),
-                                          ),
-                                        ),
-                                        Align(
-                                          alignment: Alignment.topRight,
-                                          child: IconButton(
-                                              icon: const Icon(
-                                                  Icons.remove_red_eye,
-                                                  color: Colors.greenAccent),
-                                              tooltip: TextRoutes.edit.tr,
-                                              onPressed: () {
-                                                showItemDetailsDialog(
-                                                    context: context,
-                                                    item: dataItem,
-                                                    itemDetailsModel:
-                                                        ItemDetailsModel(
-                                                            itemId: 1),
-                                                    onDelete: () {
-                                                      // showDeleteDialog(
-                                                      //     context: context,
-                                                      //     title: "",
-                                                      //     content: "",
-                                                      //     onPressed: () {});
-                                                    },
-                                                    onEdit: () {
-                                                      Navigator.of(context)
-                                                          .pop(false);
-                                                      controller.goUpdateItems(
-                                                        dataItem,
-                                                      );
-                                                    });
-                                              }),
-                                        ),
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            File(imageFilePath).existsSync()
-                                                ? Image.file(
-                                                    File(imageFilePath),
-                                                    width: 50,
-                                                    height: 50,
-                                                    fit: BoxFit.contain,
-                                                  )
-                                                : SvgPicture.asset(
-                                                    AppImageAsset.itemsIcons,
-                                                    width: 50,
-                                                    height: 50,
-                                                    color: primaryColor,
-                                                  ),
-                                            verticalGap(10),
-                                            Text(
-                                              dataItem.itemsName,
-                                              maxLines: 2,
-                                              overflow: TextOverflow.ellipsis,
-                                              textAlign: TextAlign.center,
-                                              style: titleStyle.copyWith(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.bold,
-                                                color: black,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
-                          );
-                        },
-                      ),
-                    )
+                  ? ItemsGridCardWidget(controller: controller,)
                   : TableWidget(
                       allSelected: controller.selectedItems.length ==
                           controller.data.length,
@@ -270,7 +112,6 @@ class CustomShowItems extends StatelessWidget {
                         TextRoutes.itemsName,
                         TextRoutes.quantity,
                         TextRoutes.unit,
-                        TextRoutes.profits,
                         TextRoutes.sellingPrice,
                         TextRoutes.buyingPrice,
                         TextRoutes.costPrice,
@@ -288,12 +129,12 @@ class CustomShowItems extends StatelessWidget {
                         2,
                         1,
                         1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
                         2,
                         2,
                         2,
@@ -314,7 +155,10 @@ class CustomShowItems extends StatelessWidget {
                       rows: List.generate(controller.data.length, (index) {
                         final item = controller.data[index];
                         final isSelected = controller.isSelected(item.itemsId!);
-
+                        // final unitList = [
+                        //   item.baseUnitName,
+                        //   ...item.altUnits.map((u) => u.unitName),
+                        // ].toSet().toList(); // Removes duplicates
                         return [
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 8.w),
@@ -327,11 +171,36 @@ class CustomShowItems extends StatelessWidget {
                           buildCell(item.itemsId?.toString() ?? '', item),
                           buildCell(item.itemsName, item),
                           buildCell(item.itemsBaseQty.toString(), item),
-                          buildCell(item.unitName.toString(), item),
-                          buildCell(
-                              formattingNumbers((item.itemsSellingPrice) -
-                                  (item.itemsBuyingPrice)),
-                              item),
+                          buildCell(item.baseUnitName.toString(), item),
+                          // DropDownMenu(
+                          //   showBorder: false,
+                          //   selectedValue: item.baseUnitName,
+                          //   items: unitList,
+                          //   onChanged: (String? newUnitName) {
+                          //     if (newUnitName == null) return;
+
+                          //     // Find the selected unit from main or alt units
+                          //     AltUnit selectedUnit;
+                          //     if (newUnitName == item.baseUnitName) {
+                          //       selectedUnit = AltUnit(
+                          //         unitId: item.mainUnitId,
+                          //         unitName: item.baseUnitName,
+                          //         price: item.itemsSellingPrice,
+                          //         barcode: item.itemsBarcode,
+                          //       );
+                          //     } else {
+                          //       selectedUnit = item.altUnits.firstWhere(
+                          //           (u) => u.unitName == newUnitName);
+                          //     }
+                          //     controller.updateItemDetails(
+                          //         item.itemsId!,
+                          //         selectedUnit.barcode,
+                          //         selectedUnit.price,
+                          //         selectedUnit.unitName);
+                          //   },
+                          //   fieldColor: Colors.transparent,
+                          //   contentColor: Colors.black,
+                          // ),
                           buildCell(
                               formattingNumbers(item.itemsSellingPrice), item),
                           buildCell(

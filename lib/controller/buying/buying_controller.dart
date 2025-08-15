@@ -821,6 +821,20 @@ class BuyingController extends DefinitionBuyingController {
 
     super.dispose();
   }
+
+  List<PurchaseRowModel> purchaseRow = [];
+  void addRow() {
+    purchaseRow.add(PurchaseRowModel(
+      id: TextEditingController(text: ""),
+      itemsName: TextEditingController(text: ""),
+      itemsType: TextEditingController(text: ""),
+      itemsQTY: TextEditingController(text: "0"),
+      purchasePrice: TextEditingController(text: "0"),
+      totalPurchasePrice: TextEditingController(text: "0"),
+      discountTotalPurchasePrice: TextEditingController(text: "0"),
+    ));
+    update();
+  }
 }
 
 Widget _customTextFields(
@@ -857,4 +871,24 @@ Widget _customTextFields(
       ),
     ),
   );
+}
+
+class PurchaseRowModel {
+  TextEditingController id;
+  TextEditingController itemsName;
+  TextEditingController itemsType;
+  TextEditingController itemsQTY;
+  TextEditingController purchasePrice;
+  TextEditingController totalPurchasePrice;
+  TextEditingController discountTotalPurchasePrice;
+
+  PurchaseRowModel({
+    required this.id,
+    required this.itemsName,
+    required this.itemsType,
+    required this.itemsQTY,
+    required this.purchasePrice,
+    required this.totalPurchasePrice,
+    required this.discountTotalPurchasePrice,
+  });
 }

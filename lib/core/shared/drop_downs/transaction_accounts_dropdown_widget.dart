@@ -7,7 +7,7 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:get/get.dart';
 
 // ignore: must_be_immutable
-class TransactionAccountsDropdownWidget<T> extends StatelessWidget {
+class CustomDropdownSearchWidget<T> extends StatelessWidget {
   final String label;
   final IconData iconData;
   final List<T> items;
@@ -18,7 +18,7 @@ class TransactionAccountsDropdownWidget<T> extends StatelessWidget {
   final Color? fieldColor;
   String? Function(T?)? validator;
 
-  TransactionAccountsDropdownWidget({
+  CustomDropdownSearchWidget({
     super.key,
     required this.label,
     required this.iconData,

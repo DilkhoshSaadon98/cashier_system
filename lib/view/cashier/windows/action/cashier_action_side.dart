@@ -161,7 +161,7 @@ class CashierActionSide extends StatelessWidget {
                             controller.buttonsDetails[index]['title']);
                       },
                       child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 100),
+                        duration: const Duration(milliseconds: 50),
                         height: 60.h,
                         padding: EdgeInsets.symmetric(horizontal: 15.w),
                         decoration: BoxDecoration(

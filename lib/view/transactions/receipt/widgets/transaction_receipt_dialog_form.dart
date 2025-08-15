@@ -6,7 +6,7 @@ import 'package:cashier_system/core/shared/custom_sized_box.dart';
 import 'package:cashier_system/core/shared/custom_text_field_widget.dart';
 import 'package:cashier_system/data/model/account_model.dart';
 import 'package:cashier_system/view/categories/widgets/add_category_form.dart';
-import 'package:cashier_system/view/transactions/components/transaction_accounts_dropdown_widget.dart';
+import 'package:cashier_system/core/shared/drop_downs/transaction_accounts_dropdown_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -43,8 +43,7 @@ class TransactionReceiptDialogForm extends StatelessWidget {
                           title == TextRoutes.targetAccount) {
                         return Container(
                           margin: const EdgeInsets.only(bottom: 15),
-                          child:
-                              TransactionAccountsDropdownWidget<AccountModel>(
+                          child: CustomDropdownSearchWidget<AccountModel>(
                             iconData: icon,
                             items: controller.dropDownListSourceAccounts,
                             label: title,

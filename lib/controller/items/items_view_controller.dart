@@ -261,7 +261,12 @@ class ItemsViewController extends ItemsDefinitionController {
         final List responsedata = response['data'] ?? [];
 
         if (responsedata.isNotEmpty) {
-          data.addAll(responsedata.map((e) => ItemsModel.fromMap(e)));
+          data.addAll(
+            responsedata.map((e) {
+              final mapData = Map<String, dynamic>.from(e);
+              return ItemsModel.fromMap(mapData);
+            }),
+          );
           itemsOffset += itemsPerPage;
         } else {
           if (isInitialSearch || data.isEmpty) {
@@ -271,7 +276,7 @@ class ItemsViewController extends ItemsDefinitionController {
         }
 
         if (calculateData) {
-          totalItemsPrice = response['total_selling_price'] ?? 0.0;
+          totalItemsPrice = (response['total_selling_price'] ?? 0.0).toDouble();
           totalItemsCount = response['total_items'] ?? 0;
         }
       } else {
@@ -334,12 +339,13 @@ class ItemsViewController extends ItemsDefinitionController {
   }
 
   //? Update item price
-  Future<void> updateItemPrice(
-      String itemsId, String buyingPrice, String sellingPrice) async {
+  Future<void> updateItemDetails(
+      int itemsId, String barcode, double sellingPrice, String unitName) async {
     try {
       Map<String, dynamic> data = {
         "item_selling_price": sellingPrice,
-        "item_buying_price": buyingPrice,
+        "item_barcode": barcode,
+        "selected_unit": unitName,
       };
       var response =
           await sqlDb.updateData("tbl_items", data, "item_id = $itemsId");
@@ -349,29 +355,6 @@ class ItemsViewController extends ItemsDefinitionController {
     } catch (e) {
       showErrorDialog(e.toString(),
           title: "Error", message: "Error updating item price");
-    }
-  }
-
-  //? Update item details
-  Future<void> updateItemsDetails(String itemsId, String typeId) async {
-    try {
-      var dataResponse = await sqlDb.getAllData("unitsView",
-          where: "unit_item_id = $itemsId AND unit_type_id = $typeId");
-      if (dataResponse.isNotEmpty) {
-        Map<String, dynamic> data = {
-          "item_selling_price": dataResponse['data'][0]['unit_price_amount'],
-          "item_type": dataResponse['data'][0]['type_name'],
-          "item_barcode": dataResponse['data'][0]['unit_price_barcode'],
-        };
-        var response =
-            await sqlDb.updateData("tbl_items", data, "item_id = $itemsId");
-        if (response > 0) {
-          await getItemsData(isInitialSearch: true);
-        }
-      }
-    } catch (e) {
-      showErrorDialog(e.toString(),
-          title: "Error", message: "Error updating item details");
     }
   }
 
@@ -409,7 +392,7 @@ class ItemsViewController extends ItemsDefinitionController {
         double totalPrice = (item.itemsBaseQty) * (item.itemsSellingPrice);
         result["Total Price"]!.add(totalPrice.toString());
 
-        result["unit"]!.add(item.unitName.toString());
+        result["unit"]!.add(item.baseUnitName.toString());
       }
 
       // Prepare the invoice data

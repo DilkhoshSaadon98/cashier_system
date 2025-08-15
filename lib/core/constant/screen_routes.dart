@@ -18,6 +18,9 @@ class AppRoute {
   static const String accountScreen = "/accountScreen";
   static const String addAdminScreen = "/addAdminScreen";
   static const String addAccountScreen = "/addAccountScreen";
+  //! Units:
+  
+  static const String unitsScreen = "/unitsScreen";
   //! Settings Routes:
   static const String updateScreen = "/updateScreen";
   static const String backUpScreen = "/backUpScreen";

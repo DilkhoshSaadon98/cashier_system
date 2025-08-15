@@ -123,7 +123,7 @@ class ClientsData {
 
     String sql =
         "SELECT * FROM $viewSupplierTable WHERE $whereClause ORDER BY $sortBy ${isAsc! ? "ASC" : "DESC"} LIMIT $limit OFFSET $offset";
-    print(sql);
+
     var responseData = await db.getData(sql);
     return {'status': 'success', 'data': responseData};
   }

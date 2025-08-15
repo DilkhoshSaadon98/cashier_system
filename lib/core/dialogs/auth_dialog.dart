@@ -4,6 +4,7 @@ import 'package:cashier_system/core/dialogs/custom_snack_bar.dart';
 import 'package:cashier_system/core/functions/validinput.dart';
 import 'package:cashier_system/core/shared/custom_formfield_global.dart';
 import 'package:cashier_system/core/shared/custom_sized_box.dart';
+import 'package:cashier_system/core/shared/custom_text_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -40,9 +41,10 @@ class AuthenticationDialog extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              CustomTextFormFieldGlobal(
+              CustomTextFieldWidget(
                 borderColor: primaryColor,
-                mycontroller: usernameController,
+                fieldColor: white,
+                controller: usernameController,
                 hinttext: "Username",
                 labeltext: "Username",
                 iconData: Icons.person_outline,
@@ -52,9 +54,10 @@ class AuthenticationDialog extends StatelessWidget {
                 isNumber: false,
               ),
               verticalGap(),
-              CustomTextFormFieldGlobal(
+              CustomTextFieldWidget(
                 borderColor: primaryColor,
-                mycontroller: passwordController,
+                controller: passwordController,
+                fieldColor: white,
                 hinttext: "Password",
                 labeltext: "Password",
                 iconData: Icons.lock_outline,
@@ -62,7 +65,6 @@ class AuthenticationDialog extends StatelessWidget {
                   return validInput(value!, 0, 50, "password");
                 },
                 isNumber: false,
-                obscureText: true,
               ),
             ],
           ),

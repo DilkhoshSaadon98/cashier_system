@@ -180,13 +180,7 @@ class CatagoriesController extends GetxController {
     update();
   }
 
-  void checkSearch(String val) {
-    if (val.isEmpty) {
-      statusRequest = StatusRequest.none;
-      isSearch = false;
-    }
-    update();
-  }
+
 
   void onSearchItems() {
     isSearch = true;

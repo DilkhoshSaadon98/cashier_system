@@ -65,7 +65,7 @@ class CashierDefinitionController extends GetxController {
   //*
   List<UnitModel> unitsData = [];
   //* Store Selected Rows:
-  List<String> selectedRows = [];
+  List<int> selectedRows = [];
   //* Store pended Carts:
   List<int> pendedCarts = []; // Changed type to CartModel
   //* Store Cart Number That Are pended

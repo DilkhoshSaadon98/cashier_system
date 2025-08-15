@@ -23,28 +23,10 @@ class CustomGridDataView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<CashierController>();
+    Get.find<CashierController>();
     final imagePath =
         myServices.sharedPreferences.getString("image_path") ?? "";
     final CustomShowPopupMenu popupMenu = CustomShowPopupMenu();
-    void showDialogOption(String itemsId) {
-      popupMenu.showPopupMenu(context, [
-        TextRoutes.edit,
-        TextRoutes.view,
-      ], [
-        () async {
-          await controller.getItemsById(itemsId);
-          Get.toNamed(AppRoute.itemsUpdateScreen, arguments: {
-            "itemsModel": controller.dataItem[0],
-            "screen_route": AppRoute.cashierScreen,
-            'show_back': true
-          });
-        },
-        () async {
-          await controller.getItemsById(itemsId);
-        }
-      ]);
-    }
 
     return GetBuilder<CashierController>(
       builder: (controller) {
@@ -177,16 +159,37 @@ class CustomGridDataView extends StatelessWidget {
                                               controller.listDataSearch[index];
 
                                           return GestureDetector(
-                                            // behavior:
-                                            //     HitTestBehavior.translucent,
-                                            // excludeFromSemantics: true,
-                                            // onTapDown:
-                                            //     popupMenu.storeTapPosition,
-                                            // onLongPress: () => showDialogOption(
-                                            //     item.itemsId.toString()),
-                                            // onSecondaryTap: () =>
-                                            //     showDialogOption(
-                                            //         item.itemsId.toString()),
+                                            behavior:
+                                                HitTestBehavior.translucent,
+                                            excludeFromSemantics: true,
+                                            onTapDown:
+                                                popupMenu.storeTapPosition,
+                                            onLongPress: () async {
+                                              await controller
+                                                  .getItemsById(item.itemsId!);
+                                              Get.toNamed(
+                                                  AppRoute.itemsUpdateScreen,
+                                                  arguments: {
+                                                    "itemsModel":
+                                                        controller.dataItem[0],
+                                                    "screen_route":
+                                                        AppRoute.cashierScreen,
+                                                    'show_back': true
+                                                  });
+                                            },
+                                            onSecondaryTap: () async {
+                                              await controller
+                                                  .getItemsById(item.itemsId!);
+                                              Get.toNamed(
+                                                  AppRoute.itemsUpdateScreen,
+                                                  arguments: {
+                                                    "itemsModel":
+                                                        controller.dataItem[0],
+                                                    "screen_route":
+                                                        AppRoute.cashierScreen,
+                                                    'show_back': true
+                                                  });
+                                            },
                                             onTap: () {
                                               controller.addItemsToCart(
                                                 item.itemsId.toString(),

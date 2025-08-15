@@ -1,18 +1,13 @@
 import 'package:cashier_system/controller/items/items_definition_controller.dart';
-import 'package:cashier_system/controller/items/items_view_controller.dart';
-import 'package:cashier_system/controller/printer/invoice_controller.dart';
 import 'package:cashier_system/core/constant/app_theme.dart';
 import 'package:cashier_system/core/constant/screen_routes.dart';
 import 'package:cashier_system/core/dialogs/error_dialogs.dart';
 import 'package:cashier_system/core/dialogs/snackbar_helper.dart';
 import 'package:cashier_system/core/localization/text_routes.dart';
-import 'package:cashier_system/main.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart';
-import 'package:pdf/pdf.dart';
-import 'package:printing/printing.dart';
 
 class AddItemsController extends ItemsDefinitionController {
   GlobalKey<FormState> formState = GlobalKey<FormState>();
@@ -50,26 +45,24 @@ class AddItemsController extends ItemsDefinitionController {
         'item_name': itemsNameController.text,
         'item_barcode': itemsBarcodeController.text,
         'item_selling_price':
-            double.tryParse(itemsSellingPriceController.text) ?? 0,
+            double.tryParse(itemsSellingPriceController.text) ?? 0.0,
         'item_buying_price': double.tryParse(itemsBuyingPriceController.text) ??
             double.tryParse(itemsCostPriceController.text) ??
-            0,
+            0.0,
         'item_wholesale_price':
-            double.tryParse(itemsWholeSalePriceController.text) ?? 0,
+            double.tryParse(itemsWholeSalePriceController.text) ?? 0.0,
         'item_cost_price': double.tryParse(itemsCostPriceController.text) ??
             double.tryParse(itemsBuyingPriceController.text) ??
-            0,
-        'item_base_quantity': itemsBaseQtyController.text,
-        'item_alt_quantity': itemsAltQtyController.text,
-        'unit_conversion': itemsUnitConversionController.text,
-        'unit_name': itemsUnitBaseController.text,
-        'alt_unit_name': itemsUnitAltController.text,
+            0.0,
+        'item_count': double.tryParse(itemsCountController.text) ?? 0.0,
         'item_description': itemsDescControllerController.text,
-        'item_category_id': int.tryParse(catIdController.text) ?? 0,
+        'item_category_id': selectedCatId,
         'item_image': file?.path != null ? basename(file!.path) : "",
-        'production_date': itemsProductionDateController.text,
-        'expiry_date': itemsExpiryDateController.text,
         'item_create_date': currentTime,
+        'item_production_date': itemsProductionDateController.text,
+        'item_expiry_date': itemsExpiryDateController.text,
+        'unit_id': selectedUnitId,
+        "selected_unit": selectedUnitData!.unitBaseName,
       };
       if (itemsBarcodeController.text.isNotEmpty &&
           await itemBarcodeExist(itemsBarcodeController.text)) {
@@ -81,7 +74,7 @@ class AddItemsController extends ItemsDefinitionController {
         final int newItemId = response;
 
         double initialQuantity =
-            double.tryParse(itemsBaseQtyController.text) ?? 0;
+            double.tryParse(itemsCountController.text) ?? 0;
 
         if (initialQuantity > 0) {
           final movementData = {
@@ -99,40 +92,32 @@ class AddItemsController extends ItemsDefinitionController {
           await sqlDb.insertData("tbl_inventory_movements", movementData);
         }
         uploadFile();
-
-        // Optional barcode printing
-        if (autoPrintBarcode && itemsBarcodeController.text.isNotEmpty) {
-          final invoiceController = Get.put(InvoiceController());
-          final pdfData = await invoiceController.generateBarcode(
-            itemsBarcodeController.text,
-            itemsNameController.text.isEmpty
-                ? "Test Item"
-                : itemsNameController.text,
-            itemsSellingPriceController.text.isEmpty
-                ? "3500"
-                : itemsSellingPriceController.text,
-            1,
-          );
-
-          if (myServices.sharedPreferences.getString("label_printer") == null) {
-            final printerUrl = await Printing.pickPrinter(
-                context: navigatorKey.currentContext!);
-            myServices.sharedPreferences
-                .setString("label_printer", printerUrl!.name);
-          }
-
-          await Printing.directPrintPdf(
-            printer: Printer(
-                url: myServices.sharedPreferences.getString("label_printer")!),
-            onLayout: (PdfPageFormat format) async => pdfData,
-          );
+        //? For Main UNit
+        Map<String, dynamic> mainUnitData = {
+          "item_id": response,
+          "unit_id": selectedUnitId,
+          "item_price":
+              double.tryParse(itemsSellingPriceController.text) ?? 0.0,
+          "item_barcode": itemsBarcodeController.text,
+          'factor': selectedUnitFactor,
+          "created_at": currentTime,
+        };
+        await sqlDb.insertData('tbl_units_price', mainUnitData);
+        //? For Alt Units:
+        for (var product in rows) {
+          Map<String, dynamic> unitData = {
+            "item_id": response,
+            "unit_id": product.unitId,
+            "item_price": product.sellingPrice,
+            "item_barcode": product.barcode,
+            'factor': product.conversionFactorController.text,
+            "created_at": currentTime,
+          };
+          await sqlDb.insertData('tbl_units_price', unitData);
         }
-
+        showSuccessSnackBar(TextRoutes.dataAddedSuccess);
         localStoreData();
-        final viewController = Get.put(ItemsViewController());
-        await viewController.getItemsData(
-            isInitialSearch: true, calculateData: true);
-        Get.offAndToNamed(AppRoute.itemsViewScreen);
+        Get.offAndToNamed(AppRoute.itemsScreen);
       } else {
         showErrorSnackBar(TextRoutes.failAddData);
       }
@@ -143,6 +128,7 @@ class AddItemsController extends ItemsDefinitionController {
     }
   }
 
+//? Store last inserted item data:
   void localStoreData() async {
     // Store the data in SharedPreferences after successful insertion
     await myServices.sharedPreferences
@@ -165,6 +151,7 @@ class AddItemsController extends ItemsDefinitionController {
         .setString("item_category_name", catNameController.text);
   }
 
+//? load last inserted item data:
   void loadStoredData() async {
     itemsNameController.text =
         myServices.sharedPreferences.getString("item_name") ?? "";
@@ -213,7 +200,7 @@ class AddItemsController extends ItemsDefinitionController {
     itemsSecondeBarcode = TextEditingController();
     fromTypeName = TextEditingController();
     fromTypeID = TextEditingController();
-
+    getUnits();
     super.onInit();
   }
 

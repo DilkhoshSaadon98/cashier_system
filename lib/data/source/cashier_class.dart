@@ -1,5 +1,6 @@
 import 'package:cashier_system/core/constant/app_theme.dart';
 import 'package:cashier_system/core/dialogs/error_dialogs.dart';
+import 'package:cashier_system/core/localization/text_routes.dart';
 import 'package:cashier_system/data/sql/sqldb.dart';
 
 class CashierClass {
@@ -249,17 +250,22 @@ class CashierClass {
 
   //! Cashier Button Actions:
   //? Increase data items:
-  Future<dynamic> increaseData(
-      dynamic itemCount, String cartNumber, String itemsId) async {
+  Future<int?> increaseData(
+      int itemCount, String cartNumber, int itemsId) async {
     try {
-      dynamic newCount = itemCount + 1;
-      Map<String, dynamic> data = {"cart_items_count": newCount};
-      return await db.updateData(
+      final newCount = itemCount + 1;
+      int cartNu = int.parse(cartNumber);
+      final data = {"cart_items_count": newCount};
+
+      final response = await db.updateData(
         'tbl_cart',
         data,
-        'cart_number = $cartNumber AND cart_items_id = $itemsId',
+        'cart_number = $cartNu AND cart_items_id = $itemsId',
         json: false,
       );
+
+      print('Rows updated: $response');
+      return response;
     } catch (e) {
       showErrorDialog(e.toString(),
           title: "Error", message: "Error increasing data");
@@ -269,7 +275,7 @@ class CashierClass {
 
   //? Decrease data items:
   Future<dynamic> decreaseData(
-      int itemCount, String cartNumber, String itemsId) async {
+      int itemCount, String cartNumber, int itemsId) async {
     try {
       int newCount = itemCount - 1;
       Map<String, dynamic> data = {"cart_items_count": newCount};
@@ -287,7 +293,7 @@ class CashierClass {
 
   //? Cart Items Discount:
   Future<dynamic> percentageDiscountingItems(
-      String cartNumber, String discount, List<String> itemsId) async {
+      String cartNumber, String discount, List<int> itemsId) async {
     try {
       Map<String, dynamic> data = {"cart_item_discount": discount};
       return await db.updateData(
@@ -320,7 +326,7 @@ class CashierClass {
 
   //? Update Items By Input Number
   Future<dynamic> updateItemsCount(
-      String cartNumber, String count, List<String> itemsId) async {
+      String cartNumber, String count, List<int> itemsId) async {
     try {
       String itemIdList = itemsId.join(',');
       Map<String, dynamic> data = {"cart_items_count": count};
@@ -355,7 +361,7 @@ class CashierClass {
 
   //? Update Items Price
   Future<dynamic> updateItemPrice(
-      String cartNumber, String price, List<String> itemsId) async {
+      String cartNumber, String price, List<int> itemsId) async {
     try {
       String itemIdList = itemsId.join(',');
       Map<String, dynamic> data = {"cart_item_price": price};
@@ -373,7 +379,7 @@ class CashierClass {
   }
 
   //? Update Cart Item Gift Status
-  Future<int> cartItemGift(String cartNumber, List<String> itemsId) async {
+  Future<int> cartItemGift(String cartNumber, List<int> itemsId) async {
     try {
       String itemIdList = itemsId.join(',');
       var result = await db.getData(
@@ -381,9 +387,10 @@ class CashierClass {
       for (var item in result) {
         int currentGiftValue = item['cart_item_gift'];
         int newGiftValue = currentGiftValue == 0 ? 1 : 0;
+        String noteData = currentGiftValue == 0 ? TextRoutes.gift : "";
         int response = await db.updateData(
             'tbl_cart',
-            {"cart_item_gift": newGiftValue},
+            {"cart_item_gift": newGiftValue, "cart_note": noteData},
             'cart_number = $cartNumber AND cart_items_id = ${item['cart_items_id']}');
 
         if (response <= 0) {
@@ -462,7 +469,7 @@ class CashierClass {
   }
 
   //? Delete Selected Items
-  Future<dynamic> deleteData(String cartNumber, List<String> itemsId) async {
+  Future<dynamic> deleteData(String cartNumber, List<int> itemsId) async {
     try {
       String itemIdList = itemsId.join(',');
       return await db.deleteData('tbl_cart',

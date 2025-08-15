@@ -1,4 +1,5 @@
-import 'package:cashier_system/controller/catagories/catagories_controller.dart';
+
+import 'package:cashier_system/controller/items/units_controller.dart';
 import 'package:cashier_system/core/constant/color.dart';
 import 'package:cashier_system/core/constant/imgaeasset.dart';
 import 'package:cashier_system/core/dialogs/show_form_dialog.dart';
@@ -10,47 +11,46 @@ import 'package:cashier_system/core/shared/custom_header_screen.dart';
 import 'package:cashier_system/core/shared/custom_search_widget.dart';
 import 'package:cashier_system/core/shared/custom_sized_box.dart';
 import 'package:cashier_system/core/shared/buttons/custom_buttton_global.dart';
-import 'package:cashier_system/view/categories/widgets/add_category_form.dart';
-import 'package:cashier_system/view/categories/widgets/view_categories_widget.dart';
+import 'package:cashier_system/view/units/widgets/custom_show_units.dart';
+import 'package:cashier_system/view/units/widgets/units_dialog_form_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class CatagoriesScreenWindows extends StatelessWidget {
-  const CatagoriesScreenWindows({super.key});
+class UnitsScreenWindows extends StatelessWidget {
+  const UnitsScreenWindows({super.key});
 
   @override
   Widget build(BuildContext context) {
-    Get.put(CatagoriesController());
+    Get.put(UnitsController());
     return Scaffold(
-      backgroundColor: primaryColor,
-      body: GetBuilder<CatagoriesController>(builder: (controller) {
+      body: GetBuilder<UnitsController>(builder: (controller) {
         return DivideScreenWidget(
-          //! View Categories
+          //! View UNits
           showWidget: ListView(
             children: [
-              customAppBarTitle(TextRoutes.viewCategories),
-              const CustomShowCatagories(),
+              customAppBarTitle(TextRoutes.viewUnits),
+              const CustomShowUnits(),
             ],
           ),
           actionWidget: ListView(
             children: [
               //! Custom Header:
-              CustomHeaderScreen(
-                imagePath: AppImageAsset.itemsIcons,
+              const CustomHeaderScreen(
+                imagePath: AppImageAsset.unitsViewSvg,
                 showBackButton: true,
-                title: TextRoutes.categories.tr,
+                title: TextRoutes.viewUnits,
               ),
               verticalGap(),
 
               customButtonGlobal(() async {
                 showFormDialog(context,
-                    addText: TextRoutes.addCategories,
-                    editText: TextRoutes.editCategories,
-                    isUpdate: true,
-                    child: const AddCategoryForm(
-                      isUpdate: true,
+                    addText: TextRoutes.addUnits,
+                    editText: TextRoutes.editUnits,
+                    isUpdate: false,
+                    child: const UnitsDialogFormWidget(
+                      isUpdate: false,
                     ));
-              }, TextRoutes.addCategories, Icons.add_box_outlined, white,
+              }, TextRoutes.addUnits, Icons.add_box_outlined, white,
                   primaryColor),
               verticalGap(),
               CustomSearchField(
