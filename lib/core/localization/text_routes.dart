@@ -134,8 +134,9 @@ class TextRoutes {
   static const purchaesItems = "purchaesItems";
   static const viewPurchaes = "viewPurchaes";
   static const purchaesPrice = "purchaesPrice";
-  static const totalPriceDiscount = "totalPriceDiscount";
+  static const purchaesPriceDiscount = "purchaesPriceDiscount";
   static const totalPurchaesPrice = "totalPurchaesPrice";
+  static const itemName = "itemName";
   //! Invoices:
   static const invoices = "invoices";
   static const design = "design";

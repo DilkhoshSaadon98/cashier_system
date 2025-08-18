@@ -13,7 +13,7 @@ import 'package:cashier_system/data/model/purchaes_model.dart';
 import 'package:cashier_system/data/model/unit_conversation_model.dart';
 import 'package:cashier_system/data/model/units_model.dart';
 import 'package:cashier_system/data/source/items_class.dart';
-import 'package:cashier_system/data/sql/sqldb.dart';
+import 'package:cashier_system/core/class/sqldb.dart';
 import 'package:cashier_system/main.dart';
 import 'package:drop_down_list/model/selected_list_item.dart';
 import 'package:flutter/material.dart';

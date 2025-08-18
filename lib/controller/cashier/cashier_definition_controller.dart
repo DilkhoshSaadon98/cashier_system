@@ -8,7 +8,7 @@ import 'package:cashier_system/data/model/cart_model.dart';
 import 'package:cashier_system/data/model/items_model.dart';
 import 'package:cashier_system/data/model/users_model.dart';
 import 'package:cashier_system/data/source/items_class.dart';
-import 'package:cashier_system/data/sql/sqldb.dart';
+import 'package:cashier_system/core/class/sqldb.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

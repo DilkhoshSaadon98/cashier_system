@@ -1,7 +1,7 @@
 import 'package:cashier_system/core/constant/app_theme.dart';
 import 'package:cashier_system/core/dialogs/error_dialogs.dart';
 import 'package:cashier_system/core/localization/text_routes.dart';
-import 'package:cashier_system/data/sql/sqldb.dart';
+import 'package:cashier_system/core/class/sqldb.dart';
 
 class CashierClass {
   final SqlDb db = SqlDb();

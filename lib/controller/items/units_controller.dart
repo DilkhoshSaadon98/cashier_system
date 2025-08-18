@@ -6,7 +6,7 @@ import 'package:cashier_system/core/functions/handing_data_controller.dart';
 import 'package:cashier_system/core/localization/text_routes.dart';
 import 'package:cashier_system/data/model/units_model.dart';
 import 'package:cashier_system/data/source/units_class.dart';
-import 'package:cashier_system/data/sql/sqldb.dart';
+import 'package:cashier_system/core/class/sqldb.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

@@ -36,8 +36,11 @@ class SqlDb {
         final winLinuxDB = await databaseFactory.openDatabase(
           dbPath,
           options: OpenDatabaseOptions(
-            version: 1,
+            version: 2,
             onCreate: _onCreate,
+            onUpgrade: (db, oldVersion, newVersion) {
+              return _onUpgrade(db, oldVersion, newVersion);
+            },
           ),
         );
         return winLinuxDB;
@@ -81,7 +84,50 @@ class SqlDb {
   }
 
   _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    if (oldVersion < newVersion) {}
+    Database? myDb = await db;
+    if (oldVersion < newVersion) {
+      myDb.rawQuery("DROP VIEW view_items");
+      myDb.rawQuery('''
+CREATE VIEW view_items AS
+SELECT
+    i.item_id,
+    i.item_name,
+    i.item_description,
+    i.item_buying_price,
+    i.item_cost_price,
+    i.item_wholesale_price,
+    i.item_count,
+    i.item_category_id,
+    i.item_image,
+    i.item_create_date,
+    i.item_production_date,
+    i.item_expiry_date,
+    mu.item_price AS main_unit_price,
+    mu.item_barcode AS main_unit_barcode,
+    un.base_unit_name AS main_unit_name,
+    mu.unit_id AS main_unit_id,
+    ca.categories_name,
+    (
+        SELECT json_group_array(
+                json_object(
+                    'unit_id', up.unit_id, 'unit_name', un2.base_unit_name, 'price', up.item_price, 'barcode', up.item_barcode, 'factor', up.factor
+                )
+            )
+        FROM
+            tbl_units_price up
+            LEFT JOIN tbl_units un2 ON up.unit_id = un2.unit_id
+        WHERE
+            up.item_id = i.item_id
+            AND up.unit_id != mu.unit_id
+    ) AS alt_units
+FROM
+    tbl_items i
+    LEFT JOIN tbl_units_price mu ON i.item_id = mu.item_id
+    AND mu.unit_id = i.unit_id
+    LEFT JOIN tbl_units un ON mu.unit_id = un.unit_id
+    LEFT JOIN tbl_categories ca ON ca.categories_id = i.item_category_id
+''');
+    }
   }
 
   _onCreate(Database db, int version) async {

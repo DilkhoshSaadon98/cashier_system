@@ -1,4 +1,4 @@
-import 'package:cashier_system/data/sql/sqldb.dart';
+import 'package:cashier_system/core/class/sqldb.dart';
 
 class UnitsClass {
   SqlDb db = SqlDb();

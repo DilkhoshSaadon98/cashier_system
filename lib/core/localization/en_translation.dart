@@ -156,7 +156,7 @@ Map<String, String> enTranslation = {
   TextRoutes.purchaesItems: "Purchase items",
   TextRoutes.viewPurchaes: "View purchases",
   TextRoutes.purchaesPrice: "Purchase price",
-  TextRoutes.totalPriceDiscount: "Total price discount",
+  TextRoutes.purchaesPriceDiscount: "purchase price discount",
   TextRoutes.totalPurchaesPrice: "Total purchase price",
   //! Transactions
   TextRoutes.receiptAndPayments: "Receipt and payments",

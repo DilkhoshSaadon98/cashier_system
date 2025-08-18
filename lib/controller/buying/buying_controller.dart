@@ -3,13 +3,10 @@ import 'package:cashier_system/core/constant/app_theme.dart';
 import 'package:cashier_system/core/dialogs/error_dialogs.dart';
 import 'package:cashier_system/core/dialogs/snackbar_helper.dart';
 import 'package:cashier_system/core/functions/calculate_discount.dart';
-import 'package:cashier_system/core/functions/validinput.dart';
 import 'package:cashier_system/core/localization/text_routes.dart';
+import 'package:cashier_system/data/model/items_model.dart';
 import 'package:cashier_system/data/model/purchaes_model.dart';
-import 'package:cashier_system/view/buying/components/items_view_dropdown_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:get/get.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class BuyingController extends DefinitionBuyingController {
@@ -32,375 +29,37 @@ class BuyingController extends DefinitionBuyingController {
   }
 
 //? Add New rows :
-  void addNewRow() {
-    rowIndexCounter = rows.length;
-    rows.add(createRow(rowIndexCounter));
-    update();
-  }
-
-//? create rows;
-  List<Widget> createRow(int index) {
-    changeShowSaveButton(false);
-    TextEditingController itemDiscountedTotalPricesController =
-        TextEditingController();
-    TextEditingController itemOriginalTotalPricesController =
-        TextEditingController();
-    GlobalKey<FormState> formKeyTotalPrice = GlobalKey<FormState>();
-    GlobalKey<FormState> formKeyOriginalTotalPrice = GlobalKey<FormState>();
-    GlobalKey<FormState> formKeyBuying = GlobalKey<FormState>();
-    GlobalKey<FormState> formKeyQTY = GlobalKey<FormState>();
-    GlobalKey<FormState> formKeyName = GlobalKey<FormState>();
-    GlobalKey<FormState> formKeyCode = GlobalKey<FormState>();
-
-    TextEditingController itemCodeController = TextEditingController();
-    TextEditingController buyingPriceController = TextEditingController();
-    TextEditingController quantityController =
-        TextEditingController(text: '1.0');
-    TextEditingController itemNameController = TextEditingController();
-
-    // Add controllers and form keys to respective lists
-    itemCodeControllers.add(itemCodeController);
-    buyingPriceControllers.add(buyingPriceController);
-    quantityControllers.add(quantityController);
-    itemNameControllers.add(itemNameController);
-    itemOriginalTotalPriceControllers.add(itemOriginalTotalPricesController);
-    itemDiscountedTotalPriceControllers
-        .add(itemDiscountedTotalPricesController);
-
-    formKeysOriginalTotalPrice.add(formKeyOriginalTotalPrice);
-    formKeysDiscountTotalPrice.add(formKeyTotalPrice);
-    formKeysBuying.add(formKeyBuying);
-    formKeysQTY.add(formKeyQTY);
-    formKeysName.add(formKeyName);
-    formKeysCode.add(formKeyCode);
-
-    rowAdded = false;
-    quantityController.text = "1";
-    update();
-
-    return [
-      IconButton(
-        icon: const Icon(Icons.delete, color: Colors.red),
-        onPressed: () {
-          if (index < rows.length &&
-              index < itemCodeControllers.length &&
-              index < buyingPriceControllers.length &&
-              index < quantityControllers.length &&
-              index < itemNameControllers.length &&
-              index < itemOriginalTotalPriceControllers.length &&
-              index < itemDiscountedTotalPriceControllers.length &&
-              index < formKeysOriginalTotalPrice.length &&
-              index < formKeysDiscountTotalPrice.length &&
-              index < formKeysBuying.length &&
-              index < formKeysQTY.length &&
-              index < formKeysName.length &&
-              index < formKeysCode.length) {
-            rows.removeAt(index);
-            itemCodeControllers.removeAt(index);
-            buyingPriceControllers.removeAt(index);
-            quantityControllers.removeAt(index);
-            itemNameControllers.removeAt(index);
-            itemOriginalTotalPriceControllers.removeAt(index);
-            itemDiscountedTotalPriceControllers.removeAt(index);
-
-            formKeysOriginalTotalPrice.removeAt(index);
-            formKeysDiscountTotalPrice.removeAt(index);
-            formKeysBuying.removeAt(index);
-            formKeysQTY.removeAt(index);
-            formKeysName.removeAt(index);
-            formKeysCode.removeAt(index);
-
-            if (rows.isEmpty) {
-              rowAdded = false;
-              addNewRow();
-            }
-
-            update();
-          } else {
-            showErrorSnackBar(TextRoutes.failDeleteData);
-          }
-        },
-      ),
-      //* Item Code
-      Form(
-        key: formKeyCode,
-        child: ItemsViewDropdownWidget(
-          hinttext: TextRoutes.code,
-          valid: (value) {
-            return validInput(value!, 0, 100, "number");
-          },
-          isNumber: true,
-          onTap: () {},
-          idController: itemCodeController,
-          nameController: itemNameController,
-          controllerPrice: buyingPriceController,
-          controllerDiscountTotalPrice: itemDiscountedTotalPricesController,
-          controllerTotalPrice: itemOriginalTotalPricesController,
-          data: dropDownList,
-          passedIndex: index,
-        ),
-      ),
-      //* Item Name
-      Form(
-        key: formKeyName,
-        child: ItemsViewDropdownWidget(
-          hinttext: TextRoutes.itemsName,
-          valid: (value) {
-            return validInput(value!, 0, 1000, "");
-          },
-          isNumber: false,
-          nameController: itemNameController,
-          idController: itemCodeController,
-          controllerPrice: buyingPriceController,
-          controllerDiscountTotalPrice: itemDiscountedTotalPricesController,
-          controllerTotalPrice: itemOriginalTotalPricesController,
-          data: dropDownList,
-          onTap: () {},
-          passedIndex: index,
-        ),
-      ),
-      //* Item Purchase Price
-      _customTextFields(
-          TextRoutes.purchaesPrice,
-          formKeyBuying,
-          buyingPriceController,
-          (value) {
-            return validInput(value!, 0, 100, "realNumber");
-          },
-          true,
-          (value) {
-            handleFieldUpdate(
-              buyingPriceController: buyingPriceController,
-              quantityController: quantityController,
-              itemOriginalTotalPricesController:
-                  itemOriginalTotalPricesController,
-              itemDiscountedTotalPricesController:
-                  itemDiscountedTotalPricesController,
-              updatedField: "buying",
-              index: index,
-            );
-          }),
-
-      //* Item QTY
-      Row(
-        children: [
-          Expanded(
-            child: IconButton(
-              onPressed: () {
-                double currentQuantity =
-                    double.tryParse(quantityController.text) ?? 1.0;
-                quantityController.text =
-                    (currentQuantity + 1).toStringAsFixed(2);
-                handleFieldUpdate(
-                  buyingPriceController: buyingPriceController,
-                  quantityController: quantityController,
-                  itemOriginalTotalPricesController:
-                      itemOriginalTotalPricesController,
-                  itemDiscountedTotalPricesController:
-                      itemDiscountedTotalPricesController,
-                  updatedField: "qty",
-                  index: index,
-                );
-              },
-              icon: const Icon(
-                Icons.add,
-                color: Colors.teal,
-              ),
-            ),
-          ),
-          Expanded(
-            child: _customTextFields(
-              TextRoutes.qty,
-              formKeyQTY,
-              quantityController,
-              (value) => validInput(value!, 0, 20, "realNumber"),
-              true,
-              (value) {
-                handleFieldUpdate(
-                  buyingPriceController: buyingPriceController,
-                  quantityController: quantityController,
-                  itemOriginalTotalPricesController:
-                      itemOriginalTotalPricesController,
-                  itemDiscountedTotalPricesController:
-                      itemDiscountedTotalPricesController,
-                  updatedField: "qty",
-                  index: index,
-                );
-              },
-            ),
-          ),
-          Expanded(
-            child: IconButton(
-              onPressed: () {
-                double currentQuantity =
-                    double.tryParse(quantityController.text) ?? 1.0;
-                if (currentQuantity > 1) {
-                  quantityController.text =
-                      (currentQuantity - 1).toStringAsFixed(2);
-                  handleFieldUpdate(
-                    buyingPriceController: buyingPriceController,
-                    quantityController: quantityController,
-                    itemOriginalTotalPricesController:
-                        itemOriginalTotalPricesController,
-                    itemDiscountedTotalPricesController:
-                        itemDiscountedTotalPricesController,
-                    updatedField: "qty",
-                    index: index,
-                  );
-                }
-              },
-              icon: const Icon(
-                Icons.remove,
-                color: Colors.red,
-              ),
-            ),
-          ),
-        ],
-      ),
-
-      //* Item Original Price
-      _customTextFields(
-          TextRoutes.totalItemsPrice,
-          formKeyOriginalTotalPrice,
-          itemOriginalTotalPricesController,
-          (value) {
-            return validInput(value!, 0, 20, "");
-          },
-          true,
-          (value) {
-            handleFieldUpdate(
-              buyingPriceController: buyingPriceController,
-              quantityController: quantityController,
-              itemOriginalTotalPricesController:
-                  itemOriginalTotalPricesController,
-              itemDiscountedTotalPricesController:
-                  itemDiscountedTotalPricesController,
-              updatedField: "total",
-              index: index,
-            );
-          }),
-
-      //* Item Discount Total Price
-      _customTextFields(
-          TextRoutes.totalPriceDiscount,
-          formKeyTotalPrice,
-          itemDiscountedTotalPricesController,
-          (value) {
-            return validInput(value!, 0, 100, "realNumber");
-          },
-          true,
-          (value) {
-            handleFieldUpdate(
-              buyingPriceController: buyingPriceController,
-              quantityController: quantityController,
-              itemOriginalTotalPricesController:
-                  itemOriginalTotalPricesController,
-              itemDiscountedTotalPricesController:
-                  itemDiscountedTotalPricesController,
-              updatedField: "total",
-              index: index,
-            );
-          }),
-
-      Container()
-    ];
-  }
-
-  //? Handling Item Selection:
-  void onItemSelected(
-      TextEditingController selectedItemPrice,
-      TextEditingController itemOriginalTotalPricesController,
-      TextEditingController itemDiscountedTotalPricesController,
-      int index) {
-    handleFieldUpdate(
-      buyingPriceController: selectedItemPrice,
-      quantityController: quantityController,
-      itemOriginalTotalPricesController: itemOriginalTotalPricesController,
-      itemDiscountedTotalPricesController: itemDiscountedTotalPricesController,
-      updatedField: "buying",
-      index: index,
-    );
-    update();
-  }
-
-  void handleFieldUpdate({
-    TextEditingController? quantityController,
-    TextEditingController? itemOriginalTotalPricesController,
-    TextEditingController? itemDiscountedTotalPricesController,
-    TextEditingController? buyingPriceController,
-    String? updatedField,
-    int? index,
-  }) {
-    changeShowSaveButton(false);
-    // Safety: Make sure index is valid
-    if (index == null || index < 0 || index >= rows.length) return;
-
-    // Auto-add new row if on last input row
-    if (!rowAdded && index == rows.length - 1) {
-      rowAdded = true;
-      addNewRow();
-    } else if (index == rows.length - 2) {
-      rowAdded = false;
-    }
-
-    // Parse values safely
-    double quantity = double.tryParse(quantityController?.text ?? '') ?? 1;
-    double originalTotalPrice =
-        double.tryParse(itemOriginalTotalPricesController?.text ?? '') ?? 0.0;
-    double buyingPrice =
-        double.tryParse(buyingPriceController?.text ?? '') ?? 0.0;
-
-    // Field logic
-    if (updatedField == "total") {
-      if (quantity > 0) {
-        double result = originalTotalPrice / quantity;
-        buyingPriceController?.text = result.toStringAsFixed(2);
-        itemDiscountedTotalPricesController?.text =
-            originalTotalPrice.toStringAsFixed(2);
-      }
-    } else if (updatedField == "buying") {
-      if (quantity > 0) {
-        double result = buyingPrice * quantity;
-        itemOriginalTotalPricesController?.text = result.toStringAsFixed(2);
-        itemDiscountedTotalPricesController?.text = result.toStringAsFixed(2);
-      }
-    } else if (updatedField == "qty") {
-      if (buyingPrice > 0) {
-        double result = buyingPrice * quantity;
-        itemOriginalTotalPricesController?.text = result.toStringAsFixed(2);
-      }
-    }
-
-    update();
-  }
 
 //? Calculate total Purchase Price:
   double totalPurchaseCalculatedPrice = 0.0;
   void calculateTotalPrice() {
-    removeEmptyRows();
     totalPurchaseCalculatedPrice = 0.0;
-    for (int i = 0; i < itemDiscountedTotalPriceControllers.length; i++) {
-      totalPurchaseCalculatedPrice =
-          double.tryParse(itemDiscountedTotalPriceControllers[i].text)! +
-              totalPurchaseCalculatedPrice;
+
+    for (var row in purchaseRow) {
+      double discountedTotal =
+          double.tryParse(row.discountTotalPurchasePriceController.text) ?? 0.0;
+      totalPurchaseCalculatedPrice += discountedTotal;
     }
+
     update();
   }
 
 //? Remove Empty Rows:
   void removeEmptyRows() {
     try {
-      for (int i = rows.length - 1; i >= 0; i--) {
-        if (buyingPriceControllers[i].text.isEmpty ||
-            itemOriginalTotalPriceControllers[i].text.isEmpty) {
-          rows.removeAt(i);
-          buyingPriceControllers.removeAt(i);
-          quantityControllers.removeAt(i);
-          itemOriginalTotalPriceControllers.removeAt(i);
-          itemDiscountedTotalPriceControllers.removeAt(i);
-          itemCodeControllers.removeAt(i);
-          itemNameControllers.removeAt(i);
+      for (int i = purchaseRow.length - 1; i >= 0; i--) {
+        final row = purchaseRow[i];
+        final isEmpty = (row.purchasePriceController.text.isEmpty) ||
+            (row.itemsModel!.itemsName.isEmpty);
+
+        if (isEmpty) {
+          row.dispose();
+          purchaseRow.removeAt(i);
         }
+      }
+      if (purchaseRow.isEmpty) {
+        showErrorSnackBar(TextRoutes.noData);
+        changeShowSaveButton(false);
       }
     } catch (e) {
       showErrorDialog(e.toString(), title: "Error", message: "");
@@ -414,46 +73,58 @@ class BuyingController extends DefinitionBuyingController {
     showSaveButton = value;
   }
 
-//? Calculate Price After Discount And Fees :
   void calculatePrice() {
     try {
       removeEmptyRows();
-      double total = 0.0;
 
-      // Calculate the total from the original prices
-      for (int j = 0; j < itemOriginalTotalPriceControllers.length; j++) {
-        total +=
-            double.tryParse(itemOriginalTotalPriceControllers[j].text) ?? 0.0;
+      double grandTotal = 0.0;
+
+      // 1️⃣ Calculate total per row from **base price** (never overwritten by discounts)
+      for (var row in purchaseRow) {
+        double qty = double.tryParse(row.itemsQTYController.text) ?? 1.0;
+
+        // Use row.itemsModel!.itemsBuyingPrice as the base price
+        double basePrice = row.itemsModel?.itemsBuyingPrice ?? 0.0;
+
+        double totalPurchase = qty * basePrice;
+        row.totalPurchasePriceController.text =
+            totalPurchase.toStringAsFixed(2);
+
+        grandTotal += totalPurchase;
       }
 
-      for (int i = 0; i < rows.length; i++) {
-        double originalPrice =
-            double.tryParse(itemOriginalTotalPriceControllers[i].text) ?? 0.0;
+      // 2️⃣ Apply discount/fees proportionally from base total
+      for (var row in purchaseRow) {
+        double baseTotal =
+            double.tryParse(row.totalPurchasePriceController.text) ?? 0.0;
 
         double discount = 0.0;
         double fees = 0.0;
 
-        // Check if discount is provided and calculate it
         if (purchaseDiscountController.text.isNotEmpty) {
           discount = calculateFeesAndDiscountFunction(
-              int.parse(purchaseDiscountController.text),
-              total,
-              itemOriginalTotalPriceControllers)[i];
+              int.tryParse(purchaseDiscountController.text) ?? 0,
+              grandTotal,
+              purchaseRow)[purchaseRow.indexOf(row)];
         }
 
-        // Check if fees are provided and calculate it
         if (purchaseFeesController.text.isNotEmpty) {
           fees = calculateFeesAndDiscountFunction(
-              int.parse(purchaseFeesController.text),
-              total,
-              itemOriginalTotalPriceControllers)[i];
+              int.tryParse(purchaseFeesController.text) ?? 0,
+              grandTotal,
+              purchaseRow)[purchaseRow.indexOf(row)];
         }
 
-        double finalPrice = originalPrice - discount + fees;
-
-        itemDiscountedTotalPriceControllers[i].text =
+        double finalPrice = baseTotal - discount + fees;
+        row.discountTotalPurchasePriceController.text =
             finalPrice.toStringAsFixed(2);
+
+        double qty = double.tryParse(row.itemsQTYController.text) ?? 1.0;
+        row.purchasePrice = qty != 0 ? finalPrice / qty : 0.0;
+        row.purchasePriceController.text =
+            row.purchasePrice!.toStringAsFixed(2);
       }
+
       changeShowSaveButton(true);
       calculateTotalPrice();
     } catch (e) {
@@ -466,114 +137,100 @@ class BuyingController extends DefinitionBuyingController {
 //? Add Purchase Data :
   void addItems(BuildContext context) async {
     try {
-      calculatePrice();
-      removeEmptyRows();
+      if (!detailsFormKey.currentState!.validate() ||
+          !itemsFormKey.currentState!.validate()) {
+        showErrorSnackBar(TextRoutes.formValidationFailed);
+        return;
+      }
+      String transactionNumber = await generateVoucherNumber();
+      String dataTime =
+          dateController.text.isEmpty ? currentTime : dateController.text;
+      double totalPrice = totalPurchaseCalculatedPrice;
+      double purchaseDiscount =
+          double.tryParse(purchaseDiscountController.text) ?? 0.0;
+      double purchaseFees = double.tryParse(purchaseFeesController.text) ?? 0.0;
+      //?
+      int sourceAccountId;
+      int targetAccountId = 10; // حساب المخزون
 
-      if (formKey.currentState!.validate()) {
-        int purchaseNumber = await generateUniquePurchaseNumber();
-
-        bool allRowsValid = true;
-        for (int i = 0; i < itemCodeControllers.length; i++) {
-          if (!(formKeysName[i].currentState!.validate() &&
-              formKeysCode[i].currentState!.validate() &&
-              formKeysBuying[i].currentState!.validate() &&
-              formKeysQTY[i].currentState!.validate() &&
-              formKeysOriginalTotalPrice[i].currentState!.validate())) {
-            allRowsValid = false;
-            break;
-          }
-        }
-
-        if (!allRowsValid) {
-          showErrorSnackBar(TextRoutes.formValidationFailed);
-          return;
-        }
-
-        double totalPrice = totalPurchaseCalculatedPrice;
-        double purchaseDiscount =
-            double.tryParse(purchaseDiscountController.text) ?? 0.0;
-        double purchaseFees =
-            double.tryParse(purchaseFeesController.text) ?? 0.0;
-        //?
-        int sourceAccountId;
-        int targetAccountId = 10; // حساب المخزون
-
-        if (paymentMethod == TextRoutes.cash) {
-          sourceAccountId = 7; // الصندوق (مدين)
-        } else if (paymentMethod == TextRoutes.dept) {
-          sourceAccountId = 10; // المخزون (مدين)
-          targetAccountId = 20; // الموردين (دائن)
-        } else {
-          showErrorSnackBar(TextRoutes.failAddData);
-          return;
-        }
-
-        Map<String, dynamic> transactionData = {
-          'transaction_type': 'purchase',
-          'transaction_date': currentTime,
-          'transaction_amount': totalPrice,
-          'transaction_note':
-              "فاتورة مشتريات للمورد ${supplierNameController.text}",
-          'transaction_discount': purchaseDiscount,
-          'source_account_id': sourceAccountId,
-          'target_account_id': targetAccountId,
-        };
-
-        await sqlDb.insertData("tbl_transactions", transactionData);
-
-        // الآن نضيف كل صنف في جدول الشراء ونحدث المخزون
-        for (int i = itemCodeControllers.length - 1; i >= 0; i--) {
-          double purchasePrice =
-              double.tryParse(buyingPriceControllers[i].text) ?? 0.0;
-          int purchaseQuantity = int.tryParse(quantityControllers[i].text) ?? 0;
-          String itemCode = itemCodeControllers[i].text.trim();
-
-          // بيانات الشراء لكل صنف
-          Map<String, dynamic> itemData = {
-            'purchase_items_id': itemCode,
-            'purchase_price': purchasePrice,
-            'purchase_quantity': purchaseQuantity,
-            'purchase_total_price': purchasePrice * purchaseQuantity,
-            'purchase_number': purchaseNumber + 1,
-            'purchase_date': currentTime,
-            'purchase_discount': purchaseDiscount,
-            'purchase_fees': purchaseFees,
-            'purchase_payment': paymentMethod,
-            'purchase_supplier_id': supplierIdController.text,
-          };
-
-          int response = await sqlDb.insertData("tbl_purchase", itemData);
-
-          if (response > 0) {
-            // تحديث كمية المخزون في جدول الأصناف
-            Database? myDb = await sqlDb.db;
-            await myDb!.rawUpdate(
-              "UPDATE tbl_items SET item_count = item_count - $purchaseQuantity WHERE item_id = $itemCode",
-            );
-            // إضافة حركة مخزون (purchase)
-            Map<String, dynamic> inventoryMovementData = {
-              'item_id': int.parse(itemCode),
-              'movement_type': 'purchase',
-              'quantity': purchaseQuantity,
-              'cost_price': purchasePrice,
-              'movement_date': currentTime,
-              'note': 'شراء صنف رقم $itemCode',
-              'account_id': targetAccountId,
-              'sale_price': 0.0,
-            };
-            await sqlDb.insertData(
-                "tbl_inventory_movements", inventoryMovementData);
-          }
-        }
-
-        showSuccessSnackBar(TextRoutes.dataAddedSuccess);
-
-        getPurchaseData(isInitialSearch: true);
-        selectedSection = TextRoutes.view;
-        rows.clear();
+      if (paymentMethod == TextRoutes.cash) {
+        sourceAccountId = 7; // الصندوق (مدين)
+      } else if (paymentMethod == TextRoutes.dept) {
+        sourceAccountId = 10; // المخزون (مدين)
+        targetAccountId = 20; // الموردين (دائن)
       } else {
         showErrorSnackBar(TextRoutes.failAddData);
+        return;
       }
+
+      Map<String, dynamic> transactionData = {
+        'transaction_type': 'purchase',
+        'transaction_date': dataTime,
+        'transaction_amount': totalPrice,
+        'transaction_note':
+            "فاتورة مشتريات للمورد ${supplierNameController.text}",
+        'transaction_discount': purchaseDiscount,
+        'transaction_number': transactionNumber,
+        'source_account_id': sourceAccountId,
+        'target_account_id': targetAccountId,
+      };
+      await sqlDb.insertData("tbl_transactions", transactionData);
+
+      // الآن نضيف كل صنف في جدول الشراء ونحدث المخزون
+      for (int i = purchaseRow.length - 1; i >= 0; i--) {
+        double purchasePrice = double.tryParse(
+                purchaseRow[i].discountTotalPurchasePriceController.text) ??
+            0.0;
+        double qty =
+            double.tryParse(purchaseRow[i].itemsQTYController.text) ?? 0.0;
+        double factor =
+            double.tryParse(purchaseRow[i].factorController.text) ?? 1.0;
+
+        double purchaseQuantity = qty * factor;
+        int itemCode = purchaseRow[i].id!;
+        // بيانات الشراء لكل صنف
+        Map<String, dynamic> itemData = {
+          'purchase_items_id': itemCode,
+          'purchase_price': purchasePrice,
+          'purchase_quantity': purchaseQuantity,
+          'purchase_total_price': purchasePrice * purchaseQuantity,
+          'purchase_number': transactionNumber,
+          'purchase_date': dataTime,
+          'purchase_discount': purchaseDiscount,
+          'purchase_fees': purchaseFees,
+          'purchase_payment': paymentMethod,
+          'purchase_supplier_id': supplierIdController.text,
+        };
+
+        int response = await sqlDb.insertData("tbl_purchase", itemData);
+
+        if (response > 0) {
+          // تحديث كمية المخزون في جدول الأصناف
+          Database? myDb = await sqlDb.db;
+          await myDb!.rawUpdate(
+            "UPDATE tbl_items SET item_count = item_count + $purchaseQuantity WHERE item_id = $itemCode",
+          );
+          // إضافة حركة مخزون (purchase)
+          Map<String, dynamic> inventoryMovementData = {
+            'item_id': itemCode,
+            'movement_type': 'purchase',
+            'quantity': purchaseQuantity,
+            'cost_price': purchasePrice,
+            'movement_date': dataTime,
+            'note': 'شراء صنف رقم $itemCode',
+            'account_id': targetAccountId,
+            'sale_price': 0.0,
+          };
+          await sqlDb.insertData(
+              "tbl_inventory_movements", inventoryMovementData);
+        }
+      }
+
+      showSuccessSnackBar(TextRoutes.dataAddedSuccess);
+
+      getPurchaseData(isInitialSearch: true);
+      selectedSection = TextRoutes.view;
+      purchaseRow.clear();
     } catch (e) {
       showErrorDialog(e.toString(), message: TextRoutes.anErrorOccurred);
     } finally {
@@ -633,48 +290,7 @@ class BuyingController extends DefinitionBuyingController {
 
       if (response['status'] == "success") {
         List rawList = response['data'] ?? [];
-        if (rawList.isNotEmpty) {
-          currentPage++;
-
-          // Group by purchase_number
-          Map<int, List<Map<String, dynamic>>> groupedData = {};
-
-          for (var item in rawList) {
-            int number = item['purchase_number'];
-            groupedData.putIfAbsent(number, () => []).add(item);
-          }
-
-          // Build PurchaseModel for each group
-          final List<PurchaseModel> newData = groupedData.entries.map((entry) {
-            final items = entry.value;
-
-            final first = items.first;
-
-            return PurchaseModel(
-              purchaseId: first['purchase_id'],
-              purchaseItemsId: first['purchase_items_id'],
-              purchasePrice: (first['purchase_price'] as num).toDouble(),
-              purchaseQuantity: first['purchase_quantity'],
-              purchaseTotalPrice:
-                  (first['purchase_total_price'] as num).toDouble(),
-              purchasePayment: first['purchase_payment'],
-              purchaseSupplierId: first['purchase_supplier_id'],
-              purchaseDiscount: (first['purchase_discount'] as num).toDouble(),
-              purchaseDate: first['purchase_date'],
-              purchaseNumber: first['purchase_number'],
-              purchaseFees: (first['purchase_fees'] as num).toDouble(),
-              supplierName: first['supplier_name'],
-              itemName: first['item_name'],
-              supplierAddress: first['supplier_address'] ?? '',
-              supplierPhone: first['supplier_phone'] ?? '',
-              items: items.map((e) => PurchaseItem.fromJson(e)).toList(),
-            );
-          }).toList();
-
-          purchaseData.addAll(newData);
-        } else {
-          hasMoreData = false;
-        }
+        purchaseData.addAll(rawList.map((e) => PurchaseModel.fromJson(e)));
       } else {
         showErrorDialog(
           "",
@@ -745,9 +361,9 @@ class BuyingController extends DefinitionBuyingController {
 
     getUsers();
     getItems();
+    addRow();
     getPurchaseData(isInitialSearch: true);
     rowIndexCounter = 0;
-    rows.add(createRow(rowIndexCounter));
     super.onInit();
   }
 
@@ -780,115 +396,101 @@ class BuyingController extends DefinitionBuyingController {
     purchaseFeesController.dispose();
     totalPriceController.dispose();
 
-    //! Dispose list controllers
-    for (var controller in itemCodeControllers) {
-      controller.dispose();
-    }
-    for (var controller in itemTypeControllers) {
-      controller.dispose();
-    }
-    for (var controller in buyingPriceControllers) {
-      controller.dispose();
-    }
-    for (var controller in discountBuyingPriceControllers) {
-      controller.dispose();
-    }
-    for (var controller in quantityControllers) {
-      controller.dispose();
-    }
-    for (var controller in sellingPriceControllers) {
-      controller.dispose();
-    }
-    for (var controller in itemNameControllers) {
-      controller.dispose();
-    }
-    for (var controller in itemOriginalTotalPriceControllers) {
-      controller.dispose();
-    }
-    for (var controller in itemDiscountedTotalPriceControllers) {
-      controller.dispose();
-    }
-
     //! Dispose global keys if necessary (though typically not required for GlobalKey)
-    formKey = GlobalKey<FormState>();
-    formKeysCode = [];
-    formKeysName = [];
-    formKeysBuying = [];
-    formKeysBuyingDiscount = [];
-    formKeysQTY = [];
-    formKeysOriginalTotalPrice = [];
-    formKeysDiscountTotalPrice = [];
+    detailsFormKey = GlobalKey<FormState>();
 
     super.dispose();
   }
 
-  List<PurchaseRowModel> purchaseRow = [];
   void addRow() {
     purchaseRow.add(PurchaseRowModel(
-      id: TextEditingController(text: ""),
-      itemsName: TextEditingController(text: ""),
-      itemsType: TextEditingController(text: ""),
-      itemsQTY: TextEditingController(text: "0"),
-      purchasePrice: TextEditingController(text: "0"),
-      totalPurchasePrice: TextEditingController(text: "0"),
-      discountTotalPurchasePrice: TextEditingController(text: "0"),
+      id: null,
+      itemsModel: null,
+      itemsType: null,
+      itemsQTY: null,
+      purchasePrice: null,
+      totalPurchasePrice: null,
+      discountTotalPurchasePrice: null,
     ));
+    update();
+  }
+
+  void removeRow(int index) {
+    purchaseRow.removeAt(index);
     update();
   }
 }
 
-Widget _customTextFields(
-    String text,
-    GlobalKey<FormState> formState,
-    TextEditingController controller,
-    String? Function(String?)? validator,
-    bool isNumber,
-    void Function(String)? onChanged) {
-  return Form(
-    key: formState,
-    child: TextFormField(
-      controller: controller,
-      textAlign: TextAlign.center,
-      textAlignVertical: TextAlignVertical.center,
-      style: bodyStyle.copyWith(
-        fontWeight: FontWeight.w200,
-        overflow: TextOverflow.clip,
-      ),
-      validator: validator,
-      keyboardType: isNumber
-          ? const TextInputType.numberWithOptions(decimal: true)
-          : TextInputType.text,
-      inputFormatters: isNumber
-          ? [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}'))]
-          : [],
-      onChanged: onChanged,
-      readOnly: text == TextRoutes.totalPriceDiscount ? true : false,
-      decoration: InputDecoration(
-        errorStyle: bodyStyle.copyWith(color: Colors.red),
-        hintText: text.tr,
-        hintStyle: bodyStyle.copyWith(fontWeight: FontWeight.w300),
-        border: InputBorder.none,
-      ),
-    ),
-  );
+void updatePurchaseFields({
+  required TextEditingController qtyController,
+  required TextEditingController purchasePriceController,
+  required TextEditingController totalPriceController,
+  String updatedField = 'qty', // 'qty', 'purchasePrice', 'totalPrice'
+}) {
+  final q = double.tryParse(qtyController.text) ?? 0.0;
+  final p = double.tryParse(purchasePriceController.text) ?? 0.0;
+  final tp = double.tryParse(totalPriceController.text) ?? 0.0;
+
+  if (updatedField == 'qty' || updatedField == 'purchasePrice') {
+    // Calculate total price
+    final newTP = q * p;
+    totalPriceController.text = newTP.toStringAsFixed(2);
+  } else if (updatedField == 'totalPrice') {
+    // Calculate purchase price
+    if (q != 0) {
+      final newP = tp / q;
+      purchasePriceController.text = newP.toStringAsFixed(2);
+    }
+  }
 }
 
 class PurchaseRowModel {
-  TextEditingController id;
-  TextEditingController itemsName;
-  TextEditingController itemsType;
-  TextEditingController itemsQTY;
-  TextEditingController purchasePrice;
-  TextEditingController totalPurchasePrice;
-  TextEditingController discountTotalPurchasePrice;
+  int? id;
+  ItemsModel? itemsModel;
+  String? itemsType;
+  double? itemsQTY;
+  double? purchasePrice;
+  double? totalPurchasePrice;
+  double? discountTotalPurchasePrice;
+  double? factor;
 
-  PurchaseRowModel({
-    required this.id,
-    required this.itemsName,
-    required this.itemsType,
-    required this.itemsQTY,
-    required this.purchasePrice,
-    required this.totalPurchasePrice,
-    required this.discountTotalPurchasePrice,
-  });
+  // Controllers
+  final TextEditingController idController;
+  final TextEditingController itemsTypeController;
+  final TextEditingController itemsQTYController;
+  final TextEditingController purchasePriceController;
+  final TextEditingController totalPurchasePriceController;
+  final TextEditingController discountTotalPurchasePriceController;
+  final TextEditingController factorController;
+
+  PurchaseRowModel(
+      {this.id,
+      this.itemsModel,
+      this.itemsType,
+      this.itemsQTY,
+      this.purchasePrice,
+      this.totalPurchasePrice,
+      this.discountTotalPurchasePrice,
+      this.factor = 1})
+      : idController = TextEditingController(text: id?.toString() ?? ''),
+        itemsTypeController = TextEditingController(text: itemsType ?? ''),
+        itemsQTYController =
+            TextEditingController(text: itemsQTY?.toString() ?? ''),
+        purchasePriceController =
+            TextEditingController(text: purchasePrice?.toString() ?? ''),
+        totalPurchasePriceController =
+            TextEditingController(text: totalPurchasePrice?.toString() ?? ''),
+        discountTotalPurchasePriceController = TextEditingController(
+            text: discountTotalPurchasePrice?.toString() ?? ''),
+        factorController =
+            TextEditingController(text: factor?.toString() ?? '');
+
+  void dispose() {
+    idController.dispose();
+    itemsTypeController.dispose();
+    itemsQTYController.dispose();
+    purchasePriceController.dispose();
+    totalPurchasePriceController.dispose();
+    discountTotalPurchasePriceController.dispose();
+  }
 }

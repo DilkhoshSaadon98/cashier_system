@@ -1,7 +1,7 @@
 class PurchaseModel {
   final int? purchaseId;
   final int? purchaseItemsId;
-  final int? purchaseNumber;
+  final String? purchaseNumber;
   final double? purchasePrice;
   final int? purchaseQuantity;
   final double? purchaseTotalPrice;
@@ -40,7 +40,7 @@ class PurchaseModel {
     return PurchaseModel(
       purchaseId: json['purchase_id'] as int?,
       purchaseItemsId: json['purchase_items_id'] as int?,
-      purchaseNumber: json['purchase_number'] as int?,
+      purchaseNumber: json['purchase_number'] as String?,
       purchasePrice: json['purchase_price'] != null
           ? (json['purchase_price'] as num).toDouble()
           : null,

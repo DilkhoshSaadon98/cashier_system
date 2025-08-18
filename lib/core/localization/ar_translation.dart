@@ -157,7 +157,7 @@ Map<String, String> arTranslation = {
   TextRoutes.purchaesItems: "عناصر المشتريات",
   TextRoutes.viewPurchaes: "عرض المشتريات",
   TextRoutes.purchaesPrice: "سعر الشراء",
-  TextRoutes.totalPriceDiscount: "إجمالي خصم السعر",
+  TextRoutes.purchaesPriceDiscount: "سعر الخصم",
   TextRoutes.totalPurchaesPrice: "إجمالي سعر الشراء",
 //! Transactions:
   TextRoutes.receiptAndPayments: "الإيصالات والمدفوعات",

@@ -134,7 +134,7 @@ class ViewBuyingDetailsScreen extends StatelessWidget {
                           Get.toNamed(AppRoute.invoiceScreen);
                         },
                         child: customButtonGlobal(() async {
-                          controller.printingData();
+                          controller.printingDatas();
                         }, "Print", Icons.print, Colors.blueAccent, white),
                       )
                     ],

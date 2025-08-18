@@ -156,7 +156,7 @@ Map<String, String> kuSoraniTranslation = {
   TextRoutes.purchaesItems: "کڕینی تاقیکردنەوەکان",
   TextRoutes.viewPurchaes: "بینینی کڕینەکان",
   TextRoutes.purchaesPrice: "نرخی کڕین",
-  TextRoutes.totalPriceDiscount: "کۆی داشکاندنی نرخ",
+  TextRoutes.purchaesPriceDiscount: "کۆی داشکاندنی نرخ",
   TextRoutes.totalPurchaesPrice: "کۆی نرخی کڕین",
 //! Transactions
   TextRoutes.receiptAndPayments: "وەرگرتن و پارەدان",

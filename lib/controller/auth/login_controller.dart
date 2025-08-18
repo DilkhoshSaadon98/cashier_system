@@ -4,7 +4,7 @@ import 'package:cashier_system/core/constant/dev_config.dart';
 import 'package:cashier_system/core/dialogs/custom_snack_bar.dart';
 import 'package:cashier_system/core/dialogs/error_dialogs.dart';
 import 'package:cashier_system/data/source/auth_class.dart';
-import 'package:cashier_system/data/sql/sqldb.dart';
+import 'package:cashier_system/core/class/sqldb.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

@@ -96,7 +96,7 @@ class AltUnit {
       unitId: map['unit_id'],
       unitName: map['unit_name'] ?? "",
       price: map['price']?.toDouble() ?? 0.0,
-      unitFactor: map['factor']?.toDouble() ?? 0.0,
+      unitFactor: map['factor']?.toDouble() ?? 1.0,
       barcode: map['barcode'] ?? "",
     );
   }

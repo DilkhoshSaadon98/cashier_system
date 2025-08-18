@@ -15,7 +15,7 @@ class MyMiddleWare extends GetMiddleware {
 
     // Direct to home for development
     if (step == "dashboard") {
-      return const RouteSettings(name: AppRoute.homeScreen);
+      return const RouteSettings(name: AppRoute.buyingScreen);
     }
 
     bool isLogin = myServices.sharedPreferences.getBool("login") ?? true;

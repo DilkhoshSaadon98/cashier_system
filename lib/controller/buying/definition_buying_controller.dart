@@ -1,7 +1,7 @@
+import 'package:cashier_system/controller/buying/buying_controller.dart';
 import 'package:cashier_system/controller/printer/invoice_controller.dart';
 import 'package:cashier_system/controller/printer/sunmi_printer_controller.dart';
 import 'package:cashier_system/core/constant/app_theme.dart';
-import 'package:cashier_system/core/constant/color.dart';
 import 'package:cashier_system/core/dialogs/error_dialogs.dart';
 import 'package:cashier_system/core/functions/show_popup_menu.dart';
 import 'package:cashier_system/core/localization/text_routes.dart';
@@ -14,10 +14,10 @@ import 'package:cashier_system/data/model/units_model.dart';
 import 'package:cashier_system/data/model/users_model.dart';
 import 'package:cashier_system/data/source/buying_class.dart';
 import 'package:cashier_system/data/source/items_class.dart';
-import 'package:cashier_system/data/sql/sqldb.dart';
+import 'package:cashier_system/core/class/sqldb.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class DefinitionBuyingController extends GetxController {
   //! Data Model
@@ -25,7 +25,8 @@ class DefinitionBuyingController extends GetxController {
   List<ItemsModel> itemsCodesData = [];
   List<UsersModel> usersData = [];
   List<PurchaseModel> purchaseData = [];
-
+  //! Data
+  List<PurchaseModel> purchaseDetailsData = [];
   //! Database Classes
   final BuyingClass buyingClass = BuyingClass();
   final ItemsClass itemsClass = ItemsClass();
@@ -35,9 +36,6 @@ class DefinitionBuyingController extends GetxController {
   List<CustomSelectedListItems> dropDownList = [];
   List<CustomSelectedListUsers> dropDownListUsers = [];
   List<SupplierModel> listDataSearchUsers = [];
-
-  //! Table Rows:
-  List<List<Widget>> rows = [];
 
   //! Search Side Titles:
   final List<String> itemsTitle = [
@@ -51,15 +49,24 @@ class DefinitionBuyingController extends GetxController {
   //! Update Screen Index:
   int currentIndex = 0;
 
-  String selectedSection = TextRoutes.add;
+  String selectedSection = TextRoutes.view;
 
   changeSection(value) {
     selectedSection = value;
     update();
   }
 
+  String selectedSearchPaymentMethod = TextRoutes.all;
+
+  changeSearchPaymentMethod(value) {
+    selectedSearchPaymentMethod = value;
+    update();
+  }
+
   //! Text Controllers
   late TextEditingController itemsNameController = TextEditingController();
+  late TextEditingController transactionNumberController =
+      TextEditingController();
   late TextEditingController itemsSellingPriceController;
   late TextEditingController itemsBuyingPriceController;
   late TextEditingController purchaseDateController;
@@ -83,34 +90,49 @@ class DefinitionBuyingController extends GetxController {
   late TextEditingController paymentMethodNameController;
   late TextEditingController paymentMethodIdController;
   late TextEditingController purchaseDiscountController;
+  late TextEditingController dateController;
   late TextEditingController purchaseFeesController;
   late TextEditingController totalPriceController;
 
-  //! List Text Controller:
-  List<TextEditingController> itemCodeControllers = [];
-  List<TextEditingController> itemTypeControllers = [];
-  List<TextEditingController> buyingPriceControllers = [];
-  List<TextEditingController> discountBuyingPriceControllers = [];
-  List<TextEditingController> quantityControllers = [];
-  List<TextEditingController> sellingPriceControllers = [];
-  List<TextEditingController> itemNameControllers = [];
-  List<TextEditingController> itemOriginalTotalPriceControllers = [];
-  List<TextEditingController> itemDiscountedTotalPriceControllers = [];
+  GlobalKey<FormState> detailsFormKey = GlobalKey<FormState>();
+  GlobalKey<FormState> itemsFormKey = GlobalKey<FormState>();
 
-  GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  List<GlobalKey<FormState>> formKeysCode = [];
-  List<GlobalKey<FormState>> formKeysName = [];
-  List<GlobalKey<FormState>> formKeysBuying = [];
-  List<GlobalKey<FormState>> formKeysBuyingDiscount = [];
-  List<GlobalKey<FormState>> formKeysQTY = [];
-  List<GlobalKey<FormState>> formKeysOriginalTotalPrice = [];
-  List<GlobalKey<FormState>> formKeysDiscountTotalPrice = [];
   String paymentMethod = TextRoutes.cash;
   changePaymentMethod(String value) {
     paymentMethod = value;
     update();
   }
 
+  List<Map<String, dynamic>> get searchFields => [
+        {
+          "title": TextRoutes.transactionNumber,
+          "icon": Icons.numbers,
+          "controller": transactionNumberController,
+          "valid": "",
+          'read_only': false
+        },
+        {
+          "title": TextRoutes.supplierName,
+          "icon": Icons.person,
+          "controller": supplierNameController,
+          "valid": "",
+          'read_only': false
+        },
+        {
+          "title": TextRoutes.date,
+          "icon": Icons.date_range,
+          "controller": dateController,
+          "valid": "",
+          'read_only': true
+        },
+        {
+          "title": TextRoutes.paymentString,
+          "icon": Icons.payment,
+          "controller": itemsSellingPriceController,
+          "valid": "",
+          'read_only': false
+        },
+      ];
   final CustomShowPopupMenu customShowPopupMenu = CustomShowPopupMenu();
   //? Lazy Loading Variables:
   final int pageSize = 20;
@@ -124,7 +146,7 @@ class DefinitionBuyingController extends GetxController {
   //?
   int totalInvoicePrice = 0;
   int rowIndexCounter = 0;
-  List<int> selectedRows = [];
+  List<String> selectedRows = [];
   //? Unit data store
   final List<UnitModel> unitsData = [];
   final List<String> dropdownItems = [];
@@ -165,25 +187,6 @@ class DefinitionBuyingController extends GetxController {
     update();
   }
 
-  //? Get current date for date picker
-  DateTime selectedDate = DateTime.now();
-  Future<void> selectDate(
-      BuildContext context, TextEditingController controller) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      // ignore: deprecated_member_use
-      barrierColor: primaryColor.withOpacity(.3),
-      initialDate: selectedDate,
-      firstDate: DateTime(2024, 1),
-      lastDate: DateTime(2101),
-    );
-    if (picked != null && picked != selectedDate) {
-      selectedDate = picked;
-      controller.text = DateFormat('yyyy-MM-dd').format(selectedDate);
-      update();
-    }
-  }
-
   //! Get Supplier Names
   Future<void> getUsers() async {
     try {
@@ -213,24 +216,21 @@ class DefinitionBuyingController extends GetxController {
     }
   }
 
-  List<ItemsModel> listDataSearch = [];
+  List<PurchaseRowModel> purchaseRow = [];
 
+  List<ItemsModel> itemsData = [];
   //? Get Items For Search
   Future<void> getItems() async {
     try {
-      var response = await sqlDb.getAllData("itemsView");
+      var response = await sqlDb.getAllData("view_items");
       if (response['status'] == "success") {
-        listDataSearch.clear();
-        dropDownList.clear();
+        itemsData.clear();
         List responsedata = response['data'];
-        listDataSearch.addAll(responsedata.map((e) => ItemsModel.fromMap(e)));
-        for (int i = 0; i < listDataSearch.length; i++) {
-          dropDownList.add(CustomSelectedListItems(
-            desc: listDataSearch[i].itemsName,
-            name: listDataSearch[i].itemsName,
-            value: listDataSearch[i].itemsId.toString(),
-            price: listDataSearch[i].itemsBuyingPrice.toString(),
-          ));
+        itemsData.addAll(responsedata.map((e) => ItemsModel.fromMap(e)));
+        for (var row in purchaseRow) {
+          if (itemsData.isNotEmpty) {
+            row.itemsModel ??= itemsData.first;
+          }
         }
       }
     } catch (e) {
@@ -358,6 +358,29 @@ class DefinitionBuyingController extends GetxController {
   }
 
   //! Generate Unique Purchase Number
+  Future<String> generateVoucherNumber() async {
+    final currentYear = DateTime.now().year.toString();
+    Database? myDb = await sqlDb.db;
+    final result = await myDb!.rawQuery('''
+    SELECT transaction_number FROM tbl_transactions
+    WHERE transaction_number LIKE 'PI-$currentYear-%'
+    ORDER BY transaction_id DESC LIMIT 1
+  ''');
+
+    int nextNumber = 1;
+
+    if (result.isNotEmpty) {
+      final lastVoucherNumber = result[0]['transaction_number'] as String;
+      final lastNumberStr = lastVoucherNumber.split('-').last;
+      final lastNumber = int.tryParse(lastNumberStr) ?? 0;
+      nextNumber = lastNumber + 1;
+    }
+
+    final formattedNumber = nextNumber.toString().padLeft(4, '0');
+
+    return 'PI-$currentYear-$formattedNumber';
+  }
+
   Future<int> generateUniquePurchaseNumber() async {
     int result = 0;
     try {
@@ -372,6 +395,43 @@ class DefinitionBuyingController extends GetxController {
           title: "Error", message: "Error generating unique purchase number");
     }
     return result;
+  }
+
+  Future<void> getPurchaseDetailsData(String purchaseNumber) async {
+    try {
+      final response = await buyingClass.searchPurchaseDetailsData(
+        purchaseNumber,
+        itemsNo:
+            itemsIdController.text.isNotEmpty ? itemsIdController.text : null,
+        itemsName: itemsNameController.text.isNotEmpty
+            ? itemsNameController.text
+            : null,
+        itemsSelling: itemsSellingPriceController.text.isNotEmpty
+            ? itemsSellingPriceController.text
+            : null,
+        itemsBuying: itemsBuyingPriceController.text.isNotEmpty
+            ? itemsBuyingPriceController.text
+            : null,
+        itemsDate: purchaseDateController.text.isNotEmpty
+            ? purchaseDateController.text
+            : null,
+        groupBy: groupByNameController.text.isNotEmpty
+            ? groupByNameController.text
+            : null,
+      );
+
+      if (response['status'] == "success") {
+        purchaseDetailsData.clear();
+        List responsedata = response['data'] ?? [];
+        purchaseDetailsData
+            .addAll(responsedata.map((e) => PurchaseModel.fromJson(e)));
+      }
+    } catch (e) {
+      showErrorDialog(e.toString(),
+          title: "Error", message: "Error fetching purchase details");
+    } finally {
+      update();
+    }
   }
 
   @override
@@ -399,6 +459,7 @@ class DefinitionBuyingController extends GetxController {
     paymentMethodNameController = TextEditingController();
     paymentMethodIdController = TextEditingController();
     purchaseDiscountController = TextEditingController();
+    dateController = TextEditingController();
     purchaseFeesController = TextEditingController();
     totalPriceController = TextEditingController();
   }

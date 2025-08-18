@@ -1,13 +1,18 @@
-import 'package:flutter/material.dart';
+import 'package:cashier_system/controller/buying/buying_controller.dart';
 
-List<double> calculateFeesAndDiscountFunction(int fees, double totalPrice,
-    List<TextEditingController> itemTotalPriceControllers) {
+List<double> calculateFeesAndDiscountFunction(
+    int fees, double totalPrice, List<PurchaseRowModel> rows,
+    {bool useOriginalPrice = true}) {
   List<double> dataResult = [];
 
-  for (int i = 0; i < itemTotalPriceControllers.length; i++) {
-    double itemTotal = double.tryParse(itemTotalPriceControllers[i].text)??0.0;
+  for (var row in rows) {
+    double itemTotal = useOriginalPrice
+        ? double.tryParse(row.totalPurchasePriceController.text) ?? 0.0
+        : double.tryParse(row.discountTotalPurchasePriceController.text) ?? 0.0;
+
     double feeAmount = (itemTotal / totalPrice) * fees;
     dataResult.add(feeAmount);
   }
+
   return dataResult;
 }
