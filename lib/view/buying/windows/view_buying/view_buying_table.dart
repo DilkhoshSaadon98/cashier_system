@@ -2,6 +2,7 @@ import 'package:cashier_system/controller/buying/buying_controller.dart';
 import 'package:cashier_system/core/constant/app_theme.dart';
 import 'package:cashier_system/core/constant/color.dart';
 import 'package:cashier_system/core/dialogs/delete_dialog.dart';
+import 'package:cashier_system/core/dialogs/show_form_dialog.dart';
 import 'package:cashier_system/core/functions/formating_numbers.dart';
 import 'package:cashier_system/core/functions/handle_data_function_mobile.dart';
 import 'package:cashier_system/core/localization/text_routes.dart';
@@ -29,8 +30,10 @@ class ViewBuyingTable extends StatelessWidget {
           TextRoutes.remove,
         ],
         [
-          () {
-            showPurchaseItemsDialog(context, dataItem);
+          () async {
+            await controller.getPurchaseDetailsData(dataItem.purchaseNumber!);
+            showPurchaseDetailsDialog(context, controller.purchaseDetailsData,
+                dataItem.purchaseNumber!);
           },
           () {
             showDeleteDialog(
@@ -38,7 +41,7 @@ class ViewBuyingTable extends StatelessWidget {
                 title: "",
                 content: "",
                 onPressed: () {
-                  controller.removeData(dataItem.purchaseNumber!);
+                  //  controller.removeData(dataItem.purchaseNumber!);
                   Navigator.pop(context);
                 });
           }
@@ -94,7 +97,8 @@ class ViewBuyingTable extends StatelessWidget {
                               controller.purchaseData.length,
                           columns: const [
                             " ",
-                            TextRoutes.invoiceNumber,
+                            // TextRoutes.invoiceNumber,
+                            TextRoutes.transactionNumber,
                             TextRoutes.supplierName,
                             TextRoutes.totalPrice,
                             TextRoutes.discount,
@@ -135,7 +139,8 @@ class ViewBuyingTable extends StatelessWidget {
                                   },
                                 ),
                               ),
-                              buildCell(record.purchaseId.toString(), record),
+                              // buildCell(record.purchaseId.toString(), record),
+                              buildCell(record.purchaseNumber!, record),
                               buildCell(record.supplierName!, record),
                               buildCell(
                                   formattingNumbers(record.purchaseTotalPrice),
@@ -200,4 +205,103 @@ void showPurchaseItemsDialog(BuildContext context, PurchaseModel purchase) {
       ],
     ),
   );
+}
+
+void showPurchaseDetailsDialog(
+    BuildContext context, List<PurchaseModel> items, String purchaseNumber) {
+  showFormDialog(
+    context,
+    addText: "Purchase #$purchaseNumber",
+    editText: "Purchase #$purchaseNumber",
+    isUpdate: false,
+    child: Container(
+      width: MediaQuery.of(context).size.width * 0.8,
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(
+            height: 300,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Column(
+                        children: [
+                          Text(TextRoutes.discount.tr, style: titleStyle),
+                          Text(
+                            formattingNumbers(items[0].purchaseDiscount),
+                            style: bodyStyle,
+                          ),
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          Text(TextRoutes.fees.tr, style: titleStyle),
+                          Text(
+                            formattingNumbers(items[0].purchaseFees),
+                            style: bodyStyle,
+                          ),
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          Text(TextRoutes.date.tr, style: titleStyle),
+                          Text(
+                            items[0].purchaseDate.toString(),
+                            style: bodyStyle,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const Divider(height: 20),
+                  Column(
+                    children: items.map((item) {
+                      return ListTile(
+                        tileColor: Colors.white12,
+                        title: Text(
+                          item.itemName!,
+                          style: titleStyle,
+                        ),
+                        subtitle: Text(
+                          "${item.purchaseQuantity} * ${item.purchaseTotalPrice}",
+                          style: bodyStyle,
+                        ),
+                        trailing: Text(
+                          "${TextRoutes.totalPrice.tr}: ${item.purchaseTotalPrice}",
+                          style: bodyStyle,
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+class PurchaseItem {
+  final String name;
+  final String unit;
+  final double price;
+  final double quantity;
+  final double total;
+  final double discountedPrice;
+
+  PurchaseItem({
+    required this.name,
+    required this.unit,
+    required this.price,
+    required this.quantity,
+    required this.total,
+    required this.discountedPrice,
+  });
 }

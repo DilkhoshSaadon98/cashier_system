@@ -18,13 +18,16 @@ import '../../data/model/categories_model.dart';
 
 class CashierController extends CashierConstantController {
   //? show grid data view (items in image)
-  bool showGridData = true;
+  bool showGridData =
+      myServices.systemSharedPreferences.getBool("menu_expand") ?? true;
   switchShowGridData() {
     showGridData = !showGridData;
+    myServices.systemSharedPreferences.setBool("menu_expand", showGridData);
     update();
   }
 
-  int gridExpand = 1;
+  int gridExpand =
+      myServices.systemSharedPreferences.getInt("menu_expand_value") ?? 1;
   changeGridExpanded() {
     if (showGridData) {
       gridExpand++;
@@ -32,6 +35,7 @@ class CashierController extends CashierConstantController {
         gridExpand = 1;
       }
     }
+    myServices.systemSharedPreferences.setInt("menu_expand_value", gridExpand);
     update();
   }
 
@@ -66,21 +70,21 @@ class CashierController extends CashierConstantController {
 
   //? Check if an item is selected
   bool isSelected(int itemsId) {
-    return selectedRows.contains(itemsId.toString());
+    return selectedRows.contains(itemsId);
   }
 
   //? Select or deselect an item
   void selectItem(int itemsId, bool? selected) {
     if (selected == true) {
-      selectedRows.add(itemsId.toString());
+      selectedRows.add(itemsId);
     } else {
-      selectedRows.remove(itemsId.toString());
+      selectedRows.remove(itemsId);
     }
     update();
   }
 
 //? Select or De-Select Items
-  void toggleRowSelection(String index) {
+  void toggleRowSelection(int index) {
     if (selectedRows.contains(index)) {
       selectedRows.remove(index);
     } else {
@@ -100,7 +104,7 @@ class CashierController extends CashierConstantController {
     if (selectedRows.length == cartData.length) {
       selectedRows.clear();
     } else {
-      selectedRows = cartData.map((item) => item.itemsId.toString()).toList();
+      selectedRows = cartData.map((item) => item.cartItemsId).toList();
     }
     update();
   }
@@ -126,7 +130,7 @@ class CashierController extends CashierConstantController {
 
 //? Checking Selected Rows:
   void checkSelectedRows(bool value, int index) {
-    String itemId = cartData[index].itemsId.toString();
+    int itemId = cartData[index].cartItemsId;
     if (value) {
       if (!selectedRows.contains(itemId)) {
         selectedRows.add(itemId);
@@ -249,7 +253,7 @@ class CashierController extends CashierConstantController {
   }
 
   //? Get Items By ID;
-  Future<void> getItemsById(String id) async {
+  Future<void> getItemsById(int id) async {
     try {
       var response =
           await sqlDb.getAllData("itemsView", where: "item_id = $id");
@@ -324,8 +328,7 @@ class CashierController extends CashierConstantController {
             showDialog = false;
           }
         }
-        await cashierClass.increaseData(
-            cartItemsCount, cartNo, cartItemsId.toString());
+        await cashierClass.increaseData(cartItemsCount, cartNo, cartItemsId);
       } else {
         // ignore: prefer_typing_uninitialized_variables
         var idResponse;
@@ -367,7 +370,6 @@ class CashierController extends CashierConstantController {
         message: TextRoutes.exceptionAddingItemToCart,
       );
     } finally {
-      // Update the state after the operation
       update();
     }
   }
@@ -384,8 +386,13 @@ class CashierController extends CashierConstantController {
         cartItemsCount = 0;
 
         List responsedata = response["data_cart"]['data'] ?? [];
+        cartData.addAll(
+          responsedata.map((e) {
+            final mapData = Map<String, dynamic>.from(e);
+            return CartModel.fromJson(mapData);
+          }),
+        );
 
-        cartData.addAll(responsedata.map((e) => CartModel.fromJson(e)));
         pendedCarts = response["pended_carts"] ?? [];
         cartsNumbers = response["carts_number"] ?? [];
         cartItemsCount = response["cart_items_count"] ?? 0;
@@ -399,11 +406,11 @@ class CashierController extends CashierConstantController {
                   : item.cartItemsPrice;
 
               double totalItemPrice = item.cartItemsCount * itemPrice;
-              // ((100 - item.cartItemDiscount!) / 100);
 
               cartTotalPrice += totalItemPrice.toInt();
             }
           }
+
           double discount =
               double.tryParse(cartData[0].cartDiscount.toString()) ?? 0.0;
           int percentageDiscount = cartData[0].cartItemDiscount.toInt();
@@ -420,12 +427,34 @@ class CashierController extends CashierConstantController {
       showErrorDialog(e.toString(),
           message: TextRoutes.exceptionGettingCartData);
     } finally {
+      update(); // refresh UI
+    }
+  }
+
+  //? Update Items Details:
+  Future<void> updateItemDetails(int itemsId, int cartNumber,
+      double sellingPrice, String unitName, double unitFactor) async {
+    try {
+      Map<String, dynamic> data = {
+        "cart_item_price": sellingPrice,
+        "item_unit": unitName,
+        "item_unit_factor": unitFactor,
+      };
+      var response = await sqlDb.updateData("tbl_cart", data,
+          "cart_items_id = $itemsId AND cart_number = $cartNumber");
+      if (response > 0) {
+        getCartData(cartNumber.toString());
+      }
+    } catch (e) {
+      showErrorDialog(e.toString(),
+          title: "Error", message: "Error updating item price");
+    } finally {
       update();
     }
   }
 
   //? Item Increase
-  Future<void> cartItemIncrease(int itemsCount, String itemsId) async {
+  Future<void> cartItemIncrease(int itemsCount, int itemsId) async {
     try {
       String? cartNumber =
           myServices.systemSharedPreferences.getString("cart_number");
@@ -435,24 +464,25 @@ class CashierController extends CashierConstantController {
       }
       var response =
           await cashierClass.increaseData(itemsCount, cartNumber, itemsId);
-
-      if (response > 0) {
+      if (response! > 0) {
         await getCartData(cartNumber);
       } else {
         showErrorSnackBar(TextRoutes.exceptionIncreasingItemCount);
       }
     } catch (e) {
-      showErrorDialog(
-        e.toString(),
-        message: TextRoutes.exceptionIncreasingItemCount,
-      );
+      // showErrorDialog(
+      //   e.toString(),
+      //   message: TextRoutes.exceptionIncreasingItemCount,
+      // );
+      showErrorDialog(e.toString(),
+          title: "Error", message: "Error increasing data");
     } finally {
       update();
     }
   }
 
   //? Item Decrease
-  Future<void> cartItemDecrease(int itemsCount, String itemsId) async {
+  Future<void> cartItemDecrease(int itemsCount, int itemsId) async {
     try {
       String? cartNumber =
           myServices.systemSharedPreferences.getString("cart_number");
@@ -499,7 +529,7 @@ class CashierController extends CashierConstantController {
 
   //? Percentage Discounting Cart Price
   Future<void> percentageDiscountingItems(
-      List<String> itemsId, String discountValue) async {
+      List<int> itemsId, String discountValue) async {
     try {
       String? cartNumber =
           myServices.systemSharedPreferences.getString("cart_number");
@@ -551,7 +581,7 @@ class CashierController extends CashierConstantController {
   }
 
   //? updateItemPrice
-  void updateItemPrice(List<String> itemsId, String itemPrice) async {
+  void updateItemPrice(List<int> itemsId, String itemPrice) async {
     try {
       String? cartNumber =
           myServices.systemSharedPreferences.getString("cart_number");
@@ -575,8 +605,7 @@ class CashierController extends CashierConstantController {
   }
 
   //? Update Cart Number By Input Number
-  Future<void> updateItemQuantity(
-      List<String> itemsId, String itemCount) async {
+  Future<void> updateItemQuantity(List<int> itemsId, String itemCount) async {
     try {
       String? cartNumber =
           myServices.systemSharedPreferences.getString("cart_number");
@@ -627,7 +656,7 @@ class CashierController extends CashierConstantController {
   }
 
 //! Cart Item Gift
-  Future<void> cartItemGift(List<String> itemsId) async {
+  Future<void> cartItemGift(List<int> itemsId) async {
     try {
       String? cartNumber =
           myServices.systemSharedPreferences.getString("cart_number");
@@ -652,7 +681,7 @@ class CashierController extends CashierConstantController {
   }
 
 //? Delete Cart Item
-  Future<void> deleteCartItem(List<String> itemsId) async {
+  Future<void> deleteCartItem(List<int> itemsId) async {
     try {
       String? cartNumber =
           myServices.systemSharedPreferences.getString("cart_number");
@@ -738,7 +767,6 @@ class CashierController extends CashierConstantController {
 
 //? Update Cart Owner
   Future<void> cartOwnerNameUpdate(String? userId) async {
-    print(userId);
     try {
       String? cartNumber =
           myServices.systemSharedPreferences.getString("cart_number");
@@ -751,7 +779,7 @@ class CashierController extends CashierConstantController {
         var response =
             await cashierClass.cartOwnerNameUpdate(cartNumber, userId);
         if (response > 0) {
-          showSuccessSnackBar(TextRoutes.dataAddedSuccess);
+          showSuccessSnackBar(TextRoutes.dataUpdatedSuccess);
           await getCartData(cartNumber);
         } else {
           showErrorSnackBar(TextRoutes.errorUpdatingCartOwnerName);
@@ -957,17 +985,17 @@ class CashierController extends CashierConstantController {
       // 5. تحديث المخزون
       if (invoiceIdResponse > 0) {
         List<Map<String, dynamic>> cartItems = await sqlDb.getData(
-          "SELECT cart_items_id, cart_items_count FROM tbl_cart WHERE cart_number = $cartNumber",
+          "SELECT cart_items_id,item_unit_factor, cart_items_count FROM tbl_cart WHERE cart_number = $cartNumber",
         );
         for (var cartItem in cartItems) {
           int itemId = int.parse(cartItem['cart_items_id'].toString());
-          int quantitySold = cartItem['cart_items_count'];
+          double unitFactor = cartItem['item_unit_factor'] ?? 1;
+          double quantitySold = cartItem['cart_items_count'] * unitFactor;
 
           Database? myDb = await sqlDb.db;
           await myDb!.rawUpdate(
             "UPDATE tbl_items SET item_count = item_count - $quantitySold WHERE item_id = $itemId",
           );
-
           await sqlDb.insertData("tbl_inventory_movements", {
             "item_id": itemId,
             "movement_type": 'sale',
@@ -975,7 +1003,7 @@ class CashierController extends CashierConstantController {
             "cost_price": cost,
             "sale_price": sellPrice,
             "movement_date": currentTime,
-            "note": "عملية بيع",
+            "note": " عملية بيع فاتورة $invoiceIdResponse",
             "account_id": userId
           });
         }
@@ -1011,17 +1039,20 @@ class CashierController extends CashierConstantController {
     try {
       String? cartNumber =
           myServices.systemSharedPreferences.getString("cart_number");
-      //? Retrieve items and quantities from the cart
-      List<Map<String, dynamic>> cartItems = await sqlDb.getData(
-          "SELECT cart_items_id, cart_items_count FROM tbl_cart WHERE cart_number = ${myServices.systemSharedPreferences.getString("cart_number")!}");
       if (cartNumber == null) {
         showErrorSnackBar(TextRoutes.cartNumberNotSet);
         return;
       }
+      //? Retrieve items and quantities from the cart
+      List<Map<String, dynamic>> cartItems = await sqlDb.getData(
+        "SELECT cart_items_id,item_unit_factor, cart_items_count FROM tbl_cart WHERE cart_number = $cartNumber",
+      );
+
       //? Update the item counts in the tbl_items table
       for (var cartItem in cartItems) {
-        int itemId = cartItem['cart_items_id'];
-        int quantitySold = cartItem['cart_items_count'];
+        int itemId = int.parse(cartItem['cart_items_id'].toString());
+        double unitFactor = cartItem['item_unit_factor'] ?? 1;
+        double quantitySold = cartItem['cart_items_count'] * unitFactor;
 
         //? Increment the item count
         Database? myDb = await sqlDb.db;

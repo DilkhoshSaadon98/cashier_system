@@ -8,7 +8,7 @@ import 'package:cashier_system/core/functions/change_direction.dart';
 import 'package:cashier_system/core/functions/upload_file.dart';
 import 'package:cashier_system/data/model/items_model.dart';
 import 'package:cashier_system/data/model/locale/custom_selected_list_items.dart';
-import 'package:cashier_system/data/sql/sqldb.dart';
+import 'package:cashier_system/core/class/sqldb.dart';
 import 'package:cashier_system/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

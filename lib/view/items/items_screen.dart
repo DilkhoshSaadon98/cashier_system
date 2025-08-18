@@ -1,13 +1,18 @@
+import 'package:cashier_system/controller/items/items_definition_controller.dart';
 import 'package:cashier_system/core/constant/app_theme.dart';
 import 'package:cashier_system/core/constant/color.dart';
 import 'package:cashier_system/core/constant/imgaeasset.dart';
 import 'package:cashier_system/core/constant/screen_routes.dart';
+import 'package:cashier_system/core/dialogs/show_form_dialog.dart';
 import 'package:cashier_system/core/localization/text_routes.dart';
 import 'package:cashier_system/core/responsive/divide_screen_widget.dart';
 import 'package:cashier_system/core/responsive/screen_builder.dart';
 import 'package:cashier_system/core/shared/custom_appbar_title.dart';
 import 'package:cashier_system/core/shared/custom_header_screen.dart';
+import 'package:cashier_system/core/shared/custom_sized_box.dart';
 import 'package:cashier_system/view/categories/widgets/add_category_form.dart';
+import 'package:cashier_system/view/items/widget/custom_add_items.dart';
+import 'package:cashier_system/view/units/widgets/units_dialog_form_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -30,7 +35,12 @@ class ItemsScreen extends StatelessWidget {
         'title': TextRoutes.addItems,
         'image': AppImageAsset.addItems,
         'on_tap': () {
-          Get.toNamed(AppRoute.itemsAddScreen);
+          showFormDialog(context,
+              addText: TextRoutes.addItems,
+              editText: TextRoutes.editItem,
+              isUpdate: false,
+              child: const AddItems());
+          // Get.toNamed(AppRoute.itemsAddScreen);
         }
       },
       {
@@ -44,10 +54,37 @@ class ItemsScreen extends StatelessWidget {
         'title': TextRoutes.addCategories,
         'image': AppImageAsset.addCategory,
         'on_tap': () {
-          showAddCategoryForm(context, false);
+          showFormDialog(context,
+              addText: TextRoutes.addCategories,
+              editText: TextRoutes.editCategories,
+              isUpdate: false,
+              child: const AddCategoryForm(
+                isUpdate: false,
+              ));
+        }
+      },
+      {
+        'title': TextRoutes.viewUnits,
+        'image': AppImageAsset.unitsViewSvg,
+        'on_tap': () {
+          Get.toNamed(AppRoute.unitsScreen);
+        }
+      },
+      {
+        'title': TextRoutes.addUnits,
+        'image': AppImageAsset.unitsAddSvg,
+        'on_tap': () {
+          showFormDialog(context,
+              addText: TextRoutes.addUnits,
+              editText: TextRoutes.editUnits,
+              isUpdate: false,
+              child: const UnitsDialogFormWidget(
+                isUpdate: false,
+              ));
         }
       },
     ];
+    Get.put(ItemsDefinitionController());
     return Scaffold(
       backgroundColor: white,
       body: ScreenBuilder(
@@ -57,7 +94,7 @@ class ItemsScreen extends StatelessWidget {
               width: 600.w,
               child: GridView.builder(
                 shrinkWrap: true,
-                itemCount: 4,
+                itemCount: data.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   childAspectRatio: 2,
@@ -88,7 +125,7 @@ class ItemsScreen extends StatelessWidget {
                 width: 500.w,
                 child: GridView.builder(
                   shrinkWrap: true,
-                  itemCount: 4,
+                  itemCount: data.length,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     childAspectRatio: 1,
@@ -131,11 +168,12 @@ class ItemsScreen extends StatelessWidget {
               SvgPicture.asset(
                 data['image'],
                 semanticsLabel: 'Icon',
+                // ignore: deprecated_member_use
                 color: white,
                 width: 75,
                 height: 75,
               ),
-              SizedBox(height: 10.h),
+              verticalGap(),
               Text(
                 data['title'].toString().tr,
                 textAlign: TextAlign.center,

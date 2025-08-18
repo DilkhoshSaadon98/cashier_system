@@ -10,7 +10,7 @@ import 'package:cashier_system/core/shared/custom_text_field_widget.dart';
 import 'package:cashier_system/core/shared/drop_downs/drop_down_menu.dart';
 import 'package:cashier_system/core/shared/drop_downs/sort_drop_down.dart';
 import 'package:cashier_system/data/model/account_model.dart';
-import 'package:cashier_system/view/transactions/components/transaction_accounts_dropdown_widget.dart';
+import 'package:cashier_system/core/shared/drop_downs/transaction_accounts_dropdown_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -75,7 +75,7 @@ class BoxActionWidget extends StatelessWidget {
           },
         ),
         verticalGap(),
-        TransactionAccountsDropdownWidget<AccountModel>(
+        CustomDropdownSearchWidget<AccountModel>(
           iconData: Icons.account_balance,
           items: controller.dropDownListSourceAccounts,
           label: TextRoutes.sourceAccount,

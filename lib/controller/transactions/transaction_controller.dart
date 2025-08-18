@@ -7,7 +7,7 @@ import 'package:cashier_system/data/model/account_model.dart';
 import 'package:cashier_system/data/model/journal_voucher_model.dart';
 import 'package:cashier_system/data/model/transaction_model.dart';
 import 'package:cashier_system/data/source/transaction_class.dart';
-import 'package:cashier_system/data/sql/sqldb.dart';
+import 'package:cashier_system/core/class/sqldb.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -110,9 +110,9 @@ class TransactionController extends GetxController {
   //? All Field Controller :
   int? idController;
   TextEditingController dateController = TextEditingController();
-  TextEditingController amountController = TextEditingController(text: '0');
+  TextEditingController amountController = TextEditingController();
   TextEditingController noteController = TextEditingController();
-  TextEditingController discountController = TextEditingController(text: '0.0');
+  TextEditingController discountController = TextEditingController();
   TextEditingController accountControllerName = TextEditingController();
   TextEditingController accountControllerId = TextEditingController();
   TextEditingController userControllerName = TextEditingController();
@@ -225,8 +225,6 @@ class TransactionController extends GetxController {
       update();
     }
   }
-
-
 
   @override
   void onInit() {

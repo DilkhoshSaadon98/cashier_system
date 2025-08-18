@@ -5,6 +5,7 @@ import 'package:cashier_system/core/constant/app_theme.dart';
 import 'package:cashier_system/core/constant/color.dart';
 import 'package:cashier_system/core/constant/imgaeasset.dart';
 import 'package:cashier_system/core/dialogs/delete_dialog.dart';
+import 'package:cashier_system/core/dialogs/show_form_dialog.dart';
 import 'package:cashier_system/core/localization/text_routes.dart';
 import 'package:cashier_system/core/shared/custom_sized_box.dart';
 import 'package:cashier_system/view/categories/widgets/add_category_form.dart';
@@ -27,7 +28,13 @@ Widget categoriesCardWidget(
       }
       controller.catagoriesName?.text = dataItem.categoriesName ?? "";
       controller.catagoriesId?.text = dataItem.categoriesId.toString();
-      showAddCategoryForm(context, true);
+      showFormDialog(context,
+          addText: TextRoutes.addCategories,
+          editText: TextRoutes.editCategories,
+          isUpdate: true,
+          child: const AddCategoryForm(
+            isUpdate: true,
+          ));
     },
     child: MouseRegion(
       cursor: SystemMouseCursors.click,
@@ -105,7 +112,13 @@ Widget categoriesCardWidget(
                         dataItem.categoriesName ?? "";
                     controller.catagoriesId?.text =
                         dataItem.categoriesId.toString();
-                    showAddCategoryForm(context, true);
+                    showFormDialog(context,
+                        addText: TextRoutes.addCategories,
+                        editText: TextRoutes.editCategories,
+                        isUpdate: true,
+                        child: const AddCategoryForm(
+                          isUpdate: true,
+                        ));
                   },
                 ),
                 itemsCount == 0

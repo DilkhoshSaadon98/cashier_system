@@ -1,5 +1,5 @@
 import 'package:cashier_system/core/constant/app_theme.dart';
-import 'package:cashier_system/data/sql/sqldb.dart';
+import 'package:cashier_system/core/class/sqldb.dart';
 
 class AuthClass {
   SqlDb db = SqlDb();

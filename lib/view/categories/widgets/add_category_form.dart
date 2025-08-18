@@ -27,7 +27,7 @@ class AddCategoryForm extends StatelessWidget {
           builder: (controller) {
             return Form(
               key: controller.formState,
-              child: Container(
+              child: SizedBox(
                 width: MediaQuery.of(context).size.width * 0.5,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -75,35 +75,6 @@ class AddCategoryForm extends StatelessWidget {
           }),
     );
   }
-}
-
-void showAddCategoryForm(BuildContext context, bool isUpdate) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        backgroundColor: white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(constRadius),
-          side: const BorderSide(
-            color: primaryColor,
-            width: .5,
-          ),
-        ),
-        title: Center(
-          child: Text(
-            !isUpdate
-                ? TextRoutes.addCategories.tr.toUpperCase()
-                : TextRoutes.editCategories.tr.toUpperCase(),
-            style: titleStyle,
-          ),
-        ),
-        content: AddCategoryForm(
-          isUpdate: isUpdate,
-        ),
-      );
-    },
-  );
 }
 
 Widget dialogButtonWidget(BuildContext context, void Function()? onPressed) {

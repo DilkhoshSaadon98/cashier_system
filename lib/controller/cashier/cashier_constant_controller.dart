@@ -11,11 +11,11 @@ import 'package:cashier_system/core/dialogs/snackbar_helper.dart';
 import 'package:cashier_system/core/functions/validinput.dart';
 import 'package:cashier_system/core/localization/text_routes.dart';
 import 'package:cashier_system/core/shared/buttons/custom_buttton_global.dart';
+import 'package:cashier_system/core/shared/custom_text_field_widget.dart';
 import 'package:cashier_system/data/model/categories_model.dart';
 import 'package:cashier_system/data/model/items_model.dart';
 import 'package:cashier_system/view/cashier/components/drop_down_search_users_cashier.dart';
 import 'package:cashier_system/view/cashier/windows/action/components/custom_cashier_dialog.dart';
-import 'package:cashier_system/core/shared/custom_formfield_global.dart';
 import 'package:cashier_system/core/shared/custom_sized_box.dart';
 import 'package:cashier_system/view/cashier/windows/action/components/export_pdf_dialog.dart';
 import 'package:cashier_system/view/cashier/windows/action/components/show_last_invoices.dart';
@@ -400,8 +400,8 @@ class CashierConstantController extends CashierDefinitionController {
                                 key: cashierController.formState,
                                 child: Column(
                                   children: [
-                                    CustomTextFormFieldGlobal(
-                                        mycontroller: cashierController
+                                    CustomTextFieldWidget(
+                                        controller: cashierController
                                             .usernameController!,
                                         borderColor: primaryColor,
                                         hinttext: TextRoutes.fullName.tr,
@@ -410,10 +410,12 @@ class CashierConstantController extends CashierDefinitionController {
                                         valid: (value) {
                                           return validInput(value!, 1, 400, '');
                                         },
+                                        fieldColor: white,
                                         isNumber: false),
                                     verticalGap(),
-                                    CustomTextFormFieldGlobal(
-                                        mycontroller:
+                                    CustomTextFieldWidget(
+                                        fieldColor: white,
+                                        controller:
                                             cashierController.phoneController!,
                                         borderColor: primaryColor,
                                         hinttext: TextRoutes.phoneNumber.tr,
@@ -424,10 +426,11 @@ class CashierConstantController extends CashierDefinitionController {
                                         },
                                         isNumber: false),
                                     verticalGap(),
-                                    CustomTextFormFieldGlobal(
-                                        mycontroller: cashierController
+                                    CustomTextFieldWidget(
+                                        controller: cashierController
                                             .addressController!,
                                         borderColor: primaryColor,
+                                        fieldColor: white,
                                         hinttext: TextRoutes.address.tr,
                                         labeltext: TextRoutes.address.tr,
                                         iconData: Icons.gps_fixed,
@@ -437,10 +440,11 @@ class CashierConstantController extends CashierDefinitionController {
                                         },
                                         isNumber: false),
                                     verticalGap(),
-                                    CustomTextFormFieldGlobal(
-                                        mycontroller:
+                                    CustomTextFieldWidget(
+                                        controller:
                                             cashierController.noteController!,
                                         borderColor: primaryColor,
+                                        fieldColor: white,
                                         hinttext: TextRoutes.note.tr,
                                         labeltext: TextRoutes.note.tr,
                                         iconData: Icons.description_outlined,
@@ -614,7 +618,7 @@ class CashierConstantController extends CashierDefinitionController {
           // Prepare the invoice data
           Map<String, dynamic> invoiceData = {
             TextRoutes.customerName:
-                cashierController.cartData[0].unitName.toString().tr,
+                cashierController.cartData[0].mainUnitName.toString().tr,
             TextRoutes.organizer:
                 myServices.sharedPreferences.getString("admins_username") ??
                     "Admin",
@@ -769,9 +773,10 @@ class CashierConstantController extends CashierDefinitionController {
                                 key: cashierController.formState,
                                 child: Column(
                                   children: [
-                                    CustomTextFormFieldGlobal(
-                                        mycontroller: cashierController
+                                    CustomTextFieldWidget(
+                                        controller: cashierController
                                             .usernameController!,
+                                        fieldColor: white,
                                         borderColor: primaryColor,
                                         hinttext: TextRoutes.fullName.tr,
                                         labeltext: TextRoutes.fullName.tr,
@@ -781,8 +786,9 @@ class CashierConstantController extends CashierDefinitionController {
                                         },
                                         isNumber: false),
                                     verticalGap(),
-                                    CustomTextFormFieldGlobal(
-                                        mycontroller:
+                                    CustomTextFieldWidget(
+                                        fieldColor: white,
+                                        controller:
                                             cashierController.phoneController!,
                                         borderColor: primaryColor,
                                         hinttext: TextRoutes.phoneNumber.tr,
@@ -793,8 +799,9 @@ class CashierConstantController extends CashierDefinitionController {
                                         },
                                         isNumber: false),
                                     verticalGap(),
-                                    CustomTextFormFieldGlobal(
-                                        mycontroller: cashierController
+                                    CustomTextFieldWidget(
+                                        fieldColor: white,
+                                        controller: cashierController
                                             .addressController!,
                                         borderColor: primaryColor,
                                         hinttext: TextRoutes.address.tr,
@@ -806,8 +813,9 @@ class CashierConstantController extends CashierDefinitionController {
                                         },
                                         isNumber: false),
                                     verticalGap(),
-                                    CustomTextFormFieldGlobal(
-                                        mycontroller:
+                                    CustomTextFieldWidget(
+                                        fieldColor: white,
+                                        controller:
                                             cashierController.noteController!,
                                         borderColor: primaryColor,
                                         hinttext: TextRoutes.note.tr,

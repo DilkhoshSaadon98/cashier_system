@@ -123,11 +123,7 @@ class ItemsUpdateController extends ItemsDefinitionController {
 
     itemsDescControllerController.text = itemsModel?.itemsDescription ?? '';
     itemsBaseQtyController.text = itemsModel?.itemsBaseQty.toString() ?? '';
-    itemsAltQtyController.text = itemsModel?.itemsAltQty.toString() ?? '';
-    itemsUnitBaseController.text = itemsModel?.unitName.toString() ?? '';
-    itemsUnitAltController.text = itemsModel?.altUnitName.toString() ?? '';
-    itemsUnitConversionController.text =
-        itemsModel?.unitConversion.toString() ?? '';
+    itemsUnitBaseController.text = itemsModel?.baseUnitName.toString() ?? '';
     if (itemsModel?.itemsImage.isNotEmpty ?? false) {
       file = File(
           "${myServices.sharedPreferences.getString('image_path')!}/${itemsModel?.itemsImage}");

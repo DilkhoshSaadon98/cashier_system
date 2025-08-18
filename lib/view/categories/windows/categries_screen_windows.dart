@@ -1,7 +1,7 @@
 import 'package:cashier_system/controller/catagories/catagories_controller.dart';
-import 'package:cashier_system/core/constant/app_theme.dart';
 import 'package:cashier_system/core/constant/color.dart';
 import 'package:cashier_system/core/constant/imgaeasset.dart';
+import 'package:cashier_system/core/dialogs/show_form_dialog.dart';
 import 'package:cashier_system/core/functions/validinput.dart';
 import 'package:cashier_system/core/localization/text_routes.dart';
 import 'package:cashier_system/core/responsive/divide_screen_widget.dart';
@@ -10,7 +10,6 @@ import 'package:cashier_system/core/shared/custom_header_screen.dart';
 import 'package:cashier_system/core/shared/custom_search_widget.dart';
 import 'package:cashier_system/core/shared/custom_sized_box.dart';
 import 'package:cashier_system/core/shared/buttons/custom_buttton_global.dart';
-import 'package:cashier_system/data/model/categories_model.dart';
 import 'package:cashier_system/view/categories/widgets/add_category_form.dart';
 import 'package:cashier_system/view/categories/widgets/view_categories_widget.dart';
 import 'package:flutter/material.dart';
@@ -44,7 +43,13 @@ class CatagoriesScreenWindows extends StatelessWidget {
               verticalGap(),
 
               customButtonGlobal(() async {
-                showAddCategoryForm(context, false);
+                showFormDialog(context,
+                    addText: TextRoutes.addCategories,
+                    editText: TextRoutes.editCategories,
+                    isUpdate: true,
+                    child: const AddCategoryForm(
+                      isUpdate: true,
+                    ));
               }, TextRoutes.addCategories, Icons.add_box_outlined, white,
                   primaryColor),
               verticalGap(),

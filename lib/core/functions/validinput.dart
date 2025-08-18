@@ -36,6 +36,9 @@ String? validInput(String val, int min, int max, String type,
     if (type == "realNumber" && !GetUtils.isNum(val)) {
       return "Number required (e.g.,0.1 ,0.5 , 1, 2, 3...)".tr;
     }
+    if (type == "real" && !GetUtils.isNum(val)) {
+      return "Number required (e.g.,0.1 ,0.5 , 1, 2, 3...)".tr;
+    }
 
     if (type == "phone" && !GetUtils.isPhoneNumber(val)) {
       return "Mobile number not valid".tr;

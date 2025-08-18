@@ -32,7 +32,9 @@ import 'package:cashier_system/view/transactions/opening_entry_screen.dart';
 import 'package:cashier_system/view/transactions/transaction_receipt_screen.dart';
 import 'package:cashier_system/view/transactions/transactions_payment_screen.dart';
 import 'package:cashier_system/view/transactions/transactions_screen.dart';
+import 'package:cashier_system/view/units/units_screen.dart';
 import 'package:get/get.dart';
+
 List<GetPage<dynamic>>? routes = [
   //! Start Root :
   GetPage(
@@ -71,6 +73,7 @@ List<GetPage<dynamic>>? routes = [
 
   //!Items Routes:
 
+  GetPage(name: AppRoute.unitsScreen, page: () => const UnitsScreen()),
   GetPage(name: AppRoute.itemsAddScreen, page: () => const ItemsAddScreen()),
   GetPage(name: AppRoute.itemsViewScreen, page: () => const ItemsViewScreen()),
   GetPage(

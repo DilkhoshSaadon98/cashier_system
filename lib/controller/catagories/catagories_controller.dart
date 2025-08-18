@@ -16,7 +16,7 @@ import 'package:cashier_system/core/dialogs/snackbar_helper.dart';
 import 'package:cashier_system/core/functions/upload_file.dart';
 import 'package:cashier_system/core/localization/text_routes.dart';
 import 'package:cashier_system/data/model/categories_model.dart';
-import 'package:cashier_system/data/sql/sqldb.dart';
+import 'package:cashier_system/core/class/sqldb.dart';
 
 class CatagoriesController extends GetxController {
   //? Keys & Controllers
@@ -180,13 +180,7 @@ class CatagoriesController extends GetxController {
     update();
   }
 
-  void checkSearch(String val) {
-    if (val.isEmpty) {
-      statusRequest = StatusRequest.none;
-      isSearch = false;
-    }
-    update();
-  }
+
 
   void onSearchItems() {
     isSearch = true;

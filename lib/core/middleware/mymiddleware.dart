@@ -15,17 +15,16 @@ class MyMiddleWare extends GetMiddleware {
 
     // Direct to home for development
     if (step == "dashboard") {
-
-      return const RouteSettings(name: AppRoute.homeScreen);
+      return const RouteSettings(name: AppRoute.buyingScreen);
     }
 
     bool isLogin = myServices.sharedPreferences.getBool("login") ?? true;
     switch (step) {
       case "register":
       case null:
-      // return const RouteSettings(name: AppRoute.registerSystemScreen);
+        return const RouteSettings(name: AppRoute.registerSystemScreen);
       case "verify":
-      // return const RouteSettings(name: AppRoute.verifyAccountScreen);
+        return const RouteSettings(name: AppRoute.verifyAccountScreen);
       case "login":
         return const RouteSettings(name: AppRoute.loginScreen);
 

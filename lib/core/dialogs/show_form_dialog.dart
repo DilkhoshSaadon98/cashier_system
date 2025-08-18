@@ -20,11 +20,29 @@ void showFormDialog(BuildContext context,
             width: .5,
           ),
         ),
-        title: Center(
-          child: Text(
-            !isUpdate! ? addText!.tr.toUpperCase() : editText!.tr.toUpperCase(),
-            style: titleStyle,
-          ),
+        titlePadding:
+            const EdgeInsets.only(left: 16, right: 8, top: 16, bottom: 0),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Center(
+                child: Text(
+                  !(isUpdate ?? false)
+                      ? (addText ?? '').tr.toUpperCase()
+                      : (editText ?? '').tr.toUpperCase(),
+                  style: titleStyle,
+                ),
+              ),
+            ),
+            IconButton(
+              icon: const Icon(Icons.close),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              tooltip: TextRoutes.close.tr,
+            ),
+          ],
         ),
         content: child,
       );

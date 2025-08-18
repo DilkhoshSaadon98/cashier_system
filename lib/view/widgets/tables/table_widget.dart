@@ -111,7 +111,7 @@ class TableWidget extends StatelessWidget {
                     ),
                   ),
                 ),
-              Expanded(
+              Flexible(
                 child: Container(
                   color: white,
                   child: SingleChildScrollView(

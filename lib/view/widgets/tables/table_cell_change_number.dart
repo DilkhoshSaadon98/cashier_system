@@ -4,13 +4,17 @@ import 'package:flutter/material.dart';
 Widget tableCellChangeNumber(String text,
     {double cellWidth = 75,
     void Function()? onTapAdd,
+    void Function(String)? onValueChanged,
     void Function()? onTapRemove}) {
+  TextEditingController qtyController = TextEditingController();
+  qtyController.text = text;
   return SizedBox(
     child: GestureDetector(
       behavior: HitTestBehavior.opaque,
       excludeFromSemantics: true,
       onTap: () {},
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Expanded(
             child: GestureDetector(
@@ -24,14 +28,19 @@ Widget tableCellChangeNumber(String text,
             ),
           ),
           Expanded(
-            child: Center(
-              child: Text(
-                text,
+              flex: 2,
+              child: TextFormField(
+                controller: qtyController,
                 textAlign: TextAlign.center,
-                overflow: TextOverflow.fade,
-              ),
-            ),
-          ),
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  isDense: true,
+                  contentPadding: EdgeInsets.all(8),
+                  border: UnderlineInputBorder(),
+                  
+                ),
+                onChanged: onValueChanged,
+              )),
           Expanded(
             child: GestureDetector(
               onDoubleTap: onTapRemove,

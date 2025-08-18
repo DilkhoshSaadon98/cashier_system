@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:math';
-import 'package:barcode/barcode.dart';
 import 'package:cashier_system/core/class/statusrequest.dart';
 import 'package:cashier_system/core/constant/app_theme.dart';
 import 'package:cashier_system/core/dialogs/error_dialogs.dart';
@@ -11,9 +10,10 @@ import 'package:cashier_system/data/model/categories_model.dart';
 import 'package:cashier_system/data/model/item_details_model.dart';
 import 'package:cashier_system/data/model/items_model.dart';
 import 'package:cashier_system/data/model/purchaes_model.dart';
+import 'package:cashier_system/data/model/unit_conversation_model.dart';
 import 'package:cashier_system/data/model/units_model.dart';
 import 'package:cashier_system/data/source/items_class.dart';
-import 'package:cashier_system/data/sql/sqldb.dart';
+import 'package:cashier_system/core/class/sqldb.dart';
 import 'package:cashier_system/main.dart';
 import 'package:drop_down_list/model/selected_list_item.dart';
 import 'package:flutter/material.dart';
@@ -50,14 +50,15 @@ class ItemsDefinitionController extends GetxController {
 
   //* Data
   List<PurchaseModel> purchaesData = [];
+  List<CategoriesModel> dropDownListCategoriesData = [];
   List<SelectedListItem> dropDownListCategories = [];
   List<SelectedListItem> dropDownListUnits = [];
+  List<String> dropDownListUnitsTemplate = [];
+  List<UnitModel> unitsDropDownData = [];
   List<ItemsModel> data = [];
   List<CategoriesModel> categoriesData = [];
-  List<UnitModel> unitData = [];
   List<ItemDetailsModel> itemDetailsModel = [];
   List<ItemsModel> listDataSearch = [];
-  List<UnitModel> unitsData = [];
   List<int> selectedItems = [];
   List<String> dropdownItems = [];
   List<bool> hoverStates = [];
@@ -147,6 +148,22 @@ class ItemsDefinitionController extends GetxController {
           'read_only': true
         },
         {
+          "title": TextRoutes.baseUnit,
+          "icon": Icons.ac_unit,
+          "controller": itemsUnitBaseController,
+          "required": false,
+          "valid": "",
+          'read_only': true
+        },
+        {
+          "title": TextRoutes.baseUnitQuantity,
+          "icon": Icons.calculate,
+          "controller": itemsCountController,
+          "required": false,
+          "valid": "realNumber",
+          'read_only': false
+        },
+        {
           "title": TextRoutes.explain,
           "icon": Icons.description,
           "controller": itemsDescControllerController,
@@ -161,8 +178,8 @@ class ItemsDefinitionController extends GetxController {
           "required": false,
           "valid": "number",
           'read_only': false,
-          'on_tap': () {
-            generateRandomBarcode();
+          'on_tap': () async {
+            itemsBarcodeController.text = await generateRandomBarcode();
           },
           'suffix_icon': Icons.replay
         },
@@ -194,22 +211,6 @@ class ItemsDefinitionController extends GetxController {
           "title": TextRoutes.sellingPrice,
           "icon": Icons.price_change,
           "controller": itemsSellingPriceController,
-          "required": false,
-          "valid": "realNumber",
-          'read_only': false
-        },
-        {
-          "title": TextRoutes.baseUnit,
-          "icon": Icons.ac_unit,
-          "controller": itemsUnitBaseController,
-          "required": false,
-          "valid": "",
-          'read_only': true
-        },
-        {
-          "title": TextRoutes.baseUnitQuantity,
-          "icon": Icons.calculate,
-          "controller": itemsBaseQtyController,
           "required": false,
           "valid": "realNumber",
           'read_only': false
@@ -406,66 +407,33 @@ class ItemsDefinitionController extends GetxController {
     return response['status'] == 'success';
   }
 
-  Future<void> generateRandomBarcode() async {
+  Future<String> generateRandomBarcode() async {
     final random = Random();
-    final bc = Barcode.code128();
     bool exists = true;
+    String randomBarcode = '';
 
     while (exists) {
       randomBarcode = (10000000 + random.nextInt(90000000)).toString();
       exists = await itemBarcodeExist(randomBarcode);
     }
-    svg = bc.toSvg(randomBarcode, width: 200, height: 100);
-    itemsBarcodeController.text = randomBarcode;
+
     update();
+
+    return randomBarcode;
   }
 
   Future<void> getCategories() async {
     try {
       final response = await sqlDb.getAllData("tbl_categories");
       if (response['status'] == "success") {
-        categoriesData.clear();
-        dropDownListCategories.clear();
+        dropDownListCategoriesData.clear();
         List list = response['data'];
-        categoriesData.addAll(list.map((e) => CategoriesModel.fromJson(e)));
-        for (var category in categoriesData) {
-          dropDownListCategories.add(
-            SelectedListItem(
-                name: category.categoriesName!,
-                value: category.categoriesId!.toString()),
-          );
-        }
+        dropDownListCategoriesData
+            .addAll(list.map((e) => CategoriesModel.fromJson(e)));
       }
     } catch (e) {
       showErrorDialog(e.toString(),
           title: "Error", message: "Error fetching categories");
-    } finally {
-      update();
-    }
-  }
-
-  Future<void> getUnits() async {
-    try {
-      final response = await sqlDb.getAllData("tbl_units");
-      if (response['status'] == "success") {
-        unitData.clear();
-        dropDownListUnits.clear();
-        List list = response['data'];
-        unitData.addAll(list.map((e) => UnitModel.fromJson(e)));
-        for (var unit in unitData) {
-          dropDownListUnits.add(SelectedListItem(
-              name: unit.unitName, value: unit.convertValue.toString()));
-          if (unit.unitName == "Pcs") {
-            fromTypeName!.text = unit.unitName;
-            fromTypeID!.text = unit.unitId.toString();
-          }
-        }
-      } else {
-        showErrorDialog("", title: "Error", message: "Failed to fetch types");
-      }
-    } catch (e) {
-      showErrorDialog(e.toString(),
-          title: "Error", message: "Error fetching types");
     } finally {
       update();
     }
@@ -486,6 +454,89 @@ class ItemsDefinitionController extends GetxController {
     } finally {
       update();
     }
+  }
+
+  // String? selectedUnit = '';
+  UnitModel? selectedUnitData;
+  int? selectedUnitId;
+  double? selectedUnitFactor;
+  CategoriesModel? selectedCat;
+  int? selectedCatId;
+  UnitConversationModel? selectedUnitConversation;
+  int? selectedUnitConversationId;
+  Future<void> getUnits() async {
+    try {
+      final response = await sqlDb.getAllData("tbl_units");
+      if (response['status'] == "success") {
+        unitsDropDownData.clear();
+        List list = response['data'] ?? [];
+        if (list.isNotEmpty) {
+          unitsDropDownData.addAll(list.map((e) => UnitModel.fromJson(e)));
+        }
+
+        // Ensure selectedUnitData is valid
+        if (unitsDropDownData.isNotEmpty) {
+          selectedUnitData = unitsDropDownData.first;
+          selectedUnitId = selectedUnitData!.unitId;
+        } else {
+          selectedUnitData = null;
+          selectedUnitId = null;
+        }
+      }
+    } catch (e) {
+      showErrorDialog(e.toString(),
+          title: "Error", message: "Error fetching types");
+    } finally {
+      update();
+    }
+  }
+
+  String selectedUnitPriceDetails = "";
+  List<UnitModel> unitsPriceDetails = [];
+  List<String> unitNames = [];
+
+  Future<void> getUnitsPriceDetails(int id) async {
+    try {
+      final response = await sqlDb.getAllData("tbl_units");
+      if (response['status'] == "success") {
+        unitsPriceDetails.clear();
+
+        List listData = response['data'];
+        unitsPriceDetails.addAll(
+          listData.map((e) => UnitModel.fromJson(e)),
+        );
+
+        for (var row in rows) {
+          row.conversionUnit =
+              unitsPriceDetails.isNotEmpty ? unitsPriceDetails.first : null;
+        }
+      }
+    } catch (e) {
+      showErrorDialog(e.toString(),
+          title: "Error", message: "Error fetching types");
+    } finally {
+      update();
+    }
+  }
+
+  List<ProductRow> rows = [];
+  void addRow() {
+    // if (unitsPriceDetails.isEmpty) {
+    //   showErrorSnackBar(TextRoutes.noSubUnits);
+    //   return;
+    // }
+    rows.add(ProductRow(
+      conversionUnit:
+          unitsPriceDetails.isNotEmpty ? unitsPriceDetails.first : null,
+      barcode: '',
+      sellingPrice: 0.0,
+    ));
+    update();
+  }
+
+  void removeRow(int index) {
+    rows.removeAt(index);
+    update();
   }
 
   void _loadAdditionalData() {
@@ -524,14 +575,53 @@ class ItemsDefinitionController extends GetxController {
     dropDownListUnits.clear();
     data.clear();
     categoriesData.clear();
-    unitData.clear();
     listDataSearch.clear();
-    unitsData.clear();
     selectedItems.clear();
     dropdownItems.clear();
     hoverStates.clear();
     itemsController.clear();
 
     super.dispose();
+  }
+}
+
+class ProductRow {
+  int? unitId;
+  UnitModel? conversionUnit;
+  String? barcode;
+  double? sellingPrice;
+  double? conversionFactor;
+
+  final TextEditingController barcodeController;
+  final TextEditingController sellingPriceController;
+  final TextEditingController conversionFactorController;
+
+  ProductRow({
+    this.conversionUnit,
+    this.unitId,
+    this.barcode,
+    this.sellingPrice,
+    this.conversionFactor,
+  })  : barcodeController = TextEditingController(text: barcode ?? ''),
+        sellingPriceController =
+            TextEditingController(text: sellingPrice?.toString() ?? ''),
+        conversionFactorController =
+            TextEditingController(text: conversionFactor?.toString() ?? '');
+
+  void dispose() {
+    barcodeController.dispose();
+    sellingPriceController.dispose();
+    conversionFactorController.dispose();
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'conversion_unit': conversionUnit?.unitBaseName ?? '',
+      'unit_id': unitId,
+      'barcode': barcodeController.text,
+      'selling_price': double.tryParse(sellingPriceController.text) ?? 0.0,
+      'factor':
+          double.tryParse(conversionFactorController.text) ?? 0.0,
+    };
   }
 }

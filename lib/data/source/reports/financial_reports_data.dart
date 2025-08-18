@@ -1,4 +1,4 @@
-import 'package:cashier_system/data/sql/sqldb.dart';
+import 'package:cashier_system/core/class/sqldb.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 

@@ -1,4 +1,4 @@
-import 'package:cashier_system/data/sql/sqldb.dart';
+import 'package:cashier_system/core/class/sqldb.dart';
 
 class BuyingClass {
   SqlDb db = SqlDb();
@@ -56,7 +56,7 @@ class BuyingClass {
     String? groupBy,
   }) async {
     String sql = "";
-    List<String> conditions = ["purchase_number = $purchaseNumber"];
+    List<String> conditions = ["purchase_number = '$purchaseNumber'"];
     if (itemsNo != null) {
       conditions.add("( purchase_id = '$itemsNo' )");
     }

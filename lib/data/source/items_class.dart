@@ -1,6 +1,6 @@
 import 'package:cashier_system/core/dialogs/error_dialogs.dart';
 import 'package:cashier_system/core/localization/text_routes.dart';
-import 'package:cashier_system/data/sql/sqldb.dart';
+import 'package:cashier_system/core/class/sqldb.dart';
 
 class ItemsClass {
   SqlDb db = SqlDb();
@@ -105,7 +105,7 @@ class ItemsClass {
     }
 
     var response = await db.getData(
-        'SELECT * FROM itemsView WHERE $sql $orderBy LIMIT $limit OFFSET $offset');
+        'SELECT * FROM view_items WHERE $sql $orderBy LIMIT $limit OFFSET $offset');
 
     List<dynamic> totalItemsData = await getTotalItemsPrice(sql);
     double totalItemsPrice = totalItemsData[0];

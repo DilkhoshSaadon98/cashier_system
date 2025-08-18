@@ -24,6 +24,8 @@ class AppImageAsset {
   static const String openingEntryIcons = "$iconsRoot/opening_entry.svg";
   static const String settingIcons = "$iconsRoot/settingIcons.svg";
   static const String categorySvg = "$iconsRoot/category.svg";
+  static const String unitsViewSvg = "$iconsRoot/view_units.svg";
+  static const String unitsAddSvg = "$iconsRoot/add_units.svg";
   static const String addCategory = "$iconsRoot/add_category.svg";
   static const String addItems = "$iconsRoot/add_items.svg";
   static const String addAccount = "$iconsRoot/add_account.svg";

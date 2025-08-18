@@ -5,7 +5,7 @@ import 'package:cashier_system/core/constant/app_theme.dart';
 import 'package:cashier_system/core/dialogs/error_dialogs.dart';
 import 'package:cashier_system/core/dialogs/custom_snack_bar.dart';
 import 'package:cashier_system/data/source/auth/register_class.dart';
-import 'package:cashier_system/data/sql/sqldb.dart';
+import 'package:cashier_system/core/class/sqldb.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 // ignore: depend_on_referenced_packages

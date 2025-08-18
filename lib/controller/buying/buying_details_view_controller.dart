@@ -1,3 +1,4 @@
+import 'package:cashier_system/controller/buying/definition_buying_controller.dart';
 import 'package:cashier_system/controller/printer/invoice_controller.dart';
 import 'package:cashier_system/controller/printer/sunmi_printer_controller.dart';
 import 'package:cashier_system/core/constant/app_theme.dart';
@@ -7,31 +8,10 @@ import 'package:cashier_system/data/source/buying_class.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class BuyingDetailsViewController extends GetxController {
-  //! Database Classes
-  final BuyingClass buyingClass = BuyingClass();
-
-  //! Text Controllers
-  late final TextEditingController itemsNameController;
-  late final TextEditingController itemsSellingPriceController;
-  late final TextEditingController itemsBuyingPriceController;
-  late final TextEditingController purchaseDateController;
-  late final TextEditingController itemsIdController;
-  late final TextEditingController groupByIdController;
-  late final TextEditingController groupByNameController;
-  late final TextEditingController itemCodeController;
+class BuyingDetailsViewController extends DefinitionBuyingController {
 
   //! Data
   List<PurchaseModel> purchaseDetailsData = [];
-
-  //! Search Side Titles:
-  final List<String> itemsTitle = [
-    "Items NO",
-    "Items Name",
-    "Purchase Date",
-    "Selling Price",
-    "Buying Price",
-  ];
 
   List<TextEditingController> itemsController = [];
   String cartNumber = "";
@@ -66,48 +46,13 @@ class BuyingDetailsViewController extends GetxController {
     }
   }
 
-  Future<void> getPurchaseDetailsData(String purchaseNumber) async {
-    try {
-      final response = await buyingClass.searchPurchaseDetailsData(
-        purchaseNumber,
-        itemsNo:
-            itemsIdController.text.isNotEmpty ? itemsIdController.text : null,
-        itemsName: itemsNameController.text.isNotEmpty
-            ? itemsNameController.text
-            : null,
-        itemsSelling: itemsSellingPriceController.text.isNotEmpty
-            ? itemsSellingPriceController.text
-            : null,
-        itemsBuying: itemsBuyingPriceController.text.isNotEmpty
-            ? itemsBuyingPriceController.text
-            : null,
-        itemsDate: purchaseDateController.text.isNotEmpty
-            ? purchaseDateController.text
-            : null,
-        groupBy: groupByNameController.text.isNotEmpty
-            ? groupByNameController.text
-            : null,
-      );
-
-      if (response['status'] == "success") {
-        purchaseDetailsData.clear();
-        List responsedata = response['data'] ?? [];
-        purchaseDetailsData
-            .addAll(responsedata.map((e) => PurchaseModel.fromJson(e)));
-      }
-    } catch (e) {
-      showErrorDialog(e.toString(),
-          title: "Error", message: "Error fetching purchase details");
-    } finally {
-      update();
-    }
-  }
 
   //? Print Data:
   String selectedPrinter =
       myServices.sharedPreferences.getString("selected_printer") ??
           "A4 Printer";
-  printingData() {
+  @override
+  printingDatas() {
     List<dynamic> passedData = purchaseDetailsData;
     InvoiceController invoiceController = Get.put(InvoiceController());
     if (passedData.isNotEmpty) {

@@ -1,7 +1,7 @@
 import 'package:cashier_system/controller/transactions/opening_entry_controller.dart';
 import 'package:cashier_system/core/shared/custom_divider.dart';
 import 'package:cashier_system/core/shared/custom_header_screen.dart';
-import 'package:cashier_system/view/transactions/components/transaction_accounts_dropdown_widget.dart';
+import 'package:cashier_system/core/shared/drop_downs/transaction_accounts_dropdown_widget.dart';
 import 'package:cashier_system/view/transactions/opening_entry/widgets/opening_entry_dialog_form.dart';
 import 'package:flutter/material.dart';
 import 'package:cashier_system/core/constant/app_theme.dart';
@@ -103,7 +103,7 @@ class OpeningEntryActionWidget extends StatelessWidget {
                     },
                   ),
                   verticalGap(10),
-                  TransactionAccountsDropdownWidget<AccountModel>(
+                  CustomDropdownSearchWidget<AccountModel>(
                     iconData: Icons.account_balance,
                     items: controller.dropDownListSourceAccounts,
                     label: TextRoutes.sourceAccount,
@@ -123,7 +123,7 @@ class OpeningEntryActionWidget extends StatelessWidget {
                     },
                   ),
                   verticalGap(10),
-                  TransactionAccountsDropdownWidget<AccountModel>(
+                  CustomDropdownSearchWidget<AccountModel>(
                     iconData: Icons.account_balance,
                     items: controller.dropDownListTargetAccounts,
                     label: TextRoutes.targetAccount,

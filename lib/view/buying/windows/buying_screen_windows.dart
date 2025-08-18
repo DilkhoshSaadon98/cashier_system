@@ -2,6 +2,7 @@ import 'package:cashier_system/controller/buying/buying_controller.dart';
 import 'package:cashier_system/core/constant/app_theme.dart';
 import 'package:cashier_system/core/constant/color.dart';
 import 'package:cashier_system/core/constant/imgaeasset.dart';
+import 'package:cashier_system/core/functions/date_picker.dart';
 import 'package:cashier_system/core/functions/formating_numbers.dart';
 import 'package:cashier_system/core/functions/validinput.dart';
 import 'package:cashier_system/core/localization/text_routes.dart';
@@ -58,64 +59,93 @@ class BuyingScreenWindows extends StatelessWidget {
               verticalGap(),
               //! View Side
               controller.selectedSection == TextRoutes.view
-                  ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          TextRoutes.searchBy.tr,
-                          style: titleStyle.copyWith(color: white),
-                        ),
-                        verticalGap(5),
-                        ListView.separated(
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: controller.itemsTitle.length,
-                          separatorBuilder: (_, __) => verticalGap(10),
-                          itemBuilder: (context, index) {
-                            return CustomTextFieldWidget(
-                              onTap: index == 2
-                                  ? () {
-                                      controller.selectDate(context,
-                                          controller.itemsController[index]!);
-                                    }
-                                  : null,
-                              controller: controller.itemsController[index],
-                              hinttext: controller.itemsTitle[index].tr,
-                              labeltext: controller.itemsTitle[index],
-                              iconData: Icons.search_outlined,
-                              fieldColor: primaryColor,
-                              valid: (value) => validInput(value!, 0, 100, ""),
-                              borderColor: white,
-                              isNumber: false,
-                            );
-                          },
-                        ),
-                        verticalGap(20),
-                        screenActionButtonWidget(
-                          context,
-                          backColor: primaryColor,
-                          onPressedClear: () {},
-                          onPressedPrint: () {
-                            final selectedExportData = controller.purchaseData
-                                .where(
-                                  (item) => controller.selectedRows
-                                      .contains(item.purchaseNumber),
-                                )
-                                .toList();
-                            controller.printingData(selectedExportData);
-                          },
-                          onPressedSearch: () {
-                            controller.getPurchaseData(isInitialSearch: true);
-                          },
-                          onPressedRemove: () {},
-                        )
-                      ],
+                  ? Expanded(
+                      child: Stack(
+                        alignment: Alignment.bottomCenter,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                TextRoutes.searchBy.tr,
+                                style: titleStyle.copyWith(color: white),
+                              ),
+                              verticalGap(5),
+                              ListView.separated(
+                                physics: const NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemCount: controller.searchFields.length,
+                                separatorBuilder: (_, __) => verticalGap(10),
+                                itemBuilder: (context, index) {
+                                  final fields = controller.searchFields[index];
+                                  final title = fields['title'];
+                                  final textController = fields['controller'];
+                                  final readONly = fields['read_only'];
+                                  final icon = fields['icon'];
+                                  if (title == TextRoutes.paymentString) {
+                                    return DropDownMenu(
+                                        selectedValue: controller
+                                            .selectedSearchPaymentMethod,
+                                        items: const [
+                                          TextRoutes.all,
+                                          TextRoutes.cash,
+                                          TextRoutes.dept
+                                        ],
+                                        contentColor: white,
+                                        fieldColor: primaryColor,
+                                        onChanged: (value) {
+                                          controller
+                                              .changeSearchPaymentMethod(value);
+                                        });
+                                  }
+                                  return CustomTextFieldWidget(
+                                    onTap: title == TextRoutes.date
+                                        ? () {
+                                            selectDate(context, textController);
+                                          }
+                                        : null,
+                                    controller: textController,
+                                    hinttext: title,
+                                    labeltext: title,
+                                    iconData: icon,
+                                    fieldColor: primaryColor,
+                                    valid: (value) =>
+                                        validInput(value!, 0, 100, ""),
+                                    borderColor: white,
+                                    isNumber: false,
+                                    readOnly: readONly,
+                                  );
+                                },
+                              ),
+                              verticalGap(20),
+                            ],
+                          ),
+                          screenActionButtonWidget(
+                            context,
+                            backColor: primaryColor,
+                            onPressedClear: () {},
+                            onPressedPrint: () {
+                              final selectedExportData = controller.purchaseData
+                                  .where(
+                                    (item) => controller.selectedRows
+                                        .contains(item.purchaseNumber),
+                                  )
+                                  .toList();
+                              controller.printingData(selectedExportData);
+                            },
+                            onPressedSearch: () {
+                              controller.getPurchaseData(isInitialSearch: true);
+                            },
+                            onPressedRemove: () {},
+                          )
+                        ],
+                      ),
                     )
                   :
                   //! Add Side
                   GetBuilder<BuyingController>(builder: (controller) {
                       return Form(
-                        key: controller.formKey,
+                        key: controller.detailsFormKey,
                         child: Column(
                           children: [
                             CustomDropDownSearchUsersGlobal(
@@ -136,8 +166,8 @@ class BuyingScreenWindows extends StatelessWidget {
                             ),
                             verticalGap(10),
                             DropDownMenu(
-                                contentColor: primaryColor,
-                                fieldColor: white,
+                                contentColor: white,
+                                fieldColor: primaryColor,
                                 selectedValue: controller.paymentMethod,
                                 items: const [
                                   TextRoutes.cash,
@@ -146,6 +176,24 @@ class BuyingScreenWindows extends StatelessWidget {
                                 onChanged: (value) {
                                   controller.changePaymentMethod(value!);
                                 }),
+                            verticalGap(10),
+                            CustomTextFieldWidget(
+                                valid: (value) {
+                                  return validInput(value!, 0, 100, "",
+                                      required: false);
+                                },
+                                onTap: () {
+                                  selectDate(
+                                      context, controller.dateController);
+                                },
+                                hinttext: TextRoutes.date,
+                                labeltext: TextRoutes.date,
+                                controller: controller.dateController,
+                                iconData: Icons.date_range,
+                                fieldColor: primaryColor,
+                                borderColor: white,
+                                readOnly: true,
+                                isNumber: false),
                             verticalGap(10),
                             CustomTextFieldWidget(
                                 valid: (value) {
@@ -159,8 +207,8 @@ class BuyingScreenWindows extends StatelessWidget {
                                 controller:
                                     controller.purchaseDiscountController,
                                 iconData: Icons.discount_outlined,
-                                borderColor: primaryColor,
-                                fieldColor: white,
+                                fieldColor: primaryColor,
+                                borderColor: white,
                                 isNumber: true),
                             verticalGap(10),
                             CustomTextFieldWidget(
@@ -169,13 +217,13 @@ class BuyingScreenWindows extends StatelessWidget {
                                 labeltext: TextRoutes.fees,
                                 controller: controller.purchaseFeesController,
                                 iconData: Icons.monetization_on,
-                                fieldColor: white,
                                 valid: (value) {
                                   return validInput(
                                       value!, 0, 100, "realNumber",
                                       required: false);
                                 },
-                                borderColor: primaryColor,
+                                fieldColor: primaryColor,
+                                borderColor: white,
                                 isNumber: true),
                             customDivider(white),
                             Row(

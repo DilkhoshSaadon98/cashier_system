@@ -7,7 +7,7 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:get/get.dart';
 
 // ignore: must_be_immutable
-class TransactionAccountsDropdownWidget<T> extends StatelessWidget {
+class ItemsDropDownSearch<T> extends StatelessWidget {
   final String label;
   final IconData iconData;
   final List<T> items;
@@ -17,8 +17,9 @@ class TransactionAccountsDropdownWidget<T> extends StatelessWidget {
   final Color? borderColor;
   final Color? fieldColor;
   String? Function(T?)? validator;
+  final List<String> Function(T)? searchFields;
 
-  TransactionAccountsDropdownWidget({
+  ItemsDropDownSearch({
     super.key,
     required this.label,
     required this.iconData,
@@ -29,6 +30,7 @@ class TransactionAccountsDropdownWidget<T> extends StatelessWidget {
     this.borderColor,
     this.fieldColor,
     this.validator,
+    this.searchFields,
   });
 
   @override
@@ -43,29 +45,20 @@ class TransactionAccountsDropdownWidget<T> extends StatelessWidget {
         dropdownSearchDecoration: InputDecoration(
           filled: true,
           fillColor: fieldColor,
-          labelText: label.tr,
-          labelStyle: bodyStyle.copyWith(color: borderColor ?? primaryColor),
+          hintText: label.tr,
+          hintStyle: bodyStyle.copyWith(color: borderColor ?? primaryColor),
           prefixIcon: Icon(
             iconData,
             color: borderColor,
           ),
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          focusedErrorBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: secondColor, width: 1),
-              borderRadius: BorderRadius.all(Radius.circular(constRadius))),
-          errorBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: primaryColor, width: 1),
-              borderRadius: BorderRadius.all(Radius.circular(constRadius))),
-          focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: secondColor, width: 1),
-              borderRadius: BorderRadius.all(Radius.circular(constRadius))),
-          enabledBorder: OutlineInputBorder(
-              borderSide:
-                  BorderSide(color: borderColor ?? primaryColor, width: 1),
-              borderRadius: BorderRadius.all(Radius.circular(constRadius))),
+          border: InputBorder.none,
         ),
       ),
+      filterFn: (item, filter) {
+        final fields = searchFields?.call(item) ?? [item.toString()];
+        return fields
+            .any((field) => field.toLowerCase().contains(filter.toLowerCase()));
+      },
       validator: validator,
       popupProps: PopupProps.menu(
         showSearchBox: true,
@@ -74,7 +67,7 @@ class TransactionAccountsDropdownWidget<T> extends StatelessWidget {
           style: bodyStyle.copyWith(color: primaryColor),
           decoration: InputDecoration(
             focusColor: Colors.teal,
-            hintText: TextRoutes.search.tr,
+            hintText: TextRoutes.searchItems.tr,
             labelStyle: bodyStyle.copyWith(color: fieldColor ?? primaryColor),
             hintStyle: bodyStyle.copyWith(color: primaryColor),
           ),

@@ -134,8 +134,9 @@ class TextRoutes {
   static const purchaesItems = "purchaesItems";
   static const viewPurchaes = "viewPurchaes";
   static const purchaesPrice = "purchaesPrice";
-  static const totalPriceDiscount = "totalPriceDiscount";
+  static const purchaesPriceDiscount = "purchaesPriceDiscount";
   static const totalPurchaesPrice = "totalPurchaesPrice";
+  static const itemName = "itemName";
   //! Invoices:
   static const invoices = "invoices";
   static const design = "design";
@@ -274,6 +275,22 @@ class TextRoutes {
       "pressToEditDoubleClickToRemove";
   static const searchInCatagoriesDots = "searchInCatagoriesDots";
   static const searchInCatagories = "searchInCatagories";
+  //! UNits:
+  static const viewUnits = "viewUnits";
+  static const addUnits = "addUnits";
+  static const editUnits = "editUnits";
+  static const unitsName = "unitsName";
+  static const unitName = "unitName";
+  static const baseLabel = "baseLabel";
+  static const largerUnitsName = "largerUnitsName";
+  static const baseUnitExample = "ex_gram";
+  static const baseUnitLabelExample = "ex_gr";
+  static const altUnitExample = "ex_kilogram";
+  static const altUnitLabelExample = "ex_kg";
+  static const label = "label";
+  static const template = "template"; 
+  static const templateEx = "template_ex"; 
+  static const noSubUnits = "noSubUnits"; 
   //! Add Account:
   static const addAccount = "addAccount";
   static const accountingAccounts = "accountingAccounts";
