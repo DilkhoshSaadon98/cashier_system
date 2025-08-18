@@ -423,10 +423,14 @@ class CashierClass {
 
   //? Update Gift Item To Cart
   Future<dynamic> cartOwnerNameUpdate(String cartNumber, String? userId) async {
+    print(cartNumber);
     try {
       Map<String, dynamic> data = {"cart_owner_id": userId};
-      return await db.updateData('tbl_cart', data, 'cart_number = $cartNumber');
+      print(data);
+      return await db.updateDataAllowNull(
+          'tbl_cart', data, 'cart_number = $cartNumber');
     } catch (e) {
+      print(e);
       showErrorDialog(e.toString(),
           title: "Error", message: "Error updating cart owner name");
       return null;
