@@ -8,6 +8,9 @@ class MyTranslation extends Translations {
   Map<String, Map<String, String>> get keys => {
         'en': enTranslation,
         "ar":arTranslation,
-       "he":kuSoraniTranslation
+       "he":kuSoraniTranslation //<<he>> for kudish
       };
 }
+
+
+

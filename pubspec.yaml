@@ -24,7 +24,7 @@ dependencies:
   http: ^1.2.0
 
   #! Internationalization
-  intl: ^0.19.0
+  intl: 0.20.2
 
   #! Responsive Design
   flutter_screenutil: ^5.9.0
