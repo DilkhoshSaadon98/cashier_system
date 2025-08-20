@@ -157,20 +157,7 @@ class UpdateItemsWidget extends StatelessWidget {
                               });
                         }),
                       ),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: TextButton.icon(
-                          style: const ButtonStyle(
-                              backgroundColor:
-                                  WidgetStatePropertyAll(Colors.teal)),
-                          icon: const Icon(Icons.add_circle, color: white),
-                          label: Text(
-                            TextRoutes.addUnits.tr,
-                            style: titleStyle.copyWith(color: white),
-                          ),
-                          onPressed: controller.addRow,
-                        ),
-                      ),
+
                       verticalGap(),
                       GetBuilder<ItemsViewController>(
                         builder: (controller) {
@@ -306,9 +293,24 @@ class UpdateItemsWidget extends StatelessWidget {
                           );
                         },
                       ),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton.icon(
+                          style: const ButtonStyle(
+                              backgroundColor:
+                                  WidgetStatePropertyAll(Colors.teal)),
+                          icon: const Icon(Icons.add_circle, color: white),
+                          label: Text(
+                            TextRoutes.addUnits.tr,
+                            style: titleStyle.copyWith(color: white),
+                          ),
+                          onPressed: controller.addRow,
+                        ),
+                      ),
                     ]),
               ),
             ),
+
             verticalGap(),
             // Add Button
             SizedBox(

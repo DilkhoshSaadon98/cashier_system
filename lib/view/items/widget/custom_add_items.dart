@@ -127,7 +127,7 @@ class AddItems extends StatelessWidget {
                                             value.factor;
                                         controller.selectedUnitData = value;
                                       }
-                                   
+
                                       controller.rows.clear();
                                     },
                                     fieldColor: white,
@@ -157,20 +157,7 @@ class AddItems extends StatelessWidget {
                               });
                         }),
                       ),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: TextButton.icon(
-                          style: const ButtonStyle(
-                              backgroundColor:
-                                  WidgetStatePropertyAll(Colors.teal)),
-                          icon: const Icon(Icons.add_circle, color: white),
-                          label: Text(
-                            TextRoutes.addUnits.tr,
-                            style: titleStyle.copyWith(color: white),
-                          ),
-                          onPressed: controller.addRow,
-                        ),
-                      ),
+
                       verticalGap(),
                       GetBuilder<ItemsViewController>(
                         builder: (controller) {
@@ -305,6 +292,20 @@ class AddItems extends StatelessWidget {
                             }),
                           );
                         },
+                      ),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton.icon(
+                          style: const ButtonStyle(
+                              backgroundColor:
+                                  WidgetStatePropertyAll(Colors.teal)),
+                          icon: const Icon(Icons.add_circle, color: white),
+                          label: Text(
+                            TextRoutes.addUnits.tr,
+                            style: titleStyle.copyWith(color: white),
+                          ),
+                          onPressed: controller.addRow,
+                        ),
                       ),
                     ]),
               ),
