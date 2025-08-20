@@ -193,11 +193,7 @@ class CashierController extends CashierConstantController {
         itemsSelling: itemsSellingPriceController.text.isNotEmpty
             ? itemsSellingPriceController.text
             : null,
-        itemsCategories:
-            catNameController.text.isNotEmpty ? catNameController.text : null,
-        itemsDesc: itemsDescControllerController.text.isNotEmpty
-            ? itemsDescControllerController.text
-            : null,
+        itemsCategories: catID!.text.isNotEmpty ? int.parse(catID!.text) : null,
         offset: currentPage * itemsPerPage,
         limit: itemsPerPage,
       );
@@ -1237,8 +1233,6 @@ class CashierController extends CashierConstantController {
     itemsBuyingPriceController.dispose();
     itemsCostPriceController.dispose();
     itemsWholeSalePriceController.dispose();
-    itemsTypeController.dispose();
-    itemsTypeControllerId.dispose();
     itemsCategoriesControllerId.dispose();
     itemsCategoriesControllerName.dispose();
     itemsBarcodeController.dispose();

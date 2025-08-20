@@ -1,12 +1,14 @@
 import 'dart:io';
 import 'package:cashier_system/controller/cashier/cashier_controller.dart';
+import 'package:cashier_system/controller/items/items_controller.dart';
 import 'package:cashier_system/core/constant/app_theme.dart';
 import 'package:cashier_system/core/constant/color.dart';
-import 'package:cashier_system/core/constant/screen_routes.dart';
+import 'package:cashier_system/core/dialogs/show_form_dialog.dart';
 import 'package:cashier_system/core/functions/show_popup_menu.dart';
 import 'package:cashier_system/core/localization/text_routes.dart';
 import 'package:cashier_system/core/shared/custom_sized_box.dart';
 import 'package:cashier_system/core/shared/custom_text_field_widget.dart';
+import 'package:cashier_system/view/items/widget/custom_update_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -68,6 +70,9 @@ class CustomGridDataView extends StatelessWidget {
                           controller.catNameController.text =
                               controller.categoriesData[index].categoriesName ??
                                   "";
+                          controller.catID!.text = controller
+                              .categoriesData[index].categoriesId
+                              .toString();
                           controller.getItems(isInitialSearch: true);
                         },
                         child: Container(
@@ -152,7 +157,7 @@ class CustomGridDataView extends StatelessWidget {
                                                   constraints.maxWidth),
                                           crossAxisSpacing: 8.w,
                                           mainAxisSpacing: 8.h,
-                                          childAspectRatio: 1.1,
+                                          childAspectRatio: 1.0,
                                         ),
                                         itemBuilder: (context, index) {
                                           final item =
@@ -165,30 +170,46 @@ class CustomGridDataView extends StatelessWidget {
                                             onTapDown:
                                                 popupMenu.storeTapPosition,
                                             onLongPress: () async {
+                                              ItemsViewController
+                                                  itemsViewController = Get.put(
+                                                      ItemsViewController());
                                               await controller
                                                   .getItemsById(item.itemsId!);
-                                              Get.toNamed(
-                                                  AppRoute.itemsUpdateScreen,
-                                                  arguments: {
-                                                    "itemsModel":
-                                                        controller.dataItem[0],
-                                                    "screen_route":
-                                                        AppRoute.cashierScreen,
-                                                    'show_back': true
-                                                  });
+                                              itemsViewController
+                                                  .passDataForUpdate(item);
+                                              showFormDialog(context,
+                                                  addText: TextRoutes.addItems,
+                                                  editText: TextRoutes.editItem,
+                                                  isUpdate: true,
+                                                  onValue: (p0) {
+                                                itemsViewController
+                                                    .clearFileds();
+                                                controller.getItems(
+                                                    isInitialSearch: true);
+                                              },
+                                                  child:
+                                                      const UpdateItemsWidget());
                                             },
                                             onSecondaryTap: () async {
+                                              ItemsViewController
+                                                  itemsViewController = Get.put(
+                                                      ItemsViewController());
                                               await controller
                                                   .getItemsById(item.itemsId!);
-                                              Get.toNamed(
-                                                  AppRoute.itemsUpdateScreen,
-                                                  arguments: {
-                                                    "itemsModel":
-                                                        controller.dataItem[0],
-                                                    "screen_route":
-                                                        AppRoute.cashierScreen,
-                                                    'show_back': true
-                                                  });
+                                              itemsViewController
+                                                  .passDataForUpdate(item);
+                                              showFormDialog(context,
+                                                  addText: TextRoutes.addItems,
+                                                  editText: TextRoutes.editItem,
+                                                  isUpdate: true,
+                                                  onValue: (p0) {
+                                                itemsViewController
+                                                    .clearFileds();
+                                                controller.getItems(
+                                                    isInitialSearch: true);
+                                              },
+                                                  child:
+                                                      const UpdateItemsWidget());
                                             },
                                             onTap: () {
                                               controller.addItemsToCart(
@@ -203,50 +224,55 @@ class CustomGridDataView extends StatelessWidget {
                                                       "start_new_cart", false);
                                             },
                                             child: Container(
-                                              decoration: BoxDecoration(
-                                                color: primaryColor
-                                                    .withOpacity(.5),
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        constRadius),
-                                              ),
-                                              alignment: Alignment.center,
-                                              padding: EdgeInsets.all(8.w),
-                                              constraints: BoxConstraints(
-                                                maxWidth: 120.w,
-                                              ),
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  if (item.itemsImage
-                                                          .isNotEmpty &&
-                                                      imagePath.isNotEmpty)
-                                                    SizedBox(
-                                                      width: 50.w,
-                                                      height: 50.w,
-                                                      child: Image.file(
-                                                        File(
-                                                            "$imagePath/${item.itemsImage}"),
-                                                        fit: BoxFit.contain,
-                                                      ),
-                                                    ),
-                                                  SizedBox(height: 5.h),
-                                                  Flexible(
-                                                    child: Text(
-                                                      item.itemsName,
-                                                      style: bodyStyle.copyWith(
-                                                          color: white),
-                                                      maxLines: 2,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                    ),
+                                                decoration: BoxDecoration(
+                                                  color: primaryColor
+                                                      .withOpacity(.5),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          constRadius),
+                                                ),
+                                                alignment: Alignment.center,
+                                                constraints: BoxConstraints(
+                                                  maxWidth: 120.w,
+                                                ),
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            constRadius),
+                                                    border: Border.all(
+                                                        width: 1,
+                                                        color: primaryColor),
+                                                    image: (item.itemsImage
+                                                                .isNotEmpty &&
+                                                            imagePath
+                                                                .isNotEmpty)
+                                                        ? DecorationImage(
+                                                            image: FileImage(File(
+                                                                "$imagePath/${item.itemsImage}")),
+                                                            fit: BoxFit.fill,
+                                                          )
+                                                        : null,
+                                                    color: primaryColor
+                                                        .withOpacity(.3),
                                                   ),
-                                                ],
-                                              ),
-                                            ),
+                                                  alignment: Alignment.center,
+                                                  child: (item.itemsImage
+                                                              .isEmpty ||
+                                                          imagePath.isEmpty)
+                                                      ? Text(
+                                                          item.itemsName,
+                                                          style: bodyStyle
+                                                              .copyWith(
+                                                                  color: white),
+                                                          maxLines: 2,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                        )
+                                                      : null,
+                                                )),
                                           );
                                         });
                                   },

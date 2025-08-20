@@ -1,6 +1,8 @@
 import 'package:cashier_system/core/dialogs/error_dialogs.dart';
-import 'package:cashier_system/core/localization/text_routes.dart';
 import 'package:cashier_system/core/class/sqldb.dart';
+import 'package:cashier_system/core/localization/text_routes.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class ItemsClass {
   SqlDb db = SqlDb();
@@ -11,9 +13,7 @@ class ItemsClass {
     String? itemsName,
     String? itemsCount,
     String? itemsSelling,
-    String? itemsType,
-    String? itemsCategories,
-    String? itemsDesc,
+    int? itemsCategories,
     String? productionFrom,
     String? productionTo,
     String? expiryFrom,
@@ -28,55 +28,66 @@ class ItemsClass {
     String? sql = "";
     List<String> conditions = [];
 
+    DateFormat formatter = DateFormat('yyyy-MM-dd');
     if (itemsNo != null) {
       conditions.add("(item_id = $itemsNo)");
     }
     if (itemsBarcode != null) {
-      conditions.add("( item_barcode LIKE '%$itemsBarcode%')");
+      conditions.add("( item_barcode = $itemsBarcode)");
     }
     if (itemsName != null) {
       conditions.add(
           "(item_name LIKE '%$itemsName%' OR item_description LIKE '%$itemsName%')");
     }
+    //? Production Date:
     if (productionFrom != null) {
-      conditions.add("production_date >= '$productionFrom'");
+      if (productionTo != null) {
+        DateTime startDate = formatter.parse(productionFrom.trim());
+        DateTime endDate = formatter.parse(productionTo.trim());
+        conditions.add(
+            "( item_production_date BETWEEN '${formatter.format(startDate)}' AND '${formatter.format(endDate)}' )");
+      } else {
+        DateTime startDate = formatter.parse(productionFrom.trim());
+        conditions
+            .add("( item_production_date = '${formatter.format(startDate)}' )");
+      }
     }
-    if (productionTo != null) {
-      conditions.add("production_date <= '$productionTo'");
-    }
-
+    //? Expiry Date:
     if (expiryFrom != null) {
-      conditions.add("expiry_date >= '$expiryFrom'");
+      if (expiryTo != null) {
+        DateTime startDate = formatter.parse(expiryFrom.trim());
+        DateTime endDate = formatter.parse(expiryTo.trim());
+        conditions.add(
+            "( item_expiry_date BETWEEN '${formatter.format(startDate)}' AND '${formatter.format(endDate)}' )");
+      } else {
+        DateTime startDate = formatter.parse(expiryFrom.trim());
+        conditions
+            .add("( item_expiry_date = '${formatter.format(startDate)}' )");
+      }
     }
-    if (expiryTo != null) {
-      conditions.add("expiry_date <= '$expiryTo'");
+    //? Insert Date:
+    if (createFrom != null) {
+      if (createTo != null) {
+        DateTime startDate = formatter.parse(createFrom.trim());
+        DateTime endDate = formatter.parse(createTo.trim());
+        conditions.add(
+            "( item_create_date BETWEEN '${formatter.format(startDate)}' AND '${formatter.format(endDate)}' )");
+      } else {
+        DateTime startDate = formatter.parse(createFrom.trim());
+        conditions
+            .add("( item_create_date = '${formatter.format(startDate)}' )");
+      }
     }
 
-    if (createFrom != null) {
-      conditions.add("item_create_date >= '$createFrom'");
-    }
-    if (createTo != null) {
-      conditions.add("item_create_date <= '$createTo'");
-    }
     if (itemsCount != null) {
       conditions.add("item_count = '$itemsCount'");
     }
     if (itemsSelling != null) {
       conditions.add("item_selling_price = '$itemsSelling'");
     }
-    if (itemsType != null) {
-      conditions.add("item_type LIKE '%$itemsType%'");
-    }
+
     if (itemsCategories != null) {
-      if (itemsCategories == TextRoutes.unknown) {
-        conditions
-            .add("(categories_name IS NULL OR categories_name = 'Unknown')");
-      } else {
-        conditions.add("categories_name LIKE '%$itemsCategories%'");
-      }
-    }
-    if (itemsDesc != null) {
-      conditions.add("item_description LIKE '%$itemsDesc%'");
+      conditions.add("item_category_id = $itemsCategories");
     }
 
     if (conditions.isNotEmpty) {
@@ -85,27 +96,8 @@ class ItemsClass {
       sql = "1 = 1";
     }
 
-    String orderBy = '';
-    if (sortField != null && sortField.isNotEmpty) {
-      final allowedSortFields = [
-        'item_id',
-        'item_name',
-        'item_count',
-        'item_selling_price',
-        'production_date',
-        'expiry_date',
-        'item_create_date',
-      ];
-
-      if (allowedSortFields.contains(sortField)) {
-        final sanitizedSortOrder =
-            sortOrder.toUpperCase() == 'DESC' ? 'DESC' : 'ASC';
-        orderBy = " ORDER BY $sortField $sanitizedSortOrder";
-      }
-    }
-
     var response = await db.getData(
-        'SELECT * FROM view_items WHERE $sql $orderBy LIMIT $limit OFFSET $offset');
+        'SELECT * FROM view_items WHERE $sql ORDER BY $sortField ${sortOrder.toUpperCase()} LIMIT $limit OFFSET $offset');
 
     List<dynamic> totalItemsData = await getTotalItemsPrice(sql);
     double totalItemsPrice = totalItemsData[0];
@@ -146,5 +138,56 @@ class ItemsClass {
           message: "Error fetching total items price");
       return [0.0, 0];
     }
+  }
+
+  Future<Map<String, String>> deleteItems(List<int> ids) async {
+    Map<String, String> result = {};
+
+    for (var id in ids) {
+      String? usedIn;
+
+      final usedCart = await db
+          .getData("SELECT 1 FROM tbl_cart WHERE cart_items_id = $id LIMIT 1");
+      if (usedCart.isNotEmpty) usedIn = TextRoutes.itemLinkedWithSaleInvoices;
+
+      final usedInventory = await db.getData(
+          "SELECT 1 FROM tbl_inventory_movements WHERE item_id = $id LIMIT 1");
+      if (usedInventory.isNotEmpty && usedIn == null) {
+        usedIn = TextRoutes.itemLinkedWithSaleInvoices;
+      }
+
+      final usedInvoice = await db.getData(
+          "SELECT 1 FROM tbl_invoice_items WHERE invoice_item_id = $id LIMIT 1");
+      if (usedInvoice.isNotEmpty && usedIn == null) {
+        usedIn = TextRoutes.itemLinkedWithSaleInvoices;
+      }
+
+      final usedPurchase = await db.getData(
+          "SELECT 1 FROM tbl_purchase WHERE purchase_items_id = $id LIMIT 1");
+      if (usedPurchase.isNotEmpty && usedIn == null) {
+        usedIn = TextRoutes.itemLinkedWithPurchaseInvoices;
+      }
+      ;
+
+      if (usedIn == null) {
+        // تحقق من tbl_units_price
+        final usedUnits = await db.getData(
+            "SELECT 1 FROM tbl_units_price WHERE item_id = $id LIMIT 1");
+        if (usedUnits.isNotEmpty) {
+          await db.deleteData("tbl_units_price", "item_id = $id");
+        }
+
+        final res = await db.deleteData("tbl_items", "item_id = $id");
+        if (res > 0) {
+          result[id.toString()] = TextRoutes.success;
+        } else {
+          result[id.toString()] = TextRoutes.fail;
+        }
+      } else {
+        result[id.toString()] = '${TextRoutes.failDeleteData.tr}-$usedIn';
+      }
+    }
+
+    return result;
   }
 }

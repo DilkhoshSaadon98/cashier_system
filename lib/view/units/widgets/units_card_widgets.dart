@@ -17,7 +17,7 @@ Widget unitsCardWidget(
   // final String imageFilePath = "$imagePath/${dataItem.categoriesImage}";
   return GestureDetector(
     onTap: () {
-      controller.baseUnitName.text = dataItem.unitBaseName;
+      controller.baseUnitName.text = dataItem.unitBaseName!;
       controller.unitFactor.text = dataItem.factor.toString();
       showFormDialog(context,
           addText: TextRoutes.addUnits,
@@ -48,7 +48,7 @@ Widget unitsCardWidget(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              dataItem.unitBaseName,
+              dataItem.unitBaseName!,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.center,
@@ -74,7 +74,7 @@ Widget unitsCardWidget(
               ),
             ),
             Text(
-              dataItem.unitCreateDate,
+              dataItem.unitCreateDate!,
               style: bodyStyle,
             ),
             const Spacer(),
@@ -85,7 +85,7 @@ Widget unitsCardWidget(
                   icon: const Icon(Icons.edit, color: Colors.blue),
                   tooltip: TextRoutes.edit.tr,
                   onPressed: () {
-                    controller.baseUnitName.text = dataItem.unitBaseName;
+                    controller.baseUnitName.text = dataItem.unitBaseName!;
                     controller.unitFactor.text = dataItem.factor.toString();
                     showFormDialog(context,
                         addText: TextRoutes.addUnits,

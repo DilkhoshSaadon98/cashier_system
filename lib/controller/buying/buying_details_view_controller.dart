@@ -3,15 +3,12 @@ import 'package:cashier_system/controller/printer/invoice_controller.dart';
 import 'package:cashier_system/controller/printer/sunmi_printer_controller.dart';
 import 'package:cashier_system/core/constant/app_theme.dart';
 import 'package:cashier_system/core/dialogs/error_dialogs.dart';
-import 'package:cashier_system/data/model/purchaes_model.dart';
-import 'package:cashier_system/data/source/buying_class.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class BuyingDetailsViewController extends DefinitionBuyingController {
 
-  //! Data
-  List<PurchaseModel> purchaseDetailsData = [];
+
 
   List<TextEditingController> itemsController = [];
   String cartNumber = "";

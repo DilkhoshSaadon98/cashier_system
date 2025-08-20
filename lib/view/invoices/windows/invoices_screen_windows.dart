@@ -17,86 +17,95 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+
+
+
 class InvoicesScreenWindows extends StatelessWidget {
   const InvoicesScreenWindows({super.key});
 
   @override
   Widget build(BuildContext context) {
-    Get.put(InvoiceController());
-    return Directionality(
-      textDirection: screenDirection(),
-      child: ScreenBuilder(
-        windows: Scaffold(
-          backgroundColor: white,
-          body: GetBuilder<InvoiceController>(builder: (controller) {
-            return DivideScreenWidget(
-              //? Display Print layout:
-              showWidget: controller.selectedIndex == 0
-                  ? const PrintingWidget(
-                      headerData: {},
-                      tableData: {},
-                    )
-                  : const PrintingBarcode(),
-              //? Customize Print layout:
-
-              actionWidget: DefaultTabController(
-                  length: 2,
-                  child: Column(
-                    children: [
-                      const CustomHeaderScreen(
-                        imagePath: AppImageAsset.settingIcons,
-                        title: TextRoutes.invoices,
-                      ),
-                      verticalGap(),
-                      Container(
-                        color: buttonColor,
-                        child: TabBar(
-                          dividerColor: primaryColor,
-                          dividerHeight: 1,
-                          unselectedLabelColor: white,
-                          indicatorColor: secondColor,
-                          indicatorSize: TabBarIndicatorSize.tab,
-                          automaticIndicatorColorAdjustment: true,
-                          dragStartBehavior: DragStartBehavior.start,
-                          labelColor: secondColor,
-                          onTap: (index) {
-                            controller.changeIndex(index);
-                            if (index == 1) {
-                              controller.getItems();
-                            }
-                          },
-                          tabs: [
-                            Tab(
-                              child: Text(
-                                TextRoutes.design.tr,
-                                style: bodyStyle.copyWith(color: white),
-                              ),
-                            ),
-                            Tab(
-                              child: Text(
-                                TextRoutes.barcode.tr,
-                                style: bodyStyle.copyWith(color: white),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const Expanded(
-                          child: TabBarView(children: [
-                        DesignPage(
-                          isWindows: true,
-                        ),
-                        DesignBarcode(
-                          isWindows: true,
-                        ),
-                      ]))
-                    ],
-                  )),
-            );
-          }),
-        ),
-        mobile: const InvoiceScreenMobile(),
-      ),
-    );
+    return const Placeholder();
   }
 }
+
+// class InvoicesScreenWindows extends StatelessWidget {
+//   const InvoicesScreenWindows({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     Get.put(InvoiceController());
+//     return ScreenBuilder(
+//       windows: Scaffold(
+//         backgroundColor: white,
+//         body: GetBuilder<InvoiceController>(builder: (controller) {
+//           return DivideScreenWidget(
+//             //? Display Print layout:
+//             showWidget: controller.selectedIndex == 0
+//                 ? const PrintingWidget(
+//                     headerData: {},
+//                     tableData: {},
+//                   )
+//                 : const PrintingBarcode(),
+//             //? Customize Print layout:
+
+//             actionWidget: DefaultTabController(
+//                 length: 2,
+//                 child: Column(
+//                   children: [
+//                     const CustomHeaderScreen(
+//                       imagePath: AppImageAsset.settingIcons,
+//                       title: TextRoutes.invoices,
+//                     ),
+//                     verticalGap(),
+//                     Container(
+//                       color: buttonColor,
+//                       child: TabBar(
+//                         dividerColor: primaryColor,
+//                         dividerHeight: 1,
+//                         unselectedLabelColor: white,
+//                         indicatorColor: secondColor,
+//                         indicatorSize: TabBarIndicatorSize.tab,
+//                         automaticIndicatorColorAdjustment: true,
+//                         dragStartBehavior: DragStartBehavior.start,
+//                         labelColor: secondColor,
+//                         onTap: (index) {
+//                           controller.changeIndex(index);
+//                           if (index == 1) {
+//                             controller.getItems();
+//                           }
+//                         },
+//                         tabs: [
+//                           Tab(
+//                             child: Text(
+//                               TextRoutes.invoices.tr,
+//                               style: bodyStyle.copyWith(color: white),
+//                             ),
+//                           ),
+//                           Tab(
+//                             child: Text(
+//                               TextRoutes.barcode.tr,
+//                               style: bodyStyle.copyWith(color: white),
+//                             ),
+//                           ),
+//                         ],
+//                       ),
+//                     ),
+//                     const Expanded(
+//                         child: TabBarView(children: [
+//                       DesignPage(
+//                         isWindows: true,
+//                       ),
+//                       DesignBarcode(
+//                         isWindows: true,
+//                       ),
+//                     ]))
+//                   ],
+//                 )),
+//           );
+//         }),
+//       ),
+//       mobile: const InvoiceScreenMobile(),
+//     );
+//   }
+// }

@@ -18,6 +18,7 @@ const Color mobileScreenBackgroundColor = Color(0xffffffff);
 
 //? Dark mode Colors:
 Color buttonColor = const Color(0xff427D9D); //Color(0xffB43F3F);
+Color sortFieldColor = const Color(0xff568F87); //Color(0xffB43F3F);
 Color whiteButtonColor = const Color.fromARGB(255, 223, 192, 165);
 Color tableHeaderColor = buttonColor;
 const Color secondColor2 = Color.fromARGB(255, 213, 213, 213);

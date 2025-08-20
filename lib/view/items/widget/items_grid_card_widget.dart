@@ -1,6 +1,8 @@
 import 'dart:io';
+import 'package:cashier_system/core/dialogs/show_form_dialog.dart';
 import 'package:cashier_system/core/functions/formating_numbers.dart';
 import 'package:cashier_system/data/model/items_model.dart';
+import 'package:cashier_system/view/items/widget/custom_update_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -10,7 +12,7 @@ import 'package:cashier_system/core/constant/imgaeasset.dart';
 import 'package:cashier_system/core/localization/text_routes.dart';
 import 'package:cashier_system/data/model/item_details_model.dart';
 import 'package:cashier_system/view/items/widget/items_details_dialog.dart';
-import 'package:cashier_system/controller/items/items_view_controller.dart';
+import 'package:cashier_system/controller/items/items_controller.dart';
 
 class ItemsGridCardWidget extends StatelessWidget {
   final ItemsViewController controller;
@@ -138,7 +140,14 @@ class ItemsGridCardWidget extends StatelessWidget {
                   backgroundColor: Colors.blue.shade50,
                   child: IconButton(
                     icon: const Icon(Icons.edit, size: 16, color: Colors.blue),
-                    onPressed: () => controller.goUpdateItems(item),
+                    onPressed: () {
+                      showFormDialog(context,
+                          addText: TextRoutes.addItems,
+                          editText: TextRoutes.editItem,
+                          isUpdate: true, onValue: (p0) {
+                        controller.clearFileds();
+                      }, child: const UpdateItemsWidget());
+                    },
                     padding: EdgeInsets.zero,
                   ),
                 ),
@@ -158,7 +167,12 @@ class ItemsGridCardWidget extends StatelessWidget {
       onDelete: () {},
       onEdit: () {
         Navigator.of(context).pop(false);
-        controller.goUpdateItems(item);
+        showFormDialog(context,
+            addText: TextRoutes.addItems,
+            editText: TextRoutes.editItem,
+            isUpdate: true, onValue: (p0) {
+          controller.clearFileds();
+        }, child: const UpdateItemsWidget());
       },
     );
   }

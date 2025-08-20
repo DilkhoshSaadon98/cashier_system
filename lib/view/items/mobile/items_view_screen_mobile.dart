@@ -1,13 +1,12 @@
-import 'package:cashier_system/controller/items/items_view_controller.dart';
+import 'package:cashier_system/controller/items/items_controller.dart';
 import 'package:cashier_system/core/constant/app_theme.dart';
 import 'package:cashier_system/core/constant/color.dart';
 import 'package:cashier_system/core/localization/text_routes.dart';
 import 'package:cashier_system/core/shared/custom_appbar_title.dart';
 import 'package:cashier_system/view/items/widget/custom_show_items.dart';
-import 'package:cashier_system/view/items/widget/mobile_action_widget.dart';
+import 'package:cashier_system/view/items/widget/items_action_section_widget.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 class ItemsViewScreenMobile extends StatelessWidget {
@@ -15,7 +14,7 @@ class ItemsViewScreenMobile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Get.put(ItemsViewController());
+    final controller = Get.put(ItemsViewController());
     return Scaffold(
       appBar: customAppBarTitle(TextRoutes.viewItems, true),
       backgroundColor: mobileScreenBackgroundColor,
@@ -45,35 +44,23 @@ class ItemsViewScreenMobile extends StatelessWidget {
                     ),
                   ]),
             ),
-            const Expanded(
+            Expanded(
               child: TabBarView(
                 children: [
-                  ItemsListView(),
-                  CustomShowItems(),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 10),
+                    child: ItemsActionSectionWidget(
+                      controller: controller,
+                      isMobile: true,
+                    ),
+                  ),
+                  const CustomShowItems(),
                 ],
               ),
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class ItemsListView extends StatelessWidget {
-  const ItemsListView({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: mobileScreenBackgroundColor,
-      body: GetBuilder<ItemsViewController>(
-        builder: (controller) {
-          return Container(
-            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
-            child: const MobileActionWidget(),
-          );
-        },
       ),
     );
   }

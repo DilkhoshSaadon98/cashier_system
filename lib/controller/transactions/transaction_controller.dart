@@ -1,4 +1,7 @@
+import 'package:cashier_system/controller/printer/invoice_controller.dart';
+import 'package:cashier_system/controller/printer/sunmi_printer_controller.dart';
 import 'package:cashier_system/core/class/statusrequest.dart';
+import 'package:cashier_system/core/constant/app_theme.dart';
 import 'package:cashier_system/core/dialogs/error_dialogs.dart';
 import 'package:cashier_system/core/functions/date_picker.dart';
 import 'package:cashier_system/core/functions/show_popup_menu.dart';
@@ -24,8 +27,8 @@ class TransactionController extends GetxController {
 
   //? Check if an item is selected
   List<int> selectedRows = [];
-  bool isSelected(int itemsId) {
-    return selectedRows.contains(itemsId);
+  bool isSelected(int transactionId) {
+    return selectedRows.contains(transactionId);
   }
 
   //? Select or deselect an item
@@ -223,6 +226,79 @@ class TransactionController extends GetxController {
       );
     } finally {
       update();
+    }
+  }
+
+  String selectedPrinter =
+      myServices.sharedPreferences.getString("selected_printer") ??
+          TextRoutes.a4Printer;
+  printData(
+      List<TransactionModel> passedData, List<int> selectedPassedData) async {
+    InvoiceController invoiceController = Get.put(InvoiceController());
+    List<TransactionModel> selectedItems = passedData
+        .where((transaction) => isSelected(transaction.transactionId))
+        .toList();
+    print(selectedItems.first.transactionNumber);
+    if (selectedItems.isNotEmpty) {
+      // invoiceController.loadPreferences();
+      // invoiceController.update();
+      Map<String, List<String>> result = {
+        "#": [],
+        TextRoutes.transactionNumber: [],
+        TextRoutes.accountName: [],
+        TextRoutes.ballance: [],
+        TextRoutes.date: [],
+        TextRoutes.note: [],
+      };
+
+      for (var i = 0; i < selectedItems.length; i++) {
+        var transaction = selectedItems[i];
+
+        // Add data to result map
+        result["#"]!.add((i + 1).toString());
+        result[TextRoutes.transactionNumber]!
+            .add(transaction.transactionNumber);
+        result[TextRoutes.accountName]!.add(transaction.targetAccountName);
+        result[TextRoutes.ballance]!
+            .add(transaction.transactionAmount.toString());
+        result[TextRoutes.date]!.add(transaction.transactionDate);
+        result[TextRoutes.note]!.add(transaction.transactionNote ?? "");
+      }
+      print(result);
+      // Prepare the invoice data
+      Map<String, dynamic> invoiceData = {};
+
+      try {
+        if (myServices.sharedPreferences.getString("selected_printer") ==
+            null) {
+          myServices.sharedPreferences
+              .setString('selected_printer', TextRoutes.a4Printer);
+        }
+        if (selectedPrinter == "A4 Printer") {
+          invoiceController.exportInvoicePdf(invoiceData, result, "bills");
+        } else if (selectedPrinter == TextRoutes.a4Printer) {
+          invoiceController.printInvoice(invoiceData, result, "bills");
+        } else if (selectedPrinter == "SUNMI Printer") {
+          PrinterController printerController = Get.put(PrinterController());
+          printerController.printTable(
+            invoiceController.selectedHeaders,
+            invoiceController.selectedColumns,
+            invoiceData,
+            result,
+          );
+        } else if (selectedPrinter == "Mini Printer") {
+          PrinterController printerController = Get.put(PrinterController());
+          printerController.printTable(
+            invoiceController.selectedHeaders,
+            invoiceController.selectedColumns,
+            invoiceData,
+            result,
+          );
+        }
+      } catch (e) {
+        showErrorDialog(e.toString(),
+            title: "Error", message: "Failed to update the invoice");
+      }
     }
   }
 

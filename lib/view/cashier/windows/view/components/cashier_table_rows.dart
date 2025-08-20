@@ -5,7 +5,6 @@ import 'dart:async';
 import 'package:cashier_system/controller/cashier/cashier_controller.dart';
 import 'package:cashier_system/core/constant/app_theme.dart';
 import 'package:cashier_system/core/constant/color.dart';
-import 'package:cashier_system/core/constant/screen_routes.dart';
 import 'package:cashier_system/core/dialogs/snackbar_helper.dart';
 import 'package:cashier_system/core/functions/show_popup_menu.dart';
 import 'package:cashier_system/core/localization/text_routes.dart';
@@ -29,22 +28,13 @@ class CashierTableRows extends StatelessWidget {
     Timer? debounce;
     void showDialogOption(int itemsId) {
       popupMenu.showPopupMenu(context, [
-        TextRoutes.edit,
         TextRoutes.remove,
-        TextRoutes.view,
+        //    TextRoutes.view,
       ], [
-        () async {
-          await controller.getItemsById(itemsId);
-          Get.toNamed(AppRoute.itemsUpdateScreen, arguments: {
-            "itemsModel": controller.dataItem[0],
-            "screen_route": AppRoute.cashierScreen,
-            'show_back': true
-          });
-        },
         () => controller.deleteCartItem([itemsId]),
-        () async {
-          await controller.getItemsById(itemsId);
-        }
+        // () async {
+        //   await controller.getItemsById(itemsId);
+        // }
       ]);
     }
 

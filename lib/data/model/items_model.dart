@@ -92,12 +92,23 @@ class AltUnit {
   });
 
   factory AltUnit.fromMap(Map<String, dynamic> map) {
+    double parseToDouble(dynamic value, [double defaultValue = 0.0]) {
+      if (value == null) return defaultValue;
+      if (value is num) return value.toDouble();
+      if (value is String && value.isNotEmpty) {
+        return double.tryParse(value) ?? defaultValue;
+      }
+      return defaultValue;
+    }
+
     return AltUnit(
-      unitId: map['unit_id'],
-      unitName: map['unit_name'] ?? "",
-      price: map['price']?.toDouble() ?? 0.0,
-      unitFactor: map['factor']?.toDouble() ?? 1.0,
-      barcode: map['barcode'] ?? "",
+      unitId: map['unit_id'] is int
+          ? map['unit_id']
+          : int.tryParse(map['unit_id'].toString()) ?? 0,
+      unitName: map['unit_name']?.toString() ?? "",
+      price: parseToDouble(map['price']),
+      unitFactor: parseToDouble(map['factor'], 1.0),
+      barcode: map['barcode']?.toString() ?? "",
     );
   }
 }

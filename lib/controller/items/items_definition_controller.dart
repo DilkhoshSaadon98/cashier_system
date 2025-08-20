@@ -4,6 +4,7 @@ import 'package:cashier_system/core/class/statusrequest.dart';
 import 'package:cashier_system/core/constant/app_theme.dart';
 import 'package:cashier_system/core/dialogs/error_dialogs.dart';
 import 'package:cashier_system/core/functions/date_picker.dart';
+import 'package:cashier_system/core/functions/show_popup_menu.dart';
 import 'package:cashier_system/core/functions/upload_file.dart';
 import 'package:cashier_system/core/localization/text_routes.dart';
 import 'package:cashier_system/data/model/categories_model.dart';
@@ -15,23 +16,37 @@ import 'package:cashier_system/data/model/units_model.dart';
 import 'package:cashier_system/data/source/items_class.dart';
 import 'package:cashier_system/core/class/sqldb.dart';
 import 'package:cashier_system/main.dart';
-import 'package:drop_down_list/model/selected_list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
+// ignore: depend_on_referenced_packages
 import 'package:path/path.dart';
 
 class ItemsDefinitionController extends GetxController {
+  final CustomShowPopupMenu customShowPopupMenu = CustomShowPopupMenu();
+  String selectedSortField = "item_create_date";
+  bool sortAscending = true;
+  String selectedPrinter =
+      myServices.sharedPreferences.getString("selected_printer") ??
+          "A4 Printer";
+
+  GlobalKey<FormState> formState = GlobalKey<FormState>();
+  //* Constants
+  ScrollController? scrollControllers;
+  int itemsPerPage = 50;
+  int itemsOffset = 0;
+  bool isLoading = false;
+  bool showBackToTopButton = false;
+  bool showSnackBar = true;
+  bool? showAddToCart = false;
+  String cartNumber = "1";
   //*
   double totalItemsPrice = 0.0;
   int totalItemsCount = 0;
   //* States & UI
-  bool isHovered = false;
   bool autoPrintBarcode = false;
-  bool isHover = false;
-  bool isSearch = false;
 
   //* Scroll
   static const double initialScrollPosition = 0.0;
@@ -45,23 +60,13 @@ class ItemsDefinitionController extends GetxController {
   File? file;
   String? fileName = "";
 
-  //* Time
-  DateTime selectedDate = DateTime.now();
-
   //* Data
   List<PurchaseModel> purchaesData = [];
   List<CategoriesModel> dropDownListCategoriesData = [];
-  List<SelectedListItem> dropDownListCategories = [];
-  List<SelectedListItem> dropDownListUnits = [];
-  List<String> dropDownListUnitsTemplate = [];
   List<UnitModel> unitsDropDownData = [];
   List<ItemsModel> data = [];
-  List<CategoriesModel> categoriesData = [];
   List<ItemDetailsModel> itemDetailsModel = [];
-  List<ItemsModel> listDataSearch = [];
   List<int> selectedItems = [];
-  List<String> dropdownItems = [];
-  List<bool> hoverStates = [];
   List<TextEditingController?> itemsController = [];
 
   //* DB Access
@@ -69,7 +74,7 @@ class ItemsDefinitionController extends GetxController {
   final SqlDb sqlDb = SqlDb();
   StatusRequest statusRequest = StatusRequest.none;
 
-  //* Controllers
+  //* Input Controllers
   final itemsNameController = TextEditingController();
   final itemsDescControllerController = TextEditingController();
   final itemsCountController = TextEditingController();
@@ -77,57 +82,38 @@ class ItemsDefinitionController extends GetxController {
   final itemsBuyingPriceController = TextEditingController();
   final itemsCostPriceController = TextEditingController();
   final itemsWholeSalePriceController = TextEditingController();
-  final itemsCategoriesControllerId = TextEditingController();
-  final itemsCategoriesControllerName = TextEditingController();
   final itemsBarcodeController = TextEditingController();
   final itemsCodeController = TextEditingController();
+  final itemsProductionDateController = TextEditingController();
+  final itemsExpiryDateController = TextEditingController();
+  final itemsUnitBaseController = TextEditingController();
+  //? Search Controller
+  int? selectedSearchCategoriesId;
+  final itemsSearchNameController = TextEditingController();
+  final itemsSearchCodeController = TextEditingController();
+  final itemsSearchCountController = TextEditingController();
+  final itemsSearchSellingPriceController = TextEditingController();
+  final itemsSearchBarcodeController = TextEditingController();
   final prodFromController = TextEditingController();
   final prodToController = TextEditingController();
   final expFromController = TextEditingController();
   final expToController = TextEditingController();
   final createFromController = TextEditingController();
   final createToController = TextEditingController();
-  final itemsUnitBaseController = TextEditingController(text: TextRoutes.pcs);
-  final itemsUnitConversionController = TextEditingController(text: "1");
-  final itemsProductionDateController = TextEditingController();
-  final itemsExpiryDateController = TextEditingController();
-  final catNameController = TextEditingController();
-  final catIdController = TextEditingController();
-  final searchController = TextEditingController();
-
-  TextEditingController? fromTypeName = TextEditingController();
-  TextEditingController? fromTypeID = TextEditingController();
-  TextEditingController? itemsSecondeBarcode;
-  final itemsBaseQtyController = TextEditingController();
-  final itemsAltQtyController = TextEditingController();
-  final itemsUnitAltController = TextEditingController();
-  final itemsTotalQtyController = TextEditingController();
-  //? Calculate Total QTY:
-  bool isFromBigToSmall = true;
-
-  void calculateTotalQty() {
-    double totalQty = (double.tryParse(itemsBaseQtyController.text) ?? 0.0) *
-        (double.tryParse(itemsUnitConversionController.text) ?? 0.0);
-    itemsAltQtyController.text = totalQty.toString();
-    // final baseQty = double.tryParse(itemsBaseQtyController.text.trim()) ?? 0;
-    // final altQty = double.tryParse(itemsAltQtyController.text.trim()) ?? 0;
-    // final conversion =
-    //     double.tryParse(itemsUnitConversionController.text.trim());
-    // if (conversion == null || conversion == 0) {
-    //   itemsTotalQtyController.text = '0.00';
-    //   return;
-    // }
-
-    // double totalQty;
-
-    // if (!isFromBigToSmall) {
-    //   totalQty = baseQty + (altQty * conversion);
-    // } else {
-    //   totalQty = baseQty + (altQty / conversion);
-    // }
-
-    // itemsTotalQtyController.text = totalQty.toStringAsFixed(2);
-  }
+  String? currentBarcode;
+  int? selectedItemsForUpdateId;
+  //? Drop Down Data:
+  UnitModel? selectedUnitData;
+  int? selectedUnitId;
+  double? selectedUnitFactor;
+  CategoriesModel? selectedCat;
+  int? selectedCatId;
+  UnitConversationModel? selectedUnitConversation;
+  int? selectedUnitConversationId;
+  String selectedUnitPriceDetails = "";
+  List<String> unitNames = [];
+  //? Add Update dynamic row:
+  List<ProductRow> rows = [];
 
   //* UI Maps
   List<Map<String, dynamic>> get itemsInputFieldsData => [
@@ -142,7 +128,7 @@ class ItemsDefinitionController extends GetxController {
         {
           "title": TextRoutes.chooseCategories,
           "icon": Icons.layers,
-          "controller": itemsCategoriesControllerName,
+          "controller": selectedCatId,
           "required": true,
           "valid": "",
           'read_only': true
@@ -245,42 +231,42 @@ class ItemsDefinitionController extends GetxController {
         {
           "title": TextRoutes.chooseCategories,
           "icon": Icons.layers,
-          "controller": catNameController,
+          "controller": selectedSearchCategoriesId,
           "valid": "",
           'read_only': true
         },
         {
           "title": TextRoutes.itemsName,
           "icon": Icons.text_fields,
-          "controller": itemsNameController,
+          "controller": itemsSearchNameController,
           "valid": "",
           'read_only': false
         },
         {
           "title": TextRoutes.code,
           "icon": FontAwesomeIcons.code,
-          "controller": itemsCodeController,
+          "controller": itemsSearchCodeController,
           "valid": "number",
           'read_only': false
         },
         {
           "title": TextRoutes.itemsQty,
           "icon": Icons.numbers_outlined,
-          "controller": itemsCountController,
+          "controller": itemsSearchCountController,
           "valid": "number",
           'read_only': false
         },
         {
           "title": TextRoutes.sellingPrice,
           "icon": Icons.price_change,
-          "controller": itemsSellingPriceController,
+          "controller": itemsSearchSellingPriceController,
           "valid": "realNumber",
           'read_only': false
         },
         {
           "title": TextRoutes.barcode,
           "icon": Icons.qr_code,
-          "controller": itemsBarcodeController,
+          "controller": itemsSearchBarcodeController,
           "valid": "number",
           'read_only': false,
         },
@@ -347,19 +333,42 @@ class ItemsDefinitionController extends GetxController {
           'suffix_icon': Icons.date_range
         },
       ];
+  List<Map<String, dynamic>> get sortFields => [
+        {
+          "title": TextRoutes.itemsName,
+          "value": "item_name",
+          "icon": Icons.text_fields,
+        },
+        {
+          "title": TextRoutes.itemsQty,
+          "value": "item_count",
+          "icon": Icons.numbers_outlined,
+        },
+        {
+          "title": TextRoutes.createDate,
+          "value": "item_create_date",
+          "icon": Icons.calendar_today,
+        },
+        {
+          "title": TextRoutes.productionDate,
+          "value": "item_production_date",
+          "icon": Icons.date_range,
+        },
+        {
+          "title": TextRoutes.expireDate,
+          "value": "item_expiry_date",
+          "icon": Icons.event_busy,
+        },
+        {
+          "title": TextRoutes.barcode,
+          "value": "item_barcode",
+          "icon": Icons.qr_code,
+        },
+      ];
   //* Methods
-  changeHover(bool value) {
-    isHovered = value;
-    update();
-  }
 
   autoPrintBarcodeFunction(bool value) {
     autoPrintBarcode = value;
-    update();
-  }
-
-  changeState(bool currentState, bool newState) {
-    currentState = newState;
     update();
   }
 
@@ -456,14 +465,6 @@ class ItemsDefinitionController extends GetxController {
     }
   }
 
-  // String? selectedUnit = '';
-  UnitModel? selectedUnitData;
-  int? selectedUnitId;
-  double? selectedUnitFactor;
-  CategoriesModel? selectedCat;
-  int? selectedCatId;
-  UnitConversationModel? selectedUnitConversation;
-  int? selectedUnitConversationId;
   Future<void> getUnits() async {
     try {
       final response = await sqlDb.getAllData("tbl_units");
@@ -491,43 +492,34 @@ class ItemsDefinitionController extends GetxController {
     }
   }
 
-  String selectedUnitPriceDetails = "";
-  List<UnitModel> unitsPriceDetails = [];
-  List<String> unitNames = [];
+  // Future<void> getUnitsPriceDetails() async {
+  //   try {
+  //     final response = await sqlDb.getAllData("tbl_units");
+  //     if (response['status'] == "success") {
+  //       unitsPriceDetails.clear();
 
-  Future<void> getUnitsPriceDetails(int id) async {
-    try {
-      final response = await sqlDb.getAllData("tbl_units");
-      if (response['status'] == "success") {
-        unitsPriceDetails.clear();
+  //       List listData = response['data'];
+  //       unitsPriceDetails.addAll(
+  //         listData.map((e) => UnitModel.fromJson(e)),
+  //       );
 
-        List listData = response['data'];
-        unitsPriceDetails.addAll(
-          listData.map((e) => UnitModel.fromJson(e)),
-        );
+  //       for (var row in rows) {
+  //         row.conversionUnit =
+  //             unitsPriceDetails.isNotEmpty ? unitsPriceDetails.first : null;
+  //       }
+  //     }
+  //   } catch (e) {
+  //     showErrorDialog(e.toString(),
+  //         title: "Error", message: "Error fetching types");
+  //   } finally {
+  //     update();
+  //   }
+  // }
 
-        for (var row in rows) {
-          row.conversionUnit =
-              unitsPriceDetails.isNotEmpty ? unitsPriceDetails.first : null;
-        }
-      }
-    } catch (e) {
-      showErrorDialog(e.toString(),
-          title: "Error", message: "Error fetching types");
-    } finally {
-      update();
-    }
-  }
-
-  List<ProductRow> rows = [];
   void addRow() {
-    // if (unitsPriceDetails.isEmpty) {
-    //   showErrorSnackBar(TextRoutes.noSubUnits);
-    //   return;
-    // }
     rows.add(ProductRow(
       conversionUnit:
-          unitsPriceDetails.isNotEmpty ? unitsPriceDetails.first : null,
+          unitsDropDownData.isNotEmpty ? unitsDropDownData.first : null,
       barcode: '',
       sellingPrice: 0.0,
     ));
@@ -560,25 +552,11 @@ class ItemsDefinitionController extends GetxController {
     itemsBuyingPriceController.dispose();
     itemsCostPriceController.dispose();
     itemsWholeSalePriceController.dispose();
-    itemsCategoriesControllerId.dispose();
-    itemsCategoriesControllerName.dispose();
     itemsBarcodeController.dispose();
-    catNameController.dispose();
-    searchController.dispose();
-    fromTypeName?.dispose();
-    fromTypeID?.dispose();
-    itemsSecondeBarcode?.dispose();
 
     // Clear data lists
-    purchaesData.clear();
-    dropDownListCategories.clear();
-    dropDownListUnits.clear();
     data.clear();
-    categoriesData.clear();
-    listDataSearch.clear();
     selectedItems.clear();
-    dropdownItems.clear();
-    hoverStates.clear();
     itemsController.clear();
 
     super.dispose();
@@ -620,8 +598,7 @@ class ProductRow {
       'unit_id': unitId,
       'barcode': barcodeController.text,
       'selling_price': double.tryParse(sellingPriceController.text) ?? 0.0,
-      'factor':
-          double.tryParse(conversionFactorController.text) ?? 0.0,
+      'factor': double.tryParse(conversionFactorController.text) ?? 0.0,
     };
   }
 }

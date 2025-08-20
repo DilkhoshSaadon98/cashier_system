@@ -7,7 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 void showFormDialog(BuildContext context,
-    {bool? isUpdate, String? addText, String? editText, Widget? child}) {
+    {bool? isUpdate,
+    String? addText,
+    String? editText,
+    Widget? child,
+    Function(dynamic)? onValue}) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -25,6 +29,19 @@ void showFormDialog(BuildContext context,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
+            CircleAvatar(
+              backgroundColor: Colors.red,
+              child: IconButton(
+                icon: const Icon(
+                  Icons.close,
+                  color: white,
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                tooltip: TextRoutes.close.tr,
+              ),
+            ),
             Expanded(
               child: Center(
                 child: Text(
@@ -35,19 +52,16 @@ void showFormDialog(BuildContext context,
                 ),
               ),
             ),
-            IconButton(
-              icon: const Icon(Icons.close),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              tooltip: TextRoutes.close.tr,
-            ),
           ],
         ),
         content: child,
       );
     },
-  );
+  ).then((value) {
+    if (onValue != null) {
+      onValue(value);
+    }
+  });
 }
 
 Widget dialogButtonWidget(BuildContext context, void Function()? onPressed) {

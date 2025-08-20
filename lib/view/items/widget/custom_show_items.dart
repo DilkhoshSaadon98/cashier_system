@@ -1,13 +1,14 @@
-
-import 'package:cashier_system/controller/items/items_view_controller.dart';
+import 'package:cashier_system/controller/items/items_controller.dart';
 import 'package:cashier_system/core/class/handling_data_view.dart';
 import 'package:cashier_system/core/constant/color.dart';
 import 'package:cashier_system/core/dialogs/delete_dialog.dart';
+import 'package:cashier_system/core/dialogs/show_form_dialog.dart';
 import 'package:cashier_system/core/functions/formating_numbers.dart';
 import 'package:cashier_system/core/localization/text_routes.dart';
 import 'package:cashier_system/core/shared/buttons/custom_floating_button.dart';
 import 'package:cashier_system/data/model/item_details_model.dart';
 import 'package:cashier_system/data/model/items_model.dart';
+import 'package:cashier_system/view/items/widget/custom_update_widget.dart';
 import 'package:cashier_system/view/items/widget/items_details_dialog.dart';
 import 'package:cashier_system/view/items/widget/items_grid_card_widget.dart';
 import 'package:cashier_system/view/widgets/tables/table_cell.dart';
@@ -22,7 +23,6 @@ class CustomShowItems extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(ItemsViewController());
-  
 
     void showDialogBox(ItemsModel dataItem) {
       controller.customShowPopupMenu.showPopupMenu(
@@ -30,32 +30,44 @@ class CustomShowItems extends StatelessWidget {
         [
           TextRoutes.edit,
           TextRoutes.remove,
-          TextRoutes.showData,
+          TextRoutes.view,
           if (controller.showAddToCart!) TextRoutes.addToCart
         ],
         [
-          () => controller.goUpdateItems(
-                dataItem,
-              ),
+          () {
+            controller.passDataForUpdate(dataItem);
+            showFormDialog(context,
+                addText: TextRoutes.addItems,
+                editText: TextRoutes.editItem,
+                isUpdate: true, onValue: (p0) {
+              controller.clearFileds();
+            }, child: const UpdateItemsWidget());
+          },
           () => showDeleteDialog(
                 context: context,
                 title: TextRoutes.warning,
                 content: TextRoutes.sureRemoveData,
                 onPressed: () {
-                  // controller.deleteItems([dataItem.itemsId]);
-                  // Navigator.of(context).pop(false);
+                  controller.deleteItems([dataItem.itemsId!]);
+                  Get.back();
                 },
               ),
           () => showItemDetailsDialog(
               context: context,
               item: dataItem,
               itemDetailsModel: ItemDetailsModel(itemId: dataItem.itemsId!),
-              onDelete: () {},
+              onDelete: () {
+                controller.deleteItems([dataItem.itemsId!]);
+                Get.back();
+              },
               onEdit: () {
                 Navigator.of(context).pop(false);
-                controller.goUpdateItems(
-                  dataItem,
-                );
+                showFormDialog(context,
+                    addText: TextRoutes.addItems,
+                    editText: TextRoutes.editItem,
+                    isUpdate: true, onValue: (p0) {
+                  controller.clearFileds();
+                }, child: const UpdateItemsWidget());
               }),
           if (controller.showAddToCart!)
             () => controller.addItemsToCart(controller.selectedItems.isEmpty
@@ -102,7 +114,9 @@ class CustomShowItems extends StatelessWidget {
             child: HandlingDataView(
               statusRequest: controller.statusRequest,
               child: controller.layoutDisplay
-                  ? ItemsGridCardWidget(controller: controller,)
+                  ? ItemsGridCardWidget(
+                      controller: controller,
+                    )
                   : TableWidget(
                       allSelected: controller.selectedItems.length ==
                           controller.data.length,
