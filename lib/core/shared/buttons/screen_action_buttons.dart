@@ -13,6 +13,7 @@ Widget screenActionButtonWidget(
   void Function()? onPressedClear,
   void Function()? onPressedRemove,
   void Function()? onPressedAdd,
+  void Function()? onPressedGrid,
 }) {
   return Container(
       width: Get.width,
@@ -95,6 +96,20 @@ Widget screenActionButtonWidget(
                       icon: const Icon(
                         size: 25,
                         Icons.clear,
+                        color: white,
+                      ))),
+            ],
+            if (onPressedGrid != null) ...[
+              horizontalGap(),
+              CircleAvatar(
+                  radius: 25,
+                  backgroundColor: Colors.lightGreen,
+                  child: IconButton(
+                      onPressed: onPressedGrid,
+                      tooltip: TextRoutes.design.tr,
+                      icon: const Icon(
+                        size: 25,
+                        Icons.grid_on_rounded,
                         color: white,
                       ))),
             ]

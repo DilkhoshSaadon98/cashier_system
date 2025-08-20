@@ -3,6 +3,7 @@ import 'package:cashier_system/core/constant/color.dart';
 import 'package:cashier_system/core/constant/screen_routes.dart';
 import 'package:cashier_system/core/functions/change_direction.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
@@ -70,7 +71,7 @@ class CustomHeaderScreen extends StatelessWidget {
 
     return Row(
       children: isLtr
-          ? [logoSection, const Spacer(), backButton, homeButton]
+          ? [logoSection, const Spacer(), homeButton, backButton]
           : [homeButton, backButton, const Spacer(), logoSection],
     );
   }

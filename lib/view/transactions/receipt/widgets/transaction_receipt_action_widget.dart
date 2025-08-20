@@ -240,7 +240,10 @@ class TransactionReceiptActionWidget extends StatelessWidget {
                 onPressedClear: () {
                   controller.clearSearchFileds();
                 },
-                onPressedPrint: () {},
+                onPressedPrint: () {
+                  controller.printData(controller.transactionReceiptData,
+                      controller.selectedRows);
+                },
                 onPressedRemove: () {
                   if (controller.selectedRows.isNotEmpty) {
                     showDeleteDialog(

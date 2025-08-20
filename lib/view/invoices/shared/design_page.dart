@@ -1,8 +1,11 @@
 import 'package:cashier_system/controller/printer/invoice_controller.dart';
 import 'package:cashier_system/core/constant/app_theme.dart';
 import 'package:cashier_system/core/constant/color.dart';
+import 'package:cashier_system/core/localization/text_routes.dart';
+import 'package:cashier_system/core/shared/buttons/custom_button_widget.dart';
 import 'package:cashier_system/core/shared/buttons/custom_buttton_global.dart';
 import 'package:cashier_system/core/shared/custom_sized_box.dart';
+import 'package:cashier_system/core/shared/drop_downs/drop_down_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -15,120 +18,39 @@ class DesignPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Get.put(InvoiceController());
-    //  PrintingController printingController = Get.put(PrintingController());
     return GetBuilder<InvoiceController>(
         init: InvoiceController(),
         builder: (controller) {
           return ListView(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
             children: [
               //? Select Printer:
               Text(
-                "Select Printer".tr,
+                TextRoutes.selectPrinter.tr,
                 style: titleStyle.copyWith(
                     fontSize: 16, color: isWindows ? white : primaryColor),
               ),
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                      width: 1, color: isWindows ? white : primaryColor),
-                ),
-                child: ExpansionTile(
-                  minTileHeight: 40,
-                  backgroundColor: primaryColor,
-                  collapsedBackgroundColor: white,
-                  expansionAnimationStyle: AnimationStyle(
-                      curve: Curves.easeInCirc,
-                      duration: const Duration(milliseconds: 100)),
-                  shape: BeveledRectangleBorder(
-                      borderRadius: BorderRadius.circular(3)),
-                  trailing: Icon(
-                    Icons.arrow_drop_down_sharp,
-                    color: controller.isSelectPrinterExpanded
-                        ? white
-                        : primaryColor,
-                  ),
-                  onExpansionChanged: (value) {
-                    controller.isSelectPrinterExpandedChanged();
-                  },
-                  title: Text(controller.selectedPrinters.toString().tr,
-                      style: titleStyle.copyWith(
-                        color: controller.isSelectPrinterExpanded
-                            ? white
-                            : primaryColor,
-                      )),
-                  children: [
-                    Container(
-                      color: white,
-                      child: ListTile(
-                        title: Text('A4 ${"Printer".tr}',
-                            style: bodyStyle.copyWith()),
-                        trailing: const Icon(
-                          Icons.print,
-                          color: primaryColor,
-                        ),
-                        onTap: () {
-                          controller.changePrinter('A4 Printer');
-                        },
-                      ),
-                    ),
-                    Container(
-                      color: white,
-                      child: ListTile(
-                        title: Text('Mini Printer'.tr,
-                            style: bodyStyle.copyWith()),
-                        trailing: const Icon(
-                          Icons.print,
-                          color: primaryColor,
-                        ),
-                        onTap: () {
-                          controller.changePrinter('Mini Printer');
-                        },
-                      ),
-                    ),
-                    // Container(
-                    //   color: white,
-                    //   child: ListTile(
-                    //     title: Text('SUNMI ${"Printer".tr}',
-                    //         style: bodyStyle.copyWith()),
-                    //     trailing: const Icon(
-                    //       Icons.print,
-                    //       color: primaryColor,
-                    //     ),
-                    //     onTap: () {
-                    //       controller.changePrinter('SUNMI Printer');
-                    //     },
-                    //   ),
-                    // ),
-                  ],
-                ),
+              DropDownMenu(
+                items: const [TextRoutes.a4Printer, TextRoutes.miniPrinter],
+                onChanged: (value) {
+                  controller.changePrinter(value!);
+                },
+                selectedValue: controller.selectedPrinter,
+                contentColor: white,
+                fieldColor: buttonColor,
               ),
               verticalGap(10),
-              //? Pick Printer
-              InkWell(
-                onTap: () => controller.pickPrinter(),
-                child: Container(
-                  height: 45,
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: primaryColor),
-                    color: white,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Pick Printer",
-                        style: titleStyle.copyWith(color: primaryColor),
-                      ),
-                      const Icon(
-                        Icons.local_print_shop_rounded,
-                        color: primaryColor,
-                      ),
-                    ],
-                  ),
-                ),
+              Text(
+                TextRoutes.printerSettings.tr,
+                style: bodyStyle.copyWith(color: white),
               ),
+              //? Pick Printer
+              customButtonWidget(
+                  () => controller.pickPrinter(), TextRoutes.pickPrinter,
+                  color: primaryColor, textColor: white, iconData: Icons.print),
+              verticalGap(10),
+              customButtonWidget(
+                  () => controller.pickPrinter(), TextRoutes.pickPrinter,
+                  color: primaryColor, textColor: white, iconData: Icons.print),
               verticalGap(10),
               //? Customize A4 printer:
               Container(

@@ -1,4 +1,4 @@
-import 'package:cashier_system/controller/items/items_add_controller.dart';
+import 'package:cashier_system/controller/items/items_controller.dart';
 import 'package:cashier_system/core/constant/app_theme.dart';
 import 'package:cashier_system/core/constant/color.dart';
 import 'package:cashier_system/core/functions/validinput.dart';
@@ -19,7 +19,7 @@ class AddItems extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(AddItemsController());
+    final controller = Get.put(ItemsViewController());
 
     return SizedBox(
       width: Get.width,
@@ -34,7 +34,7 @@ class AddItems extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Image Upload Section
-                      GetBuilder<AddItemsController>(builder: (controller) {
+                      GetBuilder<ItemsViewController>(builder: (controller) {
                         return UploadImage(
                             file: controller.file,
                             onRemove: () {
@@ -48,7 +48,7 @@ class AddItems extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child:
-                            GetBuilder<AddItemsController>(builder: (context) {
+                            GetBuilder<ItemsViewController>(builder: (context) {
                           final fields = controller.itemsInputFieldsData;
                           return GridView.builder(
                               shrinkWrap: true,
@@ -112,11 +112,11 @@ class AddItems extends StatelessWidget {
                                     selectedItem: controller.selectedUnitData,
                                     borderColor: primaryColor,
                                     itemToString: (p0) {
-                                      return "${p0.unitBaseName.tr} = ${p0.factor}";
+                                      return "${p0.unitBaseName?.tr} = ${p0.factor}";
                                     },
                                     validator: (p0) {
                                       return validInput(
-                                          p0!.unitBaseName, 0, 100, "",
+                                          p0!.unitBaseName!, 0, 100, "",
                                           required: false);
                                     },
                                     onChanged: (value) {
@@ -127,10 +127,7 @@ class AddItems extends StatelessWidget {
                                             value.factor;
                                         controller.selectedUnitData = value;
                                       }
-                                      if (controller.selectedUnitId != null) {
-                                        controller.getUnitsPriceDetails(
-                                            controller.selectedUnitId!);
-                                      }
+                                   
                                       controller.rows.clear();
                                     },
                                     fieldColor: white,
@@ -175,7 +172,7 @@ class AddItems extends StatelessWidget {
                         ),
                       ),
                       verticalGap(),
-                      GetBuilder<AddItemsController>(
+                      GetBuilder<ItemsViewController>(
                         builder: (controller) {
                           if (controller.rows.isEmpty) {
                             return const SizedBox.shrink();
@@ -197,9 +194,9 @@ class AddItems extends StatelessWidget {
                                           selectedItem: row.conversionUnit,
                                           iconData: Icons.data_array,
                                           label: TextRoutes.unitsConvert,
-                                          items: controller.unitsPriceDetails,
+                                          items: controller.unitsDropDownData,
                                           itemToString: (p0) {
-                                            return "${p0.unitBaseName.tr} = ${p0.factor}";
+                                            return "${p0.unitBaseName!.tr} = ${p0.factor}";
                                           },
                                           onChanged: (value) {
                                             final basePrice = double.tryParse(
@@ -207,7 +204,8 @@ class AddItems extends StatelessWidget {
                                                         .itemsSellingPriceController
                                                         .text) ??
                                                 0.0;
-                                            double factor = value!.factor;
+                                            double factor =
+                                                value!.factor!.toDouble();
                                             row.unitId = value.unitId;
                                             row.conversionFactorController
                                                 .text = factor.toString();

@@ -6,8 +6,7 @@ import 'package:cashier_system/view/buying/mobile/view_buying_details_screen_mob
 import 'package:cashier_system/view/categories/categories_add_screen.dart';
 import 'package:cashier_system/view/clients/clients_screen.dart';
 import 'package:cashier_system/view/invoices/invoices_screen.dart';
-import 'package:cashier_system/view/items/items_add_screen.dart';
-import 'package:cashier_system/view/items/items_edit_screen.dart';
+import 'package:cashier_system/view/invoices/sale_invoice_screen.dart';
 import 'package:cashier_system/view/items/items_screen.dart';
 import 'package:cashier_system/view/items/items_view_screen.dart';
 import 'package:cashier_system/view/reports/billing_profits/billing_profits_screen.dart';
@@ -74,10 +73,7 @@ List<GetPage<dynamic>>? routes = [
   //!Items Routes:
 
   GetPage(name: AppRoute.unitsScreen, page: () => const UnitsScreen()),
-  GetPage(name: AppRoute.itemsAddScreen, page: () => const ItemsAddScreen()),
   GetPage(name: AppRoute.itemsViewScreen, page: () => const ItemsViewScreen()),
-  GetPage(
-      name: AppRoute.itemsUpdateScreen, page: () => const ItemsEditScreen()),
 
   //! Reports Screen:
 
@@ -113,13 +109,12 @@ List<GetPage<dynamic>>? routes = [
 
   //! Buying :
   GetPage(
-      transition: Transition.fadeIn,
-      transitionDuration: const Duration(milliseconds: 100),
       name: AppRoute.buyingDetailsScreen,
       page: () => const ViewBuyingDetailsScreen()),
   GetPage(
-      transition: Transition.fadeIn,
-      transitionDuration: const Duration(milliseconds: 100),
       name: AppRoute.buyingDetailsScreenMobile,
       page: () => const ViewBuyingDetailsScreenMobile()),
+  //! Invoices:
+  GetPage(
+      name: AppRoute.saleInvoiceScreen, page: () => const SaleInvoiceScreen()),
 ];

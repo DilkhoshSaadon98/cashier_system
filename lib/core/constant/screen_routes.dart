@@ -64,4 +64,9 @@ class AppRoute {
   static const String viewCreditorScreen = "/viewCreditorScreen";
   static const String buyingDetailsScreen = "/buyingDetailsScreen";
   static const String buyingDetailsScreenMobile = "/buyingDetailsScreenMobile";
+    //! Invoices
+  static const String saleInvoiceScreen = "/saleInvoiceScreen";
+  static const String purchaseInvoiceScreen = "/purchaseInvoiceScreen";
+  static const String barcodeInvoiceScreen = "/barcodeInvoiceScreen";
+  static const String transactionInvoiceScreen = "/transactionInvoiceScreen";
 }

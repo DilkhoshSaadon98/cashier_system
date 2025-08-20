@@ -31,6 +31,10 @@ class AppImageAsset {
   static const String addAccount = "$iconsRoot/add_account.svg";
   static const String accountingSvg = "$iconsRoot/accounting_svg.svg";
   static const String invoicesSvg = "$iconsRoot/invoices.svg";
+  static const String saleInvoicesSvg = "$iconsRoot/sale_invoice.svg";
+  static const String purchaseInvoicesSvg = "$iconsRoot/purchase_invoice.svg";
+  static const String barcodeInvoicesSvg = "$iconsRoot/barcode_invoice.svg";
+  static const String transactionInvoicesSvg = "$iconsRoot/payments_invoice.svg";
 
   //! Server Status :
   static const String loading = "$rootLottie/loading.json";

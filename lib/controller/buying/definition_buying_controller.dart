@@ -161,7 +161,7 @@ class DefinitionBuyingController extends GetxController {
       if (response['status'] == 'success') {
         List responsedata = response['data'] ?? [];
         unitsData.addAll(responsedata.map((e) => UnitModel.fromJson(e)));
-        dropdownItems.addAll(unitsData.map((unit) => unit.unitBaseName));
+        dropdownItems.addAll(unitsData.map((unit) => unit.unitBaseName!));
       }
     } catch (e) {
       showErrorDialog(e.toString(),

@@ -140,6 +140,17 @@ class TextRoutes {
   //! Invoices:
   static const invoices = "invoices";
   static const design = "design";
+  static const selectPrinter = "selectPrinter";
+  static const a4Printer = "a4Printer";
+  static const printerSettings = "printerSettings";
+  static const miniPrinter = "miniPrinter";
+  static const pickPrinter = "pickPrinter";
+  static const printerNotSelected = "printerNotSelected";
+  static const saleInvoice = "saleInvoice";
+  static const purchaseInvoice = "purchaseInvoice";
+  static const barcodeInvoice = "barcodeInvoice";
+  static const transactionInvoice = "transactionInvoice";
+
 //! Transactions:
   static const receiptAndPayments = "receiptAndPayments";
   static const addPayments = "addPayments";
@@ -264,7 +275,6 @@ class TextRoutes {
   static const close = "close";
   static const details = "details";
   static const uploadImage = "uploadImage";
-  static const pickPrinter = "pickPrinter";
 //! Categories Routes:
   static const viewCategories = "viewCategories";
   static const addCategories = "addCategories";
@@ -425,6 +435,10 @@ class TextRoutes {
   static const changeLayoutOfScreen = "changeLayoutOfScreen";
 
   //! Error:--------------------------------------
+  
+  static const itemLinkedWithSaleInvoices = 'itemLinkedWithSaleInvoices';
+  static const itemLinkedWithPurchaseInvoices = 'itemLinkedWithPurchaseInvoices';
+  static const item = 'item';
   //! Error Titles:
   static const success = 'success';
   static const error = 'error';

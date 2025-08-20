@@ -23,7 +23,7 @@ class CashierDefinitionController extends GetxController {
   TextEditingController? dropDownName;
   TextEditingController? dropDownID;
   TextEditingController? catName;
-  TextEditingController? catID;
+  TextEditingController? catID = TextEditingController();
   final TextEditingController itemsNameController = TextEditingController();
   final TextEditingController itemsDescControllerController =
       TextEditingController();
@@ -36,8 +36,7 @@ class CashierDefinitionController extends GetxController {
       TextEditingController();
   final TextEditingController itemsWholeSalePriceController =
       TextEditingController();
-  final TextEditingController itemsTypeController = TextEditingController();
-  final TextEditingController itemsTypeControllerId = TextEditingController();
+
   final TextEditingController itemsCategoriesControllerId =
       TextEditingController();
   final TextEditingController itemsCategoriesControllerName =
@@ -104,5 +103,4 @@ class CashierDefinitionController extends GetxController {
   TextEditingController? noteController;
   //* Form State Key:
   GlobalKey<FormState> formState = GlobalKey<FormState>();
-
 }

@@ -4,8 +4,10 @@ import 'package:cashier_system/core/constant/app_theme.dart';
 import 'package:cashier_system/core/constant/color.dart';
 import 'package:cashier_system/core/dialogs/custom_snack_bar.dart';
 import 'package:cashier_system/core/dialogs/error_dialogs.dart';
+import 'package:cashier_system/core/dialogs/snackbar_helper.dart';
 import 'package:cashier_system/core/functions/change_direction.dart';
 import 'package:cashier_system/core/functions/upload_file.dart';
+import 'package:cashier_system/core/localization/text_routes.dart';
 import 'package:cashier_system/data/model/items_model.dart';
 import 'package:cashier_system/data/model/locale/custom_selected_list_items.dart';
 import 'package:cashier_system/core/class/sqldb.dart';
@@ -266,7 +268,7 @@ class InvoiceController extends GetxController {
         for (int i = 0; i < listDataSearch.length; i++) {
           dropDownList.add(CustomSelectedListItems(
               name: listDataSearch[i].itemsName,
-              desc:  listDataSearch[i].itemsName,
+              desc: listDataSearch[i].itemsName,
               value: listDataSearch[i].itemsId.toString(),
               price: listDataSearch[i].itemsSellingPrice.toString(),
               type: listDataSearch[i].itemsBarcode));
@@ -344,8 +346,9 @@ class InvoiceController extends GetxController {
     update();
   }
 
+  String selectedPrinter = TextRoutes.a4Printer;
   void changePrinter(String printer) {
-    selectedPrinters = printer;
+    selectedPrinter = printer;
     savePreferences();
     switchPrinter();
     update();
@@ -353,7 +356,11 @@ class InvoiceController extends GetxController {
 
   void pickPrinter() async {
     var url = await Printing.pickPrinter(context: navigatorKey.currentContext!);
-    myServices.sharedPreferences.setString("printer_url", url!.name);
+    if (url == null) {
+      //   showErrorSnackBar(TextRoutes.printerNotSelected);
+      return;
+    }
+    myServices.sharedPreferences.setString("printer_url", url.name);
   }
 
 //? Headers data height:
@@ -449,8 +456,8 @@ class InvoiceController extends GetxController {
         'footers_state', footersState.map((e) => e.toString()).toList());
     myServices.sharedPreferences.setStringList(
         'tables_state', tablesTileState.map((e) => e.toString()).toList());
-    myServices.sharedPreferences
-        .setString('selected_printer', selectedPrinters ?? "A4 Printer");
+    myServices.sharedPreferences.setString(
+        'selected_printer', selectedPrinters ?? TextRoutes.a4Printer);
     if (a4HeaderFile != null) {
       myServices.sharedPreferences
           .setString('a4HeaderFilePath', a4HeaderFile!.path);
@@ -517,7 +524,7 @@ class InvoiceController extends GetxController {
           myServices.sharedPreferences.getBool("show_mini_image") ?? true;
       selectedPrinters =
           myServices.sharedPreferences.getString("selected_printer") ??
-              "A4 Printer";
+              TextRoutes.a4Printer;
       groupValueState =
           myServices.sharedPreferences.getBool("group_layout") ?? false ? 1 : 0;
       barcodeWidth = double.tryParse(
@@ -575,19 +582,15 @@ class InvoiceController extends GetxController {
   Future<PdfPageFormat> switchPrinter() async {
     PdfPageFormat pageFormat = PdfPageFormat.a4;
     isA4Format = false;
-    isA5Format = false;
     isASunmiFormat = false;
     isXPrinterFormat = false;
 
-    if (selectedPrinters == "A4 Printer") {
+    if (selectedPrinter == TextRoutes.a4Printer) {
       pageFormat = PdfPageFormat.a4;
       isA4Format = true;
     }
-    if (selectedPrinters == "A5 Printer") {
-      pageFormat = PdfPageFormat.a5;
-      isA5Format = true;
-    }
-    if (selectedPrinters == "Mini Printer") {
+
+    if (selectedPrinter == TextRoutes.miniPrinter) {
       pageFormat =
           const PdfPageFormat(58.0 * PdfPageFormat.mm, 1000 * PdfPageFormat.mm);
       isXPrinterFormat = true;

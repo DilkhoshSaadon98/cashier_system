@@ -1,14 +1,14 @@
 class UnitModel {
-  final int unitId;
-  final String unitBaseName;
-  final double factor;
-  final String unitCreateDate;
+  final int? unitId;
+  final String? unitBaseName;
+  final double? factor;
+  final String? unitCreateDate;
 
   UnitModel({
-    required this.unitId,
-    required this.unitBaseName,
-    required this.factor,
-    required this.unitCreateDate,
+   this.unitId,
+   this.unitBaseName,
+   this.factor,
+   this.unitCreateDate,
   });
 
   factory UnitModel.fromJson(Map<String, dynamic> json) {
