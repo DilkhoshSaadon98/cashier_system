@@ -635,6 +635,7 @@ class ItemsViewController extends ItemsDefinitionController {
     }
   }
 
+
   @override
   void onClose() {
     data.clear();

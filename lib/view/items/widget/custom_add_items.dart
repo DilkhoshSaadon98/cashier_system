@@ -30,6 +30,7 @@ class AddItems extends StatelessWidget {
           children: [
             Expanded(
               child: SingleChildScrollView(
+                controller: controller.scrollController,
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

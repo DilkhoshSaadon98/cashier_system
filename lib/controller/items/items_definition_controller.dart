@@ -515,6 +515,14 @@ class ItemsDefinitionController extends GetxController {
   //     update();
   //   }
   // }
+  final ScrollController scrollController = ScrollController();
+  void scrollToEnd() {
+    scrollController.animateTo(
+      scrollController.position.maxScrollExtent,
+      duration: Duration(milliseconds: 50),
+      curve: Curves.linear,
+    );
+  }
 
   void addRow() {
     rows.add(ProductRow(
@@ -524,6 +532,16 @@ class ItemsDefinitionController extends GetxController {
       sellingPrice: 0.0,
     ));
     update();
+    // wait until widgets are built
+    Future.delayed(const Duration(milliseconds: 50), () {
+      if (scrollController.hasClients) {
+        scrollController.animateTo(
+          scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 50),
+          curve: Curves.easeOut,
+        );
+      }
+    });
   }
 
   void removeRow(int index) {
